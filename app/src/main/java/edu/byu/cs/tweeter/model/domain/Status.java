@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.model.domain;
 
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class Status {
     private User user;
 
     public Status(List<String> mentions, List<String> Urls, String tweet, Timestamp timeStamp, User user) {
-        Mentions = mentions;
+        this.Mentions = mentions;
         this.Urls = Urls;
         this.tweet = tweet;
         this.timeStamp = timeStamp;
@@ -62,6 +63,28 @@ public class Status {
                 ", timeStamp='" + timeStamp.toString() + '\'' +
                 ", user='" + user.toString() + '\'' +
                 '}';
+    }
+
+    private List<String> parseMentions(String tweet){
+        String[] splitTweet = tweet.split("\\s+");
+        List<String> mentions = new ArrayList<>();
+        for(String word : splitTweet){
+            if(word.charAt(0) == '@'){
+                mentions.add(word);
+            }
+        }
+        return mentions;
+    }
+
+    private List<String> parseURLS(String tweet){
+        String[] splitTweet = tweet.split("\\s+");
+        List<String> urls = new ArrayList<>();
+        for(String word : splitTweet){
+            if(word.contains("www")){
+                urls.add(word);
+            }
+        }
+        return urls;
     }
 
 
