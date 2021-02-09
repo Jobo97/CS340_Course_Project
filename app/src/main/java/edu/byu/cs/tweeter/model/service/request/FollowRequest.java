@@ -4,11 +4,12 @@ package edu.byu.cs.tweeter.model.service.request;
  * Contains all the information needed to make a request to have the server return the next page of
  * followees for a specified follower.
  */
-public class FollowingRequest {
+public class FollowRequest {
 
     private final String followerAlias;
     private final int limit;
     private final String lastFolloweeAlias;
+    private final boolean isFollower;
 
     /**
      * Creates an instance.
@@ -19,10 +20,11 @@ public class FollowingRequest {
      *                     there was no previous request or if no followees were returned in the
      *                     previous request).
      */
-    public FollowingRequest(String followerAlias, int limit, String lastFolloweeAlias) {
+    public FollowRequest(String followerAlias, int limit, String lastFolloweeAlias, boolean isFollower) {
         this.followerAlias = followerAlias;
         this.limit = limit;
         this.lastFolloweeAlias = lastFolloweeAlias;
+        this.isFollower = isFollower;
     }
 
     /**
@@ -51,5 +53,9 @@ public class FollowingRequest {
      */
     public String getLastFolloweeAlias() {
         return lastFolloweeAlias;
+    }
+
+    public boolean isFollower() {
+        return isFollower;
     }
 }

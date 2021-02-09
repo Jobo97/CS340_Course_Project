@@ -11,17 +11,14 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Follow;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
@@ -135,7 +132,7 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the following response.
      */
-    public FollowingResponse getFollowees(FollowingRequest request) {
+    public FollowResponse getFollows(FollowRequest request) {
 
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
@@ -148,60 +145,29 @@ public class ServerFacade {
             }
         }
 
-        List<User> allFollowees = getDummyFollowees();
-        List<User> responseFollowees = new ArrayList<>(request.getLimit());
+        List<User> allFollows;
+        if (request.isFollower()) {
+            allFollows = getDummyFollowers();
+        }
+        else {
+            allFollows = getDummyFollowees();
+        }
+
+        List<User> responseFollows = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
 
         if(request.getLimit() > 0) {
-            int followeesIndex = getStartingIndex(request.getLastFolloweeAlias(), allFollowees);
+            int followIndex = getStartingIndex(request.getLastFolloweeAlias(), allFollows);
 
-            for(int limitCounter = 0; followeesIndex < allFollowees.size() && limitCounter < request.getLimit(); followeesIndex++, limitCounter++) {
-                responseFollowees.add(allFollowees.get(followeesIndex));
+            for(int limitCounter = 0; followIndex < allFollows.size() && limitCounter < request.getLimit(); followIndex++, limitCounter++) {
+                responseFollows.add(allFollows.get(followIndex));
             }
 
-            hasMorePages = followeesIndex < allFollowees.size();
+            hasMorePages = followIndex < allFollows.size();
         }
 
-        return new FollowingResponse(responseFollowees, hasMorePages);
-    }
-
-    /**
-     * Returns the users that follow the user specified in the request.
-     *
-     * @param request contains information about the users who follow the specified user and returns and any
-     *                other information required to satisfy the request.
-     * @return the following response.
-     */
-    public FollowerResponse getFollowers(FollowerRequest request) {
-
-        // Used in place of assert statements because Android does not support them
-        if(BuildConfig.DEBUG) {
-            if(request.getLimit() < 0) {
-                throw new AssertionError();
-            }
-
-            if(request.getFollowerAlias() == null) {
-                throw new AssertionError();
-            }
-        }
-
-        List<User> allFollowers = getDummyFollowers();
-        List<User> responseFollowers = new ArrayList<>(request.getLimit());
-
-        boolean hasMorePages = false;
-
-        if(request.getLimit() > 0) {
-            int followersIndex = getStartingIndex(request.getLastFollowerAlias(), allFollowers);
-
-            for(int limitCounter = 0; followersIndex < allFollowers.size() && limitCounter < request.getLimit(); followersIndex++, limitCounter++) {
-                responseFollowers.add(allFollowers.get(followersIndex));
-            }
-
-            hasMorePages = followersIndex < allFollowers.size();
-        }
-
-        return new FollowerResponse(responseFollowers, hasMorePages);
+        return new FollowResponse(responseFollows, hasMorePages);
     }
 
     /**
@@ -257,7 +223,6 @@ public class ServerFacade {
     List<Status> getDummyStory() {
         return Arrays.asList(status1,status3);
     }
-
 
 
     //Data Structures for users, another for follow objects (following/followers)
