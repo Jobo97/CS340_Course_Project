@@ -2,14 +2,14 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.FollowingService;
-import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.FollowService;
+import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 
 /**
  * The presenter for the "following" functionality of the application.
  */
-public class FollowingPresenter {
+public class FollowPresenter {
 
     private final View view;
 
@@ -25,7 +25,7 @@ public class FollowingPresenter {
      *
      * @param view the view for which this class is the presenter.
      */
-    public FollowingPresenter(View view) {
+    public FollowPresenter(View view) {
         this.view = view;
     }
 
@@ -37,19 +37,19 @@ public class FollowingPresenter {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowing(FollowingRequest request) throws IOException {
-        FollowingService followingService = getFollowingService();
-        return followingService.getFollowees(request);
+    public FollowResponse getFollows(FollowRequest request) throws IOException {
+        FollowService followService = getFollowService();
+        return followService.getFollows(request);
     }
 
     /**
-     * Returns an instance of {@link FollowingService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link FollowService}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    FollowingService getFollowingService() {
-        return new FollowingService();
+    FollowService getFollowService() {
+        return new FollowService();
     }
 }
