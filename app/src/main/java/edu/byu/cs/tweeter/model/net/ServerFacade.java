@@ -13,14 +13,12 @@ import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
-import edu.byu.cs.tweeter.model.service.request.StoryRequest;
-import edu.byu.cs.tweeter.model.service.response.FeedResponse;
+import edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
-import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -108,18 +106,20 @@ public class ServerFacade {
         return new LoginResponse(user, new AuthToken("Test_User"));
     }
 
-    public StoryResponse getStory(StoryRequest request) {
+    public StatusResponse getStatuses(StatusRequest request) {
         String alias = request.getUserAlias();
-        //would need the user alias to get tweets, facade eliminates that need.
-        List<Status> story = getDummyStory();
-        return new StoryResponse(story, false);
-    }
+        List<Status> statuses;
+        if(request.isStory()){
+            //would need the user alias to get tweets for the story, facade eliminates that need.
+            statuses = getDummyStory();
+        }
+        else{
+            //would need the user alias to get tweets for the feed, facade eliminates that need.
+            statuses = getDummyFeed();
+        }
 
-    public FeedResponse getFeed(FeedRequest request) {
-        String alias = request.getUserAlias();
-        //would need the user alias to get tweets of their followers, facade eliminates that need.
-        List<Status> feed = getDummyFeed();
-        return new FeedResponse(feed, false);
+
+        return new StatusResponse(statuses, false);
     }
 
     /**

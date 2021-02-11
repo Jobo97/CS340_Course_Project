@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         if(user == null) {
             throw new RuntimeException("User not passed to activity");
         }
-
+        System.out.println(user.toString());
         AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
-
+        System.out.println(authToken.toString());
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);

@@ -18,4 +18,6 @@
     <string name="title_activity_login">Sign in</string>
     <string name="followeeCount">Following: %d</string>
     <string name="followerCount">Followers: %d</string>
+    <string name="sampleStatus">Sample Status That is verry long and can take up a lot of space and i still have sticky keys on my laptop and it is annoying a heck and i wat to just have a normal keyboard again lol</string>
+    <string name="sampleTimestamp">Sample Timestamp</string>
 </resources>

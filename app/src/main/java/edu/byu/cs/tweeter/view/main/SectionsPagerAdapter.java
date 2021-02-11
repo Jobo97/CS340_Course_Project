@@ -12,6 +12,7 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.view.main.following.FollowFragment;
+import edu.byu.cs.tweeter.view.main.following.StatusFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to one of the sections/tabs/pages
@@ -19,6 +20,8 @@ import edu.byu.cs.tweeter.view.main.following.FollowFragment;
  */
 class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    private static final int FEED_FRAGMENT_POSITION = 0;
+    private static final int STORY_FRAGMENT_POSITION = 1;
     private static final int FOLLOWING_FRAGMENT_POSITION = 2;
     private static final int FOLLOWER_FRAGMENT_POSITION = 3;
 
@@ -30,6 +33,9 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authToken) {
         super(fm);
+        System.out.println(context.toString());
+        System.out.println(user.toString());
+        System.out.println(authToken.toString());
         mContext = context;
         this.user = user;
         this.authToken = authToken;
@@ -37,7 +43,13 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == FOLLOWING_FRAGMENT_POSITION) {
+        if(position == FEED_FRAGMENT_POSITION){
+            return StatusFragment.newInstance(user, authToken, false);
+        }
+        else if (position == STORY_FRAGMENT_POSITION){
+            return StatusFragment.newInstance(user, authToken, true);
+        }
+        else if (position == FOLLOWING_FRAGMENT_POSITION) {
             return FollowFragment.newInstance(user, authToken, false);
         }
         else if (position == FOLLOWER_FRAGMENT_POSITION) {
