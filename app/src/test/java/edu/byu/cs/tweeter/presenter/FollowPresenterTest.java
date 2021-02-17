@@ -31,7 +31,8 @@ public class FollowPresenterTest {
         User resultUser3 = new User("FirstName3", "LastName3",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
-        request = new FollowRequest(currentUser.getAlias(), 3, null);
+        // Not sure if this should be true or false?
+        request = new FollowRequest(currentUser.getAlias(), 3, null, true);
         response = new FollowResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
 
         // Create a mock FollowingService

@@ -4,10 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -29,6 +26,10 @@ public class ServerFacade {
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
+    private final User ben = new User("Ben", "Millett", "benmillett", MALE_IMAGE_URL);
+    private final User michael = new User("Michael", "Skonnard", "michaelskonnard", MALE_IMAGE_URL);
+    private final User carter = new User("Carter", "Wonnacott", "carterwonnacott", MALE_IMAGE_URL);
+
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
     private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
     private final User user3 = new User("Bob", "Bobson", MALE_IMAGE_URL);
@@ -49,6 +50,18 @@ public class ServerFacade {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
+
+    private Map<String, String> databaseUsernamePassword = new HashMap<String, String>(){{
+        put(ben.getAlias(), "password-ben");
+        put(michael.getAlias(), "password-michael");
+        put(carter.getAlias(), "password-carter");
+    }};
+
+    private Map<String, User> databaseUsernameUser = new HashMap<String, User>(){{
+        put(ben.getAlias(), ben);
+        put(michael.getAlias(), michael);
+        put(carter.getAlias(), carter);
+    }};
 
     private List<String> mention1 = new ArrayList<String>(){{
         add("@alias1");
@@ -101,9 +114,33 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) {
-        User user = new User("Test", "User",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-        return new LoginResponse(user, new AuthToken("Test_User"));
+//        User user = new User("Test", "User",
+//                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+//        return new LoginResponse(user, new AuthToken("Test_User"));
+
+        if (request.isRegister()) {
+            if (databaseUsernameUser.containsKey(request.getUsername())) {
+                return new LoginResponse("Register failed: Username already exists!");
+            }
+            else {
+                User user = new User(request.getFirstname(), request.getLastname(), request.getUsername(), MALE_IMAGE_URL);
+                // set user's image
+                databaseUsernameUser.put(user.getAlias(), user);
+                databaseUsernamePassword.put(user.getAlias(), request.getPassword());
+            }
+        }
+
+        if (databaseUsernamePassword.containsKey(request.getUsername())) {
+            if (databaseUsernamePassword.get(request.getUsername()).equals(request.getPassword())) {
+                return new LoginResponse(databaseUsernameUser.get(request.getUsername()), new AuthToken("Test_User"));
+            }
+            else {
+                return new LoginResponse("Invalid password!");
+            }
+        }
+        else {
+            return new LoginResponse("User doesn't exist");
+        }
     }
 
     public StatusResponse getStatuses(StatusRequest request) {

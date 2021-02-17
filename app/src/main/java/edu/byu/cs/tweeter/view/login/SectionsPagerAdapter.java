@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.view.login.landing.LoginFragment;
+import edu.byu.cs.tweeter.view.login.landing.RegisterFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -35,7 +36,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             return LoginFragment.newInstance();
         }
         else if (position == REGISTER_TAB){
-            return null;//RegisterFragment.newInstance(user, authToken, true);
+            return RegisterFragment.newInstance(); //RegisterFragment.newInstance(user, authToken, true);
         }
         else {
             return PlaceholderFragment.newInstance(position + 1);

@@ -8,6 +8,15 @@ public class LoginRequest {
     private final String username;
     private final String password;
 
+    private final String firstname;
+    private final String lastname;
+
+    private final byte [] imageBytes;
+
+    private final boolean isRegister;
+
+
+
     /**
      * Creates an instance.
      *
@@ -17,6 +26,20 @@ public class LoginRequest {
     public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
+        isRegister = false;
+
+        firstname = null;
+        lastname = null;
+        imageBytes = null;
+    }
+
+    public LoginRequest(String username, String password, String firstname, String lastname, byte [] imageBytes) {
+        this.username = username;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.imageBytes = imageBytes;
+        isRegister = true;
     }
 
     /**
@@ -35,5 +58,21 @@ public class LoginRequest {
      */
     public String getPassword() {
         return password;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    public boolean isRegister() {
+        return isRegister;
     }
 }

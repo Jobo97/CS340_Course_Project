@@ -39,8 +39,8 @@ public class FollowServiceTest {
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
         // Setup request objects to use in the tests
-        validRequest = new FollowRequest(currentUser.getAlias(), 3, null);
-        invalidRequest = new FollowRequest(null, 0, null);
+        validRequest = new FollowRequest(currentUser.getAlias(), 3, null, true);
+        invalidRequest = new FollowRequest(null, 0, null, true);
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new FollowResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
