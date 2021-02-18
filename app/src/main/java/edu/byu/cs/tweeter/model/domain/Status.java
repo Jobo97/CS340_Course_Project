@@ -13,9 +13,9 @@ public class Status {
     private Timestamp timeStamp;            //Review this Timestamp class
     private User user;
 
-    public Status(List<String> mentions, List<String> Urls, String tweet, Timestamp timeStamp, User user) {
-        this.Mentions = mentions;
-        this.Urls = Urls;
+    public Status(String tweet, Timestamp timeStamp, User user) {
+        this.Mentions = parseMentions(tweet);
+        this.Urls = parseURLS(tweet);
         this.tweet = tweet;
         this.timeStamp = timeStamp;
         this.user = user;

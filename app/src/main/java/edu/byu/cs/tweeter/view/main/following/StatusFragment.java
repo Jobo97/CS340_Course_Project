@@ -309,7 +309,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() { //this will definitely have to change
-            addItem(new Status(null, null, "This is the tweet that gets replaced." +
+            addItem(new Status("This is the tweet that gets replaced." +
                     " Dummy Tweet", null, new User("Dummy", "User", "")));
         }
 
