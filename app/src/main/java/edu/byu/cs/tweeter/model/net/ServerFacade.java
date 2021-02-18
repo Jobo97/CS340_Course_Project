@@ -12,9 +12,11 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.Response;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 /**
@@ -63,6 +65,42 @@ public class ServerFacade {
         put(carter.getAlias(), carter);
     }};
 
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    Date date;
+
+    {
+        try {
+            date = dateFormat.parse("23/09/2007");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    long time = date.getTime();
+
+    private final Status status1 = new Status("Tweet from status1. @alias1 @alias2 www.byu.edu www.google.com",
+            new Timestamp(time), ben);
+    private final Status status2 = new Status("Tweet from status2. @alias3 @alias4 www.apple.com www.linked.com",
+            new Timestamp(time), ben);
+    private final Status status3 = new Status("Tweet from status3. @alias1 @alias2 www.byu.edu www.google.com",
+            new Timestamp(time), michael);
+    private final Status status4 = new Status("Tweet from status4. @alias3 @alias4 www.apple.com www.linked.com",
+            new Timestamp(time), carter);
+
+
+    private Map<String, List<Status>> databaseUsernameStatus = new HashMap<String, List<Status>>(){{
+        put(ben.getAlias(), new ArrayList<Status>(){{
+            add(status1);
+            add(status2);
+        }});
+        put(michael.getAlias(), new ArrayList<Status>(){{
+            add(status3);
+        }});
+        put(carter.getAlias(), new ArrayList<Status>(){{
+            add(status4);
+        }});
+    }};
+
     private List<String> mention1 = new ArrayList<String>(){{
         add("@alias1");
         add("@alias2");
@@ -82,27 +120,8 @@ public class ServerFacade {
         add("www.linkedin.com");
     }};
 
-    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    Date date;
 
-    {
-        try {
-            date = dateFormat.parse("23/09/2007");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    long time = date.getTime();
     //new Timestamp(time);
-    private final Status status1 = new Status(mention1, url1, "Tweet from status1. @alias1 @alias2 www.byu.edu www.google.com",
-            new Timestamp(time), user1);
-    private final Status status2 = new Status(mention2, url2, "Tweet from status2. @alias3 @alias4 www.apple.com www.linked.com",
-            new Timestamp(time), user2);
-    private final Status status3 = new Status(mention1, url1, "Tweet from status3. @alias1 @alias2 www.byu.edu www.google.com",
-            new Timestamp(time), user1);
-    private final Status status4 = new Status(mention2, url2, "Tweet from status4. @alias3 @alias4 www.apple.com www.linked.com",
-            new Timestamp(time), user2);
 
 
     /**
@@ -148,7 +167,7 @@ public class ServerFacade {
         List<Status> statuses;
         if(request.isStory()){
             //would need the user alias to get tweets for the story, facade eliminates that need.
-            statuses = getDummyStory();
+            statuses = databaseUsernameStatus.get(alias);
         }
         else{
             //would need the user alias to get tweets for the feed, facade eliminates that need.
@@ -259,6 +278,21 @@ public class ServerFacade {
 
     List<Status> getDummyStory() {
         return Arrays.asList(status1,status3);
+    }
+
+    public Response postStatus(PostStatusRequest request) {
+        long time = date.getTime();
+        Timestamp timestamp = new Timestamp(time);
+        Status status = new Status(request.getTweet(), timestamp, databaseUsernameUser.get(request.getAlias()));
+        if (databaseUsernameStatus.containsKey(request.getAlias())) {
+            databaseUsernameStatus.get(request.getAlias()).add(status);
+        }
+        else {
+            databaseUsernameStatus.put(request.getAlias(), new ArrayList<Status>(){{
+                add(status);
+            }});
+        }
+        return new Response(true);
     }
 
 
