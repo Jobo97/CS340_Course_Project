@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.service.response.Response;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 public class PostStatusPresenter {
-    private final PostStatusPresenter.View view;
+    private final View view;
 
     /**
      * The interface by which this presenter communicates with it's view.
@@ -20,7 +20,7 @@ public class PostStatusPresenter {
     }
 
 
-    public PostStatusPresenter(PostStatusPresenter.View view) {
+    public PostStatusPresenter(View view) {
         this.view = view;
     }
 

@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.main.following;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +29,10 @@ import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
+import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
-public class FollowFragment extends Fragment implements FollowPresenter.View {
+public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable {
 
     private static final String LOG_TAG = "FollowFragment";
     private static final String USER_KEY = "UserKey";
@@ -42,7 +45,9 @@ public class FollowFragment extends Fragment implements FollowPresenter.View {
     private static final int PAGE_SIZE = 10;
 
     private User user;
+    private String serializedUser;
     private AuthToken authToken;
+    private Serializable serializedAuthToken;
     private boolean isFollower;
     private FollowPresenter presenter;
 
@@ -119,8 +124,14 @@ public class FollowFragment extends Fragment implements FollowPresenter.View {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                    }
+                        //pull up the new users profile.
+                        //TOOO: Create an Async to get the viewed user, needs to return a User object from the databaseUsernameUser
+                        Intent intent = new Intent(getContext(), ProfileActivity.class);
+
+                        intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
+                        intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
+                        intent.putExtra(ProfileActivity.VIEWED_USER, userAlias.getText().toString());
+                        startActivity(intent);                    }
                 });
             } else {
                 userImage = null;

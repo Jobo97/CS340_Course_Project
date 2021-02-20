@@ -129,6 +129,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                     @Override
                     public void onClick(View view) {
                         //pull up the new users profile.
+                        //Create AsyncTask to pull up the user, see the note in FollowFragment
                         Intent intent = new Intent(getContext(), ProfileActivity.class);
 
                         intent.putExtra(ProfileActivity.CURRENT_USER_KEY, USER_KEY);

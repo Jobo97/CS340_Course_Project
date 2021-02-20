@@ -96,8 +96,8 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //creates async task to follow/unfollow that person.
                 onFollowClicked(v);
-                //create async task to follow/unfollow that person.
             }
         });
     }
@@ -146,8 +146,8 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
     @Override
     public void followCount(FollowCountResponse followCountResponse) {
-        followeeCount.setText(followCountResponse.getFolloweeCount());
-        followerCount.setText(followCountResponse.getFollowerCount());
+        followeeCount.setText(getString(R.string.followeeCount, followCountResponse.getFolloweeCount()));
+        followerCount.setText(getString(R.string.followerCount, followCountResponse.getFollowerCount()));
     }
 
     @Override

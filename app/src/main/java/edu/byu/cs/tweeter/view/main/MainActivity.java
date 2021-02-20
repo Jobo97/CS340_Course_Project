@@ -24,13 +24,21 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
+import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
 import edu.byu.cs.tweeter.view.LoginActivity;
+import edu.byu.cs.tweeter.view.asyncTasks.FollowCountTask;
+import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.PostStatusTask;
 import edu.byu.cs.tweeter.view.login.LandingActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
@@ -38,13 +46,18 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements PostStatusPresenter.View, PostStatusTask.Observer{
+public class MainActivity extends AppCompatActivity implements PostStatusPresenter.View, PostStatusTask.Observer,
+        FollowPresenter.View, FollowCountTask.Observer, Serializable {
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
-    User user;
+    private User user;
 
+    private TextView followeeCount;
+    private TextView followerCount;
+
+    private FollowPresenter followPresenter;
     private PostStatusPresenter postStatusPresenter;
 
     @Override
@@ -66,9 +79,10 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-
+        followPresenter = new FollowPresenter(this);
         postStatusPresenter = new PostStatusPresenter(this);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
 
         // We should use a Java 8 lambda function for the listener (and all other listeners), but
         // they would be unfamiliar to many students who use this code.
@@ -109,11 +123,11 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
         ImageView userImageView = findViewById(R.id.userImage);
         userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
 
-        TextView followeeCount = findViewById(R.id.followeeCount);
-        followeeCount.setText(getString(R.string.followeeCount, 42));
+        followeeCount = findViewById(R.id.followeeCount);
+        followerCount = findViewById(R.id.followerCount);
 
-        TextView followerCount = findViewById(R.id.followerCount);
-        followerCount.setText(getString(R.string.followerCount, 27));
+        FollowCountTask followCountTask = new FollowCountTask(followPresenter, this);
+        followCountTask.execute(new FollowCountRequest(user.getAlias()));
     }
 
     public void postStatus(String tweet) {
@@ -145,14 +159,19 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
 
     @Override
     public void postSuccessful(Response response) {
-        Toast.makeText(findViewById(R.id.main_activity).getContext(), "Great tweet! " + response.getMessage(), Toast.LENGTH_LONG).show();
-
+        //Needs to run an async task to pull in the new tweet
+        Toast.makeText(findViewById(R.id.main_activity).getContext(), "Great tweet! ", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void postUnsuccessful(Response response) {
         Toast.makeText(findViewById(R.id.main_activity).getContext(), "Terrible tweet. " + response.getMessage(), Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void followCount(FollowCountResponse followCountResponse) {
+        followeeCount.setText(getString(R.string.followeeCount, followCountResponse.getFolloweeCount()));
+        followerCount.setText(getString(R.string.followerCount, followCountResponse.getFollowerCount()));
     }
 
     @Override

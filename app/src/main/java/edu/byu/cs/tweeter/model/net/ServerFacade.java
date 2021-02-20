@@ -69,27 +69,30 @@ public class ServerFacade {
         put(carter.getAlias(), carter);
     }};
 
-    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
     Date date;
+    Date date2;
 
     {
         try {
-            date = dateFormat.parse("23/09/2007");
+            date = dateFormat.parse("23/09/2007 05:05:05");
+            date2 = dateFormat.parse("24/09/2007 11:11:11");
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     long time = date.getTime();
+    long time2 = date2.getTime();
 
     private final Status status1 = new Status("Tweet from status1. @alias1 @alias2 www.byu.edu www.google.com",
             new Timestamp(time), ben);
     private final Status status2 = new Status("Tweet from status2. @alias3 @alias4 www.apple.com www.linked.com",
-            new Timestamp(time), ben);
+            new Timestamp(time2), ben);
     private final Status status3 = new Status("Tweet from status3. @alias1 @alias2 www.byu.edu www.google.com",
             new Timestamp(time), michael);
     private final Status status4 = new Status("Tweet from status4. @alias3 @alias4 www.apple.com www.linked.com",
-            new Timestamp(time), carter);
+            new Timestamp(time2), carter);
 
 
     private Map<String, List<Status>> databaseUsernameStatus = new HashMap<String, List<Status>>(){{
@@ -275,17 +278,42 @@ public class ServerFacade {
 
     public StatusResponse getStatuses(StatusRequest request) {
         String alias = request.getUserAlias();
-        List<Status> statuses;
+        List<Status> statuses = new ArrayList<>();
         if(request.isStory()){
             //would need the user alias to get tweets for the story, facade eliminates that need.
-            statuses = databaseUsernameStatus.get(alias);
+            statuses.addAll(databaseUsernameStatus.get(alias));
         }
         else{
             //would need the user alias to get tweets for the feed, facade eliminates that need.
-            statuses = getDummyFeed();
+            for(String key : databaseUsernameStatus.keySet()){
+                if (key.equals(alias)){
+                    continue;
+                }
+                else{
+                    statuses.addAll(databaseUsernameStatus.get(key));
+                }
+            }
         }
 
-
+        Collections.sort(statuses, new Comparator<Status>() {
+            @Override
+            public int compare(Status o1, Status o2) {
+                try {
+                    //DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    return o1.getTimeStamp().compareTo(o2.getTimeStamp());
+                    //return format.parse(o1.getTimeStamp().compareTo(format.parse(o2.getTimeStamp()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
+        //statuses.sort((e1, e2) -> e1.getTimeStamp().compareTo(e2.getTimeStamp()));
+        /*List<Status> reverseStatuses = new ArrayList<>();
+        for(int i = statuses.size() - 1; i >= 0; i--){
+            reverseStatuses.add(statuses.get(i));
+        }*/
+        Collections.reverse(statuses);
         return new StatusResponse(statuses, false);
     }
 
@@ -314,10 +342,10 @@ public class ServerFacade {
 
         List<User> allFollows;
         if (request.isFollower()) {
-            allFollows = getDummyFollowers();
+            allFollows = databaseUsernameFollowers.get(request.getFollowerAlias());
         }
         else {
-            allFollows = getDummyFollowees();
+            allFollows = databaseUsernameFollowees.get(request.getFollowerAlias());
         }
 
         List<User> responseFollows = new ArrayList<>(request.getLimit());
