@@ -27,7 +27,7 @@ public class LoginServiceTest {
     private LoginService followServiceSpy;
 
     /**
-     * Create a FollowingService spy that uses a mock ServerFacade to return known responses to
+     * Create a LoginService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
