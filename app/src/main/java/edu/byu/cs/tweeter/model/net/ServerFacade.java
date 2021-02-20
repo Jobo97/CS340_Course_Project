@@ -10,10 +10,14 @@ import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
@@ -98,6 +102,113 @@ public class ServerFacade {
         }});
         put(carter.getAlias(), new ArrayList<Status>(){{
             add(status4);
+        }});
+    }};
+
+    private Map<String, List<User>> databaseUsernameFollowers = new HashMap<String,List<User>>(){{
+       put(ben.getAlias(), new ArrayList<User>(){{
+           add(user1);
+           add(user2);
+           add(user3);
+           add(user4);
+           add(user5);
+           add(user6);
+           add(user7);
+           add(user8);
+           add(user9);
+           add(user10);
+           add(michael);
+           add(carter);
+       }});
+        put(michael.getAlias(), new ArrayList<User>(){{
+            add(user10);
+            add(user11);
+            add(user12);
+            add(user13);
+            add(user14);
+            add(user15);
+            add(user16);
+            add(user17);
+            add(user18);
+            add(user19);
+            add(ben);
+            add(carter);
+        }});
+        put(carter.getAlias(), new ArrayList<User>(){{
+            add(user1);
+            add(user2);
+            add(user3);
+            add(user4);
+            add(user5);
+            add(user6);
+            add(user7);
+            add(user8);
+            add(user9);
+            add(user10);
+            add(user11);
+            add(user12);
+            add(user13);
+            add(user14);
+            add(user15);
+            add(user16);
+            add(user17);
+            add(user18);
+            add(user19);
+            add(user20);
+            add(michael);
+            add(ben);
+        }});
+    }};
+
+    private Map<String, List<User>> databaseUsernameFollowees = new HashMap<String,List<User>>(){{
+        put(ben.getAlias(), new ArrayList<User>(){{
+            add(user2);
+            add(user3);
+            add(user4);
+            add(user5);
+            add(user6);
+            add(user7);
+            add(user8);
+            add(user9);
+            add(user10);
+            add(michael);
+            add(carter);
+        }});
+        put(michael.getAlias(), new ArrayList<User>(){{
+            add(user10);
+            add(user11);
+            add(user13);
+            add(user14);
+            add(user15);
+            add(user16);
+            add(user17);
+            add(user18);
+            add(user19);
+            add(ben);
+            add(carter);
+        }});
+        put(carter.getAlias(), new ArrayList<User>(){{
+            add(user1);
+            add(user2);
+            add(user3);
+            add(user4);
+            add(user5);
+            add(user6);
+            add(user7);
+            add(user8);
+            add(user9);
+            add(user10);
+            add(user11);
+            add(user12);
+            add(user13);
+            add(user14);
+            add(user15);
+            add(user17);
+            add(user18);
+            add(user19);
+            add(user20);
+            add(michael);
+            add(ben);
         }});
     }};
 
@@ -293,6 +404,34 @@ public class ServerFacade {
             }});
         }
         return new Response(true);
+    }
+
+    public UserFollowResponse checkFollows(UserFollowRequest request) {
+        //Deal with error throwing for invalid data
+        List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
+        return new UserFollowResponse(true, followeeList.contains(databaseUsernameUser.get(request.getViewedAlias())));
+    }
+
+    public FollowCountResponse getFollowCount(FollowCountRequest request) {
+        //Deal with error throwing for invalid data
+        return new FollowCountResponse(true,
+                databaseUsernameFollowers.get(request.getUserAlias()).size(),
+                databaseUsernameFollowees.get(request.getUserAlias()).size());
+    }
+
+    public UserFollowResponse followStatus(UserFollowRequest request) {
+        //Deal with error throwing for invalid data
+        List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
+        boolean isFollower;
+        if(followeeList.contains(databaseUsernameUser.get(request.getViewedAlias()))){
+            databaseUsernameFollowees.get(request.getViewedAlias()).remove(databaseUsernameUser.get(request.getViewedAlias()));
+            isFollower = false;
+        }
+        else{
+            databaseUsernameFollowees.get(request.getViewedAlias()).add(databaseUsernameUser.get(request.getViewedAlias()));
+            isFollower = true;
+        }
+        return new UserFollowResponse(true, isFollower);
     }
 
 

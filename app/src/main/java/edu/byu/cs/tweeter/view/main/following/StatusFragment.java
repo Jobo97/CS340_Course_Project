@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.main.following;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 import edu.byu.cs.tweeter.presenter.StatusPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetStatusTask;
+import edu.byu.cs.tweeter.view.main.MainActivity;
+import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
 public class StatusFragment extends Fragment implements StatusPresenter.View{
@@ -125,8 +128,13 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() +
-                                        "'. I hope you like their tweet!", Toast.LENGTH_SHORT).show();
+                        //pull up the new users profile.
+                        Intent intent = new Intent(getContext(), ProfileActivity.class);
+
+                        intent.putExtra(ProfileActivity.CURRENT_USER_KEY, USER_KEY);
+                        intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, AUTH_TOKEN_KEY);
+                        intent.putExtra(ProfileActivity.VIEWED_USER, userAlias.getText().toString());
+                        startActivity(intent);
                     }
                 });
             } else {

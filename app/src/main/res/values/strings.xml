@@ -31,4 +31,6 @@
     <string name="string_lastname">last name</string>
     <string name="register_button">Register</string>
     <string name="take_picture">Take Profile Picture</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="follow">Follow</string>
 </resources>
