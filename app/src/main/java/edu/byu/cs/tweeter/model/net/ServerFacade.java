@@ -10,12 +10,14 @@ import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
@@ -460,6 +462,10 @@ public class ServerFacade {
             isFollower = true;
         }
         return new UserFollowResponse(true, isFollower);
+    }
+
+    public GetUserResponse getUser(GetUserRequest request) {
+        return new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
     }
 
 

@@ -55,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_profile);
 
         User user = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
         if (user == null) {
@@ -65,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         System.out.println(user.toString());
         AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
         System.out.println(authToken.toString());
+
+        //Fails to cast the string int a user object. I think we need an async task here
         viewedUser = (User) getIntent().getSerializableExtra(VIEWED_USER);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), viewedUser, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -90,16 +92,17 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
 
         followButton = findViewById(R.id.follow_button);
-        CheckFollowTask checkFollowTask = new CheckFollowTask(presenter,this);
-        checkFollowTask.execute(new UserFollowRequest(user.getAlias(),viewedUser.getAlias()));
-        //check if following or not and set the String
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //creates async task to follow/unfollow that person.
+                //creates an async task to follow/unfollow that person.
                 onFollowClicked(v);
             }
         });
+        CheckFollowTask checkFollowTask = new CheckFollowTask(presenter,this);
+        checkFollowTask.execute(new UserFollowRequest(user.getAlias(),viewedUser.getAlias()));
+        //check if following or not and set the String
+
     }
 
     private void onFollowClicked(View v) {

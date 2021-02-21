@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
@@ -50,6 +52,7 @@ public class FollowService {
         UserFollowResponse response = getServerFacade().followStatus(request);
         return response;
     }
+
     /**
      * Loads the profile image data for each followee included in the response.
      *

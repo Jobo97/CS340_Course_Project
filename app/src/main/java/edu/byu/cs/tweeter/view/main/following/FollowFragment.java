@@ -26,13 +26,17 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.presenter.UserPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
+import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
-public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable {
+public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable, UserPresenter.View {
 
     private static final String LOG_TAG = "FollowFragment";
     private static final String USER_KEY = "UserKey";
@@ -50,6 +54,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     private Serializable serializedAuthToken;
     private boolean isFollower;
     private FollowPresenter presenter;
+    private UserPresenter userPresenter;
 
     private FollowFragment.FollowingRecyclerViewAdapter followingRecyclerViewAdapter;
 
@@ -85,6 +90,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         isFollower = (boolean) getArguments().getSerializable(IS_FOLLOWER_KEY);
 
         presenter = new FollowPresenter(this);
+        userPresenter = new UserPresenter(this);
 
         RecyclerView followingRecyclerView = view.findViewById(R.id.followRecyclerView);
 
@@ -102,11 +108,12 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     /**
      * The ViewHolder for the RecyclerView that displays the Following data.
      */
-    private class FollowingHolder extends RecyclerView.ViewHolder {
+    private class FollowingHolder extends RecyclerView.ViewHolder implements GetUserTask.Observer {
 
         private final ImageView userImage;
         private final TextView userAlias;
         private final TextView userName;
+        private User viewedUser;
 
         /**
          * Creates an instance and sets an OnClickListener for the user's row.
@@ -120,23 +127,26 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
                 userImage = itemView.findViewById(R.id.userImage);
                 userAlias = itemView.findViewById(R.id.userAlias);
                 userName = itemView.findViewById(R.id.userName);
+                //Check this next line for the FollowingHolder.this
+                //GetUserTask task = new GetUserTask(userPresenter, FollowingHolder.this);
+                //task.execute(new GetUserRequest(userAlias.getText().toString()));
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //pull up the new users profile.
-                        //TOOO: Create an Async to get the viewed user, needs to return a User object from the databaseUsernameUser
                         Intent intent = new Intent(getContext(), ProfileActivity.class);
 
                         intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
                         intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
-                        intent.putExtra(ProfileActivity.VIEWED_USER, userAlias.getText().toString());
+                        //would the async task wait at all for it to load viewedUser?
+                        intent.putExtra(ProfileActivity.VIEWED_USER, viewedUser);
                         startActivity(intent);                    }
                 });
             } else {
                 userImage = null;
                 userAlias = null;
                 userName = null;
+                viewedUser = null;
             }
         }
 
@@ -149,6 +159,18 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
             userAlias.setText(user.getAlias());
             userName.setText(user.getName());
+            viewedUser = user;
+        }
+
+        @Override
+        public void loadUser(GetUserResponse getUserResponse) {
+            viewedUser = getUserResponse.getViewedUser();
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            System.out.println(exception);
+
         }
     }
 

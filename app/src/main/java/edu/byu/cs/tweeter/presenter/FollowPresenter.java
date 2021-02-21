@@ -3,9 +3,11 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.FollowService;
+import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
