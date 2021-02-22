@@ -22,6 +22,11 @@ allprojects {
     }
 }
 
+configurations {
+    cleanedAnnotations
+    compile.exclude group : 'org.jetbrains', module : 'annotations'
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

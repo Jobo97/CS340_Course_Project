@@ -93,6 +93,7 @@ public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
         } else if(loginResponse.isSuccess()) {
             observer.loginSuccessful(loginResponse);
         } else {
+
             observer.loginUnsuccessful(loginResponse);
         }
     }
