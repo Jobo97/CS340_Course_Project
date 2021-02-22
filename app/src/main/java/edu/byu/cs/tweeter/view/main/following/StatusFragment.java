@@ -1,7 +1,14 @@
 package edu.byu.cs.tweeter.view.main.following;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +114,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
         private final ImageView userImage;
         private final TextView userAlias;
         private final TextView userName;
-        private final TextView status;
+        private final TextView statusText;
         private final TextView timestamp;
         //Review these, the tweet needs to be added
 
@@ -122,7 +130,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                 userImage = itemView.findViewById(R.id.userImage);
                 userAlias = itemView.findViewById(R.id.userAlias);
                 userName = itemView.findViewById(R.id.userName);
-                status = itemView.findViewById(R.id.status);
+                statusText = itemView.findViewById(R.id.status);
                 timestamp = itemView.findViewById(R.id.timestamp);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
@@ -130,19 +138,14 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                     public void onClick(View view) {
                         //pull up the new users profile.
                         //Create AsyncTask to pull up the user, see the note in FollowFragment
-                        Intent intent = new Intent(getContext(), ProfileActivity.class);
-
-                        intent.putExtra(ProfileActivity.CURRENT_USER_KEY, USER_KEY);
-                        intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, AUTH_TOKEN_KEY);
-                        intent.putExtra(ProfileActivity.VIEWED_USER, userAlias.getText().toString());
-                        startActivity(intent);
+                        System.out.println("clicked on a tweet");
                     }
                 });
             } else {
                 userImage = null;
                 userAlias = null;
                 userName = null;
-                status = null;
+                statusText = null;
                 timestamp = null;
             }
         }
@@ -152,10 +155,53 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
          *
          */
         void bindStatus(Status status) {        //still binds the user data here since the users data is needed for the tweet, needs the rest
+            SpannableString ss = new SpannableString(status.getTweet());
+//            ClickableSpan clickableSpan = new ClickableSpan() {
+//                @Override
+//                public void onClick(View textView) {
+//                    Intent intent = new Intent(getContext(), ProfileActivity.class);
+//
+//                    intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
+//                    intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
+//                    intent.putExtra(ProfileActivity.VIEWED_USER, status.getMentions().get(0));
+//                    startActivity(intent);
+//                }
+//            };
+            List<String> mentions = status.getMentions();
+            for(String m : mentions){
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View textView) {
+                        Intent intent = new Intent(getContext(), ProfileActivity.class);
+
+                        intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
+                        intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
+                        intent.putExtra(ProfileActivity.VIEWED_USER, m);
+                        startActivity(intent);
+                    }
+                };
+                ss.setSpan(clickableSpan, status.getTweet().indexOf(m), status.getTweet().indexOf(m) + m.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            List<String> urls = status.getUrls();
+            for(String url : urls){
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View textView) {
+                        //TODO: If an http:// is added then this will crash. Solution this.
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + url));
+                        startActivity(browserIntent);
+                    }
+                };
+                ss.setSpan(clickableSpan, status.getTweet().indexOf(url), status.getTweet().indexOf(url) + url.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
             userAlias.setText(status.getUser().getAlias());
             userName.setText(status.getUser().getName());
-            this.status.setText(status.getTweet());
+            statusText.setText(ss);
+            statusText.setMovementMethod(LinkMovementMethod.getInstance());
+            statusText.setHighlightColor(Color.TRANSPARENT);
+
             timestamp.setText(status.getTimeStamp().toString());
         }
     }

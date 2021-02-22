@@ -34,9 +34,9 @@ public class ServerFacade {
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
-    private final User ben = new User("Ben", "Millett", "benmillett", MALE_IMAGE_URL);
-    private final User michael = new User("Michael", "Skonnard", "michaelskonnard", MALE_IMAGE_URL);
-    private final User carter = new User("Carter", "Wonnacott", "carterwonnacott", MALE_IMAGE_URL);
+    private final User ben = new User("Ben", "Millett", "@benmillett", MALE_IMAGE_URL);
+    private final User michael = new User("Michael", "Skonnard", "@michaelskonnard", MALE_IMAGE_URL);
+    private final User carter = new User("Carter", "Wonnacott", "@carterwonnacott", MALE_IMAGE_URL);
 
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
     private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
@@ -87,13 +87,13 @@ public class ServerFacade {
     long time = date.getTime();
     long time2 = date2.getTime();
 
-    private final Status status1 = new Status("Tweet from status1. @alias1 @alias2 www.byu.edu www.google.com",
+    private final Status status1 = new Status("Tweet from status1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
             new Timestamp(time), ben);
-    private final Status status2 = new Status("Tweet from status2. @alias3 @alias4 www.apple.com www.linked.com",
+    private final Status status2 = new Status("Tweet from status2. @benmillett @carterwonnacott www.apple.com www.linked.com",
             new Timestamp(time2), ben);
-    private final Status status3 = new Status("Tweet from status3. @alias1 @alias2 www.byu.edu www.google.com",
+    private final Status status3 = new Status("Tweet from status3. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
             new Timestamp(time), michael);
-    private final Status status4 = new Status("Tweet from status4. @alias3 @alias4 www.apple.com www.linked.com",
+    private final Status status4 = new Status("Tweet from status4. @benmillett @carterwonnacott www.apple.com www.linked.com",
             new Timestamp(time2), carter);
 
 
@@ -218,12 +218,12 @@ public class ServerFacade {
     }};
 
     private List<String> mention1 = new ArrayList<String>(){{
-        add("@alias1");
-        add("@alias2");
+        add("@michaelskonnard");
+        add("@carterwonnacott");
     }};
     private List<String> mention2 = new ArrayList<String>(){{
-        add("@alias3");
-        add("@alias4");
+        add("@benmillett");
+        add("@carterwonnacott");
     }};
 
     private List<String> url1 = new ArrayList<String>(){{
@@ -439,10 +439,20 @@ public class ServerFacade {
     public UserFollowResponse checkFollows(UserFollowRequest request) {
         //Deal with error throwing for invalid data
         List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
+        //Just removes that person for the check
+        followeeList.remove(databaseUsernameUser.get(request.getViewedAlias()));
         return new UserFollowResponse(true, followeeList.contains(databaseUsernameUser.get(request.getViewedAlias())));
     }
 
     public FollowCountResponse getFollowCount(FollowCountRequest request) {
+        List<User> followers = databaseUsernameFollowers.get(request.getUserAlias());
+        List<User> followees = databaseUsernameFollowees.get(request.getUserAlias());
+        if(followers == null){
+            return new FollowCountResponse(true, 0, 0);
+        }
+        else if(followees == null){
+            return new FollowCountResponse(true, 0, 0);
+        }
         //Deal with error throwing for invalid data
         return new FollowCountResponse(true,
                 databaseUsernameFollowers.get(request.getUserAlias()).size(),
@@ -454,18 +464,30 @@ public class ServerFacade {
         List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
         boolean isFollower;
         if(followeeList.contains(databaseUsernameUser.get(request.getViewedAlias()))){
-            databaseUsernameFollowees.get(request.getViewedAlias()).remove(databaseUsernameUser.get(request.getViewedAlias()));
+            List<User> currentUserFollowees = databaseUsernameFollowees.get(request.getUserAlias());
+            List<User> currentViewedFollowers = databaseUsernameFollowers.get(request.getViewedAlias());
+
+            currentUserFollowees.remove(databaseUsernameUser.get(request.getViewedAlias()));
+            currentViewedFollowers.remove(databaseUsernameUser.get(request.getUserAlias()));
+
+            databaseUsernameFollowees.put(request.getUserAlias(), currentUserFollowees);
+            databaseUsernameFollowers.put(request.getViewedAlias(), currentViewedFollowers);
+
+            //databaseUsernameFollowees.get(request.getUserAlias()).remove(databaseUsernameUser.get(request.getViewedAlias()));
+            //databaseUsernameFollowers.get(request.getViewedAlias()).remove(databaseUsernameUser.get(request.getUserAlias()));
             isFollower = false;
         }
         else{
-            databaseUsernameFollowees.get(request.getViewedAlias()).add(databaseUsernameUser.get(request.getViewedAlias()));
+            databaseUsernameFollowees.get(request.getUserAlias()).add(databaseUsernameUser.get(request.getViewedAlias()));
+            databaseUsernameFollowers.get(request.getViewedAlias()).add(databaseUsernameUser.get(request.getUserAlias()));
             isFollower = true;
         }
         return new UserFollowResponse(true, isFollower);
     }
 
     public GetUserResponse getUser(GetUserRequest request) {
-        return new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
+        GetUserResponse getUserResponse = new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
+        return getUserResponse;
     }
 
 

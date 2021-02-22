@@ -139,7 +139,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
                         intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
                         intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
                         //would the async task wait at all for it to load viewedUser?
-                        intent.putExtra(ProfileActivity.VIEWED_USER, viewedUser);
+                        intent.putExtra(ProfileActivity.VIEWED_USER, viewedUser.getAlias());
                         startActivity(intent);                    }
                 });
             } else {

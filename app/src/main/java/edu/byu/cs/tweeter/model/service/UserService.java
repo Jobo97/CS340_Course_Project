@@ -14,6 +14,9 @@ public class UserService {
 
     public GetUserResponse getUser(GetUserRequest request) throws IOException{
         GetUserResponse response = getServerFacade().getUser(request);
+        if(response.isSuccess()) {
+            loadImages(response);
+        }
         return response;
     }
 
