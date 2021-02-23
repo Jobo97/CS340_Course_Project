@@ -38,6 +38,9 @@ public class ServerFacade {
     private final User michael = new User("Michael", "Skonnard", "@michaelskonnard", MALE_IMAGE_URL);
     private final User carter = new User("Carter", "Wonnacott", "@carterwonnacott", MALE_IMAGE_URL);
 
+    private User registeredUser;
+    private int counter;
+
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
     private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
     private final User user3 = new User("Bob", "Bobson", MALE_IMAGE_URL);
@@ -90,22 +93,23 @@ public class ServerFacade {
     private final Status status1 = new Status("Tweet from status1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
             new Timestamp(time), ben);
     private final Status status2 = new Status("Tweet from status2. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), ben);
-    private final Status status3 = new Status("Tweet from status3. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
-            new Timestamp(time), michael);
-    private final Status status4 = new Status("Tweet from status4. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status3 = new Status("Tweet from carter #1. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status4 = new Status("Tweet from carter #2. @benmillett @michaelskonnard www.apple.com www.linked.com",
             new Timestamp(time2), carter);
+    private Status newStatus;
 
 
     private Map<String, List<Status>> databaseUsernameStatus = new HashMap<String, List<Status>>(){{
         put(ben.getAlias(), new ArrayList<Status>(){{
             add(status1);
-            add(status2);
         }});
         put(michael.getAlias(), new ArrayList<Status>(){{
-            add(status3);
+            add(status2);
         }});
         put(carter.getAlias(), new ArrayList<Status>(){{
+            add(status3);
             add(status4);
         }});
     }};
@@ -254,45 +258,36 @@ public class ServerFacade {
 //        return new LoginResponse(user, new AuthToken("Test_User"));
 
         if (request.isRegister()) {
-            if (databaseUsernameUser.containsKey(request.getUsername())) {
-                return new LoginResponse("Register failed: Username already exists!");
-            }
-            else {
-                User user = new User(request.getFirstname(), request.getLastname(), request.getUsername(), MALE_IMAGE_URL);
+//            if (databaseUsernameUser.containsKey(request.getUsername())) {
+//                return new LoginResponse("Register failed: Username already exists!");
+//            }
+//            else {
+            registeredUser = new User("firstname", "lastname", "username", MALE_IMAGE_URL);
+            return new LoginResponse(registeredUser, new AuthToken("New_User"));
                 // set user's image
-                databaseUsernameUser.put(user.getAlias(), user);
-                databaseUsernamePassword.put(user.getAlias(), request.getPassword());
-            }
+//                databaseUsernameUser.put(user.getAlias(), user);
+//                databaseUsernamePassword.put(user.getAlias(), request.getPassword());
+//            }
         }
-
-        if (databaseUsernamePassword.containsKey(request.getUsername())) {
-            if (databaseUsernamePassword.get(request.getUsername()).equals(request.getPassword())) {
-                return new LoginResponse(databaseUsernameUser.get(request.getUsername()), new AuthToken("Test_User"));
-            }
-            else {
-                return new LoginResponse("Invalid password!");
-            }
-        }
-        else {
-            return new LoginResponse("User doesn't exist");
-        }
+        return new LoginResponse(carter, new AuthToken("Carter_Token"));
     }
 
     public StatusResponse getStatuses(StatusRequest request) {
-        String alias = request.getUserAlias();
+        String alias = carter.getAlias();
         List<Status> statuses = new ArrayList<>();
         if(request.isStory()){
-            //would need the user alias to get tweets for the story, facade eliminates that need.
-            statuses.addAll(databaseUsernameStatus.get(alias));
+            statuses.addAll(getDummyStory());
+            if(newStatus != null){
+                statuses.add(newStatus);
+            }
         }
         else{
-            //would need the user alias to get tweets for the feed, facade eliminates that need.
             for(String key : databaseUsernameStatus.keySet()){
                 if (key.equals(alias)){
                     continue;
                 }
                 else{
-                    statuses.addAll(databaseUsernameStatus.get(key));
+                    statuses.addAll(getDummyFeed());
                 }
             }
         }
@@ -301,20 +296,13 @@ public class ServerFacade {
             @Override
             public int compare(Status o1, Status o2) {
                 try {
-                    //DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     return o1.getTimeStamp().compareTo(o2.getTimeStamp());
-                    //return format.parse(o1.getTimeStamp().compareTo(format.parse(o2.getTimeStamp()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return 0;
                 }
             }
         });
-        //statuses.sort((e1, e2) -> e1.getTimeStamp().compareTo(e2.getTimeStamp()));
-        /*List<Status> reverseStatuses = new ArrayList<>();
-        for(int i = statuses.size() - 1; i >= 0; i--){
-            reverseStatuses.add(statuses.get(i));
-        }*/
         Collections.reverse(statuses);
         return new StatusResponse(statuses, false);
     }
@@ -344,10 +332,10 @@ public class ServerFacade {
 
         List<User> allFollows;
         if (request.isFollower()) {
-            allFollows = databaseUsernameFollowers.get(request.getFollowerAlias());
+            allFollows = getDummyFollowers();
         }
         else {
-            allFollows = databaseUsernameFollowees.get(request.getFollowerAlias());
+            allFollows = getDummyFollowees();
         }
 
         List<User> responseFollows = new ArrayList<>(request.getLimit());
@@ -414,30 +402,31 @@ public class ServerFacade {
     }
 
     List<Status> getDummyFeed() {
-        return Arrays.asList(status2,status4);
+        return Arrays.asList(status1,status2);
     }
 
     List<Status> getDummyStory() {
-        return Arrays.asList(status1,status3);
+        return Arrays.asList(status3,status4);
     }
 
     public Response postStatus(PostStatusRequest request) {
         long time = date.getTime();
         Timestamp timestamp = new Timestamp(time);
-        Status status = new Status(request.getTweet(), timestamp, databaseUsernameUser.get(request.getAlias()));
-        if (databaseUsernameStatus.containsKey(request.getAlias())) {
-            databaseUsernameStatus.get(request.getAlias()).add(status);
-        }
-        else {
-            databaseUsernameStatus.put(request.getAlias(), new ArrayList<Status>(){{
-                add(status);
-            }});
-        }
+        Status status = new Status("This is a standard tweet!", timestamp, carter);
+        newStatus = status;
         return new Response(true);
     }
 
     public UserFollowResponse checkFollows(UserFollowRequest request) {
         //Deal with error throwing for invalid data
+        UserFollowResponse response;
+        if(counter % 2 == 0){
+            repsonse = new UserFollowResponse(true, true);
+        }
+        else{
+
+        }
+        counter++;
         List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
         //Just removes that person for the check
         followeeList.remove(databaseUsernameUser.get(request.getViewedAlias()));
