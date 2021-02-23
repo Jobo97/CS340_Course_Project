@@ -1,7 +1,12 @@
 package edu.byu.cs.tweeter.view.login.landing;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -11,15 +16,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
+
+import java.io.ByteArrayOutputStream;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.presenter.LoginPresenter;
+import edu.byu.cs.tweeter.util.ByteArrayUtils;
 import edu.byu.cs.tweeter.view.asyncTasks.LoginTask;
 import edu.byu.cs.tweeter.view.main.MainActivity;
 
@@ -34,13 +44,17 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
     private EditText username;
     private EditText password;
     private TextView profile;
+    private static final int pic_id = 123;
+    private Bitmap photo;
 
     private Button registerButton;
 
     private LoginPresenter presenter;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int RESULT_OK = 0;
+
+
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
     public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
@@ -57,6 +71,22 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
         username = view.findViewById(R.id.register_username);
         password = view.findViewById(R.id.register_password);
         profile = view.findViewById(R.id.register_profile);
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED)
+                {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                }
+                else
+                {
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                }
+            }
+        });
+
         registerButton = view.findViewById(R.id.register_button);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -79,10 +109,40 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
 
     public void onRegisterClicked(View view){
         try {
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            photo.recycle();
+
             LoginTask task = new LoginTask(presenter, this);
-            task.execute(new LoginRequest(username.getText().toString(), password.getText().toString(), firstname.getText().toString(), lastname.getText().toString(), null));
+            task.execute(new LoginRequest(username.getText().toString(), password.getText().toString(),
+                    firstname.getText().toString(), lastname.getText().toString(), byteArray));
         } catch (IllegalArgumentException e) {
             Log.e("MA exception", e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
+        {
+            photo = (Bitmap) data.getExtras().get("data");
         }
     }
 

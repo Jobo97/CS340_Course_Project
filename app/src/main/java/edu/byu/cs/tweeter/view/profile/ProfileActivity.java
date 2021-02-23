@@ -21,14 +21,18 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
+import edu.byu.cs.tweeter.presenter.UserPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.CheckFollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowCountTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
+import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
 import edu.byu.cs.tweeter.view.login.LandingActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
@@ -36,7 +40,7 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
 public class ProfileActivity extends AppCompatActivity implements FollowPresenter.View, CheckFollowTask.Observer,
-        FollowCountTask.Observer, FollowTask.Observer{
+        FollowCountTask.Observer, FollowTask.Observer, GetUserTask.Observer, UserPresenter.View{
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
@@ -46,11 +50,13 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     private FollowPresenter presenter;
 
     private User user;
+    private AuthToken authToken;
     private User viewedUser;
+    private String viewedUserString;
     private TextView followeeCount;
     private TextView followerCount;
 
-    private PostStatusPresenter postStatusPresenter;
+    private UserPresenter userPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,45 +69,15 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         }
         this.user = user;
         System.out.println(user.toString());
-        AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
+        authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
         System.out.println(authToken.toString());
 
+        userPresenter = new UserPresenter(this);
+
         //Fails to cast the string int a user object. I think we need an async task here
-        viewedUser = (User) getIntent().getSerializableExtra(VIEWED_USER);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), viewedUser, authToken);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-
-        presenter = new FollowPresenter(this);
-
-        TextView userName = findViewById(R.id.userName);
-        userName.setText(viewedUser.getName());
-
-        TextView userAlias = findViewById(R.id.userAlias);
-        userAlias.setText(viewedUser.getAlias());
-
-        ImageView userImageView = findViewById(R.id.userImage);
-        userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(viewedUser.getImageBytes()));
-
-        followeeCount = findViewById(R.id.followeeCount);
-        followerCount = findViewById(R.id.followerCount);
-
-        FollowCountTask followCountTask = new FollowCountTask(presenter, this);
-        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
-
-        followButton = findViewById(R.id.follow_button);
-        followButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //creates an async task to follow/unfollow that person.
-                onFollowClicked(v);
-            }
-        });
-        CheckFollowTask checkFollowTask = new CheckFollowTask(presenter,this);
-        checkFollowTask.execute(new UserFollowRequest(user.getAlias(),viewedUser.getAlias()));
-        //check if following or not and set the String
+        viewedUserString = (String) getIntent().getSerializableExtra(VIEWED_USER);
+        GetUserTask task = new GetUserTask(userPresenter, this);
+        task.execute(new GetUserRequest(viewedUserString));
 
     }
 
@@ -160,6 +136,45 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
         FollowCountTask followCountTask = new FollowCountTask(presenter, this);
         followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
+    }
+
+    @Override
+    public void loadUser(GetUserResponse getUserResponse) {
+        viewedUser = getUserResponse.getViewedUser();
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), viewedUser, authToken);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+
+        presenter = new FollowPresenter(this);
+
+        TextView userName = findViewById(R.id.userName);
+        userName.setText(viewedUser.getName());
+
+        TextView userAlias = findViewById(R.id.userAlias);
+        userAlias.setText(viewedUser.getAlias());
+
+        ImageView userImageView = findViewById(R.id.userImage);
+        userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(viewedUser.getImageBytes()));
+
+        followeeCount = findViewById(R.id.followeeCount);
+        followerCount = findViewById(R.id.followerCount);
+
+        FollowCountTask followCountTask = new FollowCountTask(presenter, this);
+        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
+
+        followButton = findViewById(R.id.follow_button);
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //creates an async task to follow/unfollow that person.
+                onFollowClicked(v);
+            }
+        });
+        CheckFollowTask checkFollowTask = new CheckFollowTask(presenter,this);
+        checkFollowTask.execute(new UserFollowRequest(user.getAlias(),viewedUser.getAlias()));
+        //check if following or not and set the String
     }
 
     @Override
