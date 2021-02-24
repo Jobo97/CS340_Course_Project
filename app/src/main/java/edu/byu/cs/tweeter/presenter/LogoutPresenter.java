@@ -30,7 +30,9 @@ public class LogoutPresenter {
     }
 
     public Response logout(LogoutRequest request) throws IOException {
-        LogoutService logoutService = new LogoutService();
+        LogoutService logoutService = getLogoutService();
         return logoutService.logout(request);
     }
+
+    public LogoutService getLogoutService() { return new LogoutService(); }
 }

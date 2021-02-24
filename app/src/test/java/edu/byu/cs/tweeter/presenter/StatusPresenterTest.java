@@ -35,7 +35,7 @@ public class StatusPresenterTest {
         // Wrap a StatusPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new StatusPresenter(new StatusPresenter.View() {
         }));
-        Mockito.when(presenter.getStatus(request)).thenReturn(response);
+        Mockito.when(presenter.getStatusService()).thenReturn(mockStatusService);
     }
 
     @Test
