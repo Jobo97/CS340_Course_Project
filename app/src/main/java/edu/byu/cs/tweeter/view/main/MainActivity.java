@@ -30,15 +30,18 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
 import edu.byu.cs.tweeter.view.LoginActivity;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowCountTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
+import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
 import edu.byu.cs.tweeter.view.asyncTasks.PostStatusTask;
 import edu.byu.cs.tweeter.view.login.LandingActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
@@ -47,18 +50,20 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
 public class MainActivity extends AppCompatActivity implements PostStatusPresenter.View, PostStatusTask.Observer,
-        FollowPresenter.View, FollowCountTask.Observer, Serializable {
+        FollowPresenter.View, FollowCountTask.Observer, Serializable, LogoutPresenter.View, LogoutTask.Observer{
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     private User user;
+    private AuthToken authToken;
 
     private TextView followeeCount;
     private TextView followerCount;
 
     private FollowPresenter followPresenter;
     private PostStatusPresenter postStatusPresenter;
+    private LogoutPresenter logoutPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
         this.user = user;
         System.out.println(user.toString());
         AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
+        this.authToken = authToken;
         System.out.println(authToken.toString());
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -81,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
 
         followPresenter = new FollowPresenter(this);
         postStatusPresenter = new PostStatusPresenter(this);
+        logoutPresenter = new LogoutPresenter(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -148,9 +155,9 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.logoutMenu:
-                Intent intent = new Intent(this, LandingActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                //Logout async task
+                LogoutTask task = new LogoutTask(logoutPresenter, this);
+                task.execute(new LogoutRequest(user.getAlias(), authToken));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -175,8 +182,22 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
     }
 
     @Override
+    public void logoutSuccessful(Response response) {
+        Intent intent = new Intent(this, LandingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    public void logoutUnsuccessful(Response response) {
+        Toast.makeText(findViewById(R.id.main_activity).getContext(),
+                "Failed to logout, cannot connect to server ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void handleException(Exception ex) {
         Log.e("Main Activity", ex.getMessage(), ex);
-        Toast.makeText(findViewById(R.id.main_activity).getContext(), "Failed to post tweet because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(findViewById(R.id.main_activity).getContext(),
+                "Failed to post tweet because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

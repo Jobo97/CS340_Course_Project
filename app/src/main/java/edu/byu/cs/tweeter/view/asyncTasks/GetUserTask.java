@@ -5,15 +5,12 @@ import android.os.AsyncTask;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
-import edu.byu.cs.tweeter.presenter.FollowPresenter;
-import edu.byu.cs.tweeter.presenter.UserPresenter;
+import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 
 public class GetUserTask extends AsyncTask<GetUserRequest, Void, GetUserResponse> {
 
-    private final UserPresenter presenter;
+    private final ProfilePresenter presenter;
     private final GetUserTask.Observer observer;
     private Exception exception;
 
@@ -22,7 +19,7 @@ public class GetUserTask extends AsyncTask<GetUserRequest, Void, GetUserResponse
         void handleException(Exception exception);
     }
 
-    public GetUserTask(UserPresenter presenter, GetUserTask.Observer observer) {
+    public GetUserTask(ProfilePresenter presenter, GetUserTask.Observer observer) {
         if (observer == null) {
             throw new NullPointerException();
         }

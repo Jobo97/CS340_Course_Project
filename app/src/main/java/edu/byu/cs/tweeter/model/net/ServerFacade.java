@@ -11,6 +11,7 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
@@ -114,136 +115,6 @@ public class ServerFacade {
         }});
     }};
 
-    private Map<String, List<User>> databaseUsernameFollowers = new HashMap<String,List<User>>(){{
-       put(ben.getAlias(), new ArrayList<User>(){{
-           add(user1);
-           add(user2);
-           add(user3);
-           add(user4);
-           add(user5);
-           add(user6);
-           add(user7);
-           add(user8);
-           add(user9);
-           add(user10);
-           add(michael);
-           add(carter);
-       }});
-        put(michael.getAlias(), new ArrayList<User>(){{
-            add(user10);
-            add(user11);
-            add(user12);
-            add(user13);
-            add(user14);
-            add(user15);
-            add(user16);
-            add(user17);
-            add(user18);
-            add(user19);
-            add(ben);
-            add(carter);
-        }});
-        put(carter.getAlias(), new ArrayList<User>(){{
-            add(user1);
-            add(user2);
-            add(user3);
-            add(user4);
-            add(user5);
-            add(user6);
-            add(user7);
-            add(user8);
-            add(user9);
-            add(user10);
-            add(user11);
-            add(user12);
-            add(user13);
-            add(user14);
-            add(user15);
-            add(user16);
-            add(user17);
-            add(user18);
-            add(user19);
-            add(user20);
-            add(michael);
-            add(ben);
-        }});
-    }};
-
-    private Map<String, List<User>> databaseUsernameFollowees = new HashMap<String,List<User>>(){{
-        put(ben.getAlias(), new ArrayList<User>(){{
-            add(user2);
-            add(user3);
-            add(user4);
-            add(user5);
-            add(user6);
-            add(user7);
-            add(user8);
-            add(user9);
-            add(user10);
-            add(michael);
-            add(carter);
-        }});
-        put(michael.getAlias(), new ArrayList<User>(){{
-            add(user10);
-            add(user11);
-            add(user13);
-            add(user14);
-            add(user15);
-            add(user16);
-            add(user17);
-            add(user18);
-            add(user19);
-            add(ben);
-            add(carter);
-        }});
-        put(carter.getAlias(), new ArrayList<User>(){{
-            add(user1);
-            add(user2);
-            add(user3);
-            add(user4);
-            add(user5);
-            add(user6);
-            add(user7);
-            add(user8);
-            add(user9);
-            add(user10);
-            add(user11);
-            add(user12);
-            add(user13);
-            add(user14);
-            add(user15);
-            add(user17);
-            add(user18);
-            add(user19);
-            add(user20);
-            add(michael);
-            add(ben);
-        }});
-    }};
-
-    private List<String> mention1 = new ArrayList<String>(){{
-        add("@michaelskonnard");
-        add("@carterwonnacott");
-    }};
-    private List<String> mention2 = new ArrayList<String>(){{
-        add("@benmillett");
-        add("@carterwonnacott");
-    }};
-
-    private List<String> url1 = new ArrayList<String>(){{
-        add("www.byu.edu");
-        add("www.google.com");
-    }};
-
-    private List<String> url2 = new ArrayList<String>(){{
-        add("www.apple.com");
-        add("www.linkedin.com");
-    }};
-
-
-    //new Timestamp(time);
-
-
     /**
      * Performs a login and if successful, returns the logged in user and an auth token. The current
      * implementation is hard-coded to return a dummy user and doesn't actually make a network
@@ -253,21 +124,9 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) {
-//        User user = new User("Test", "User",
-//                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-//        return new LoginResponse(user, new AuthToken("Test_User"));
-
         if (request.isRegister()) {
-//            if (databaseUsernameUser.containsKey(request.getUsername())) {
-//                return new LoginResponse("Register failed: Username already exists!");
-//            }
-//            else {
             registeredUser = new User("firstname", "lastname", "username", MALE_IMAGE_URL);
             return new LoginResponse(registeredUser, new AuthToken("New_User"));
-                // set user's image
-//                databaseUsernameUser.put(user.getAlias(), user);
-//                databaseUsernamePassword.put(user.getAlias(), request.getPassword());
-//            }
         }
         return new LoginResponse(carter, new AuthToken("Carter_Token"));
     }
@@ -419,64 +278,28 @@ public class ServerFacade {
 
     public UserFollowResponse checkFollows(UserFollowRequest request) {
         //Deal with error throwing for invalid data
-        UserFollowResponse response;
-        if(counter % 2 == 0){
-            repsonse = new UserFollowResponse(true, true);
-        }
-        else{
-
-        }
-        counter++;
-        List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
-        //Just removes that person for the check
-        followeeList.remove(databaseUsernameUser.get(request.getViewedAlias()));
-        return new UserFollowResponse(true, followeeList.contains(databaseUsernameUser.get(request.getViewedAlias())));
+        Random random = new Random();
+        return new UserFollowResponse(true, random.nextBoolean());
     }
 
     public FollowCountResponse getFollowCount(FollowCountRequest request) {
-        List<User> followers = databaseUsernameFollowers.get(request.getUserAlias());
-        List<User> followees = databaseUsernameFollowees.get(request.getUserAlias());
-        if(followers == null){
-            return new FollowCountResponse(true, 0, 0);
-        }
-        else if(followees == null){
-            return new FollowCountResponse(true, 0, 0);
-        }
-        //Deal with error throwing for invalid data
-        return new FollowCountResponse(true,
-                databaseUsernameFollowers.get(request.getUserAlias()).size(),
-                databaseUsernameFollowees.get(request.getUserAlias()).size());
+        //Ignore the request for dummy data only
+        return new FollowCountResponse(true, getDummyFollowers().size(), getDummyFollowees().size());
     }
 
     public UserFollowResponse followStatus(UserFollowRequest request) {
-        //Deal with error throwing for invalid data
-        List<User> followeeList = databaseUsernameFollowees.get(request.getUserAlias());
-        boolean isFollower;
-        if(followeeList.contains(databaseUsernameUser.get(request.getViewedAlias()))){
-            List<User> currentUserFollowees = databaseUsernameFollowees.get(request.getUserAlias());
-            List<User> currentViewedFollowers = databaseUsernameFollowers.get(request.getViewedAlias());
-
-            currentUserFollowees.remove(databaseUsernameUser.get(request.getViewedAlias()));
-            currentViewedFollowers.remove(databaseUsernameUser.get(request.getUserAlias()));
-
-            databaseUsernameFollowees.put(request.getUserAlias(), currentUserFollowees);
-            databaseUsernameFollowers.put(request.getViewedAlias(), currentViewedFollowers);
-
-            //databaseUsernameFollowees.get(request.getUserAlias()).remove(databaseUsernameUser.get(request.getViewedAlias()));
-            //databaseUsernameFollowers.get(request.getViewedAlias()).remove(databaseUsernameUser.get(request.getUserAlias()));
-            isFollower = false;
-        }
-        else{
-            databaseUsernameFollowees.get(request.getUserAlias()).add(databaseUsernameUser.get(request.getViewedAlias()));
-            databaseUsernameFollowers.get(request.getViewedAlias()).add(databaseUsernameUser.get(request.getUserAlias()));
-            isFollower = true;
-        }
-        return new UserFollowResponse(true, isFollower);
+        Random random = new Random();
+        return new UserFollowResponse(true, random.nextBoolean());
     }
 
     public GetUserResponse getUser(GetUserRequest request) {
         GetUserResponse getUserResponse = new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
         return getUserResponse;
+    }
+
+    public Response logout(LogoutRequest request) {
+        //We will ignore the request since this is dummy data
+        return new Response(true, "Logout worked");
     }
 
 

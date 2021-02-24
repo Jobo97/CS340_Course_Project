@@ -3,12 +3,12 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.FollowService;
-import edu.byu.cs.tweeter.model.service.UserService;
+import edu.byu.cs.tweeter.model.service.ProfileService;
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 
-public class UserPresenter {
-    private final UserPresenter.View view;
+public class ProfilePresenter {
+    private final ProfilePresenter.View view;
 
 
 
@@ -24,16 +24,16 @@ public class UserPresenter {
      *
      * @param view the view for which this class is the presenter.
      */
-    public UserPresenter(UserPresenter.View view) {
+    public ProfilePresenter(ProfilePresenter.View view) {
         this.view = view;
     }
 
     public GetUserResponse getUser(GetUserRequest request) throws IOException {
-        UserService userService = getUserService();
-        return userService.getUser(request);
+        ProfileService profileService = getProfileService();
+        return profileService.getUser(request);
     }
 
-    UserService getUserService() {
-        return new UserService();
+    ProfileService getProfileService() {
+        return new ProfileService();
     }
 }

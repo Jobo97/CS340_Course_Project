@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-public class UserService {
+public class ProfileService {
 
     public GetUserResponse getUser(GetUserRequest request) throws IOException{
         GetUserResponse response = getServerFacade().getUser(request);

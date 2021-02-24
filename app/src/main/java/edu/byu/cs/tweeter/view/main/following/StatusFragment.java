@@ -156,17 +156,6 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
          */
         void bindStatus(Status status) {        //still binds the user data here since the users data is needed for the tweet, needs the rest
             SpannableString ss = new SpannableString(status.getTweet());
-//            ClickableSpan clickableSpan = new ClickableSpan() {
-//                @Override
-//                public void onClick(View textView) {
-//                    Intent intent = new Intent(getContext(), ProfileActivity.class);
-//
-//                    intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
-//                    intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
-//                    intent.putExtra(ProfileActivity.VIEWED_USER, status.getMentions().get(0));
-//                    startActivity(intent);
-//                }
-//            };
             List<String> mentions = status.getMentions();
             for(String m : mentions){
                 ClickableSpan clickableSpan = new ClickableSpan() {
@@ -187,7 +176,6 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override
                     public void onClick(View textView) {
-                        //TODO: If an http:// is added then this will crash. Solution this.
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + url));
                         startActivity(browserIntent);
                     }

@@ -16,23 +16,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import edu.byu.cs.tweeter.model.service.response.Response;
 import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
-import edu.byu.cs.tweeter.presenter.UserPresenter;
+import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.CheckFollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowCountTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
+import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
 import edu.byu.cs.tweeter.view.login.LandingActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
@@ -40,7 +45,8 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
 public class ProfileActivity extends AppCompatActivity implements FollowPresenter.View, CheckFollowTask.Observer,
-        FollowCountTask.Observer, FollowTask.Observer, GetUserTask.Observer, UserPresenter.View{
+        FollowCountTask.Observer, FollowTask.Observer, GetUserTask.Observer, ProfilePresenter.View,
+        LogoutPresenter.View, LogoutTask.Observer {
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
@@ -56,7 +62,8 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     private TextView followeeCount;
     private TextView followerCount;
 
-    private UserPresenter userPresenter;
+    private ProfilePresenter userPresenter;
+    private LogoutPresenter logoutPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +79,8 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
         System.out.println(authToken.toString());
 
-        userPresenter = new UserPresenter(this);
+        userPresenter = new ProfilePresenter(this);
+        logoutPresenter = new LogoutPresenter(this);
 
         //Fails to cast the string int a user object. I think we need an async task here
         viewedUserString = (String) getIntent().getSerializableExtra(VIEWED_USER);
@@ -102,9 +110,9 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.logoutMenu:
-                Intent intent = new Intent(this, LandingActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                //Logout async task
+                LogoutTask task = new LogoutTask(logoutPresenter, this);
+                task.execute(new LogoutRequest(user.getAlias(), authToken));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -178,7 +186,21 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     }
 
     @Override
-    public void handleException(Exception exception) {
+    public void logoutSuccessful(Response response) {
+        Intent intent = new Intent(this, LandingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
+    @Override
+    public void logoutUnsuccessful(Response response) {
+        Toast.makeText(findViewById(R.id.main_activity).getContext(),
+                "Failed to logout, cannot connect to server ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        Toast.makeText(findViewById(R.id.main_activity).getContext(),
+                "Failed to post tweet because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

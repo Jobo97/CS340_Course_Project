@@ -30,13 +30,13 @@ import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
-import edu.byu.cs.tweeter.presenter.UserPresenter;
+import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
 import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
-public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable, UserPresenter.View {
+public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable, ProfilePresenter.View {
 
     private static final String LOG_TAG = "FollowFragment";
     private static final String USER_KEY = "UserKey";
@@ -54,7 +54,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     private Serializable serializedAuthToken;
     private boolean isFollower;
     private FollowPresenter presenter;
-    private UserPresenter userPresenter;
+    private ProfilePresenter userPresenter;
 
     private FollowFragment.FollowingRecyclerViewAdapter followingRecyclerViewAdapter;
 
@@ -90,7 +90,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         isFollower = (boolean) getArguments().getSerializable(IS_FOLLOWER_KEY);
 
         presenter = new FollowPresenter(this);
-        userPresenter = new UserPresenter(this);
+        userPresenter = new ProfilePresenter(this);
 
         RecyclerView followingRecyclerView = view.findViewById(R.id.followRecyclerView);
 
