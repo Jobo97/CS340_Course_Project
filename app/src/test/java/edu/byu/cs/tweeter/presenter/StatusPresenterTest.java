@@ -25,7 +25,7 @@ public class StatusPresenterTest {
     public void setup() throws IOException {
         List<Status> statuses = new ArrayList<>();
 
-        request = new StatusRequest("carterwonnacott", 10, true);
+        request = new StatusRequest("carterwonnacott", 10, lastStatus, true);
         response = new StatusResponse(statuses, false);
 
         // Create a mock StatusService

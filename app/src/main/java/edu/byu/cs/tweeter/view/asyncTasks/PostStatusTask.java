@@ -1,22 +1,16 @@
 package edu.byu.cs.tweeter.view.asyncTasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
-import edu.byu.cs.tweeter.presenter.LoginPresenter;
-import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
-import edu.byu.cs.tweeter.util.ByteArrayUtils;
+import edu.byu.cs.tweeter.presenter.MainPresenter;
 
 public class PostStatusTask extends AsyncTask<PostStatusRequest, Void, Response> {
 
-    private final PostStatusPresenter presenter;
+    private final MainPresenter presenter;
     private final PostStatusTask.Observer observer;
     private Exception exception;
 
@@ -30,7 +24,7 @@ public class PostStatusTask extends AsyncTask<PostStatusRequest, Void, Response>
         void handleException(Exception ex);
     }
 
-    public PostStatusTask(PostStatusPresenter presenter, PostStatusTask.Observer observer) {
+    public PostStatusTask(MainPresenter presenter, PostStatusTask.Observer observer) {
         if(observer == null) {
             throw new NullPointerException();
         }

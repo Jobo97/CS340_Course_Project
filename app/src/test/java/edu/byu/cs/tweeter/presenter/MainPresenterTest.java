@@ -7,16 +7,16 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.PostStatusService;
+import edu.byu.cs.tweeter.model.service.MainService;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.response.Response;
 
-public class PostStatusPresenterTest {
+public class MainPresenterTest {
 
     private PostStatusRequest request;
     private Response response;
-    private PostStatusService mockLoginService;
-    private PostStatusPresenter presenter;
+    private MainService mockLoginService;
+    private MainPresenter presenter;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -25,11 +25,11 @@ public class PostStatusPresenterTest {
         response = new Response(true);
 
         // Create a mock PostStatusService
-        mockLoginService = Mockito.mock(PostStatusService.class);
+        mockLoginService = Mockito.mock(MainService.class);
         Mockito.when(mockLoginService.postStatus(request)).thenReturn(response);
 
         // Wrap a PostStatusPresenter in a spy that will use the mock service.
-        presenter = Mockito.spy(new PostStatusPresenter(new PostStatusPresenter.View() {}));
+        presenter = Mockito.spy(new MainPresenter(new MainPresenter.View() {}));
         Mockito.when(presenter.postStatus(request)).thenReturn(response);
     }
 

@@ -6,17 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
-import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
@@ -37,8 +29,8 @@ public class StatusServiceTest {
     @BeforeEach
     public void setup() {
         // Setup request objects to use in the tests
-        validRequest = new StatusRequest("test alias", 10, true);
-        invalidRequest = new StatusRequest(null, 0, false);
+        validRequest = new StatusRequest("test alias", 10, lastStatus, true);
+        invalidRequest = new StatusRequest(null, 0, lastStatus, false);
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new StatusResponse("success");

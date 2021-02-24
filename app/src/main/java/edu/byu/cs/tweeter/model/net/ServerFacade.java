@@ -91,29 +91,43 @@ public class ServerFacade {
     long time = date.getTime();
     long time2 = date2.getTime();
 
-    private final Status status1 = new Status("Tweet from status1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
+    private final Status status1 = new Status("Tweet from 1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
             new Timestamp(time), ben);
-    private final Status status2 = new Status("Tweet from status2. @benmillett @carterwonnacott www.apple.com www.linked.com",
+    private final Status status2 = new Status("Tweet from 2. @benmillett @carterwonnacott www.apple.com www.linked.com",
             new Timestamp(time2), michael);
-    private final Status status3 = new Status("Tweet from carter #1. @michaelskonnard @benmillett www.byu.edu www.google.com",
+    private final Status status3 = new Status("Tweet from 3. @michaelskonnard @benmillett www.byu.edu www.google.com",
             new Timestamp(time), carter);
-    private final Status status4 = new Status("Tweet from carter #2. @benmillett @michaelskonnard www.apple.com www.linked.com",
+    private final Status status4 = new Status("Tweet from 4. @benmillett @michaelskonnard www.apple.com www.linked.com",
             new Timestamp(time2), carter);
-    private Status newStatus;
+    private final Status status5 = new Status("Tweet from 5. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status6 = new Status("Tweet from 6. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status7 = new Status("Tweet from 7. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status8 = new Status("Tweet from 8. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status9 = new Status("Tweet from 9. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status10 = new Status("Tweet from 10. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status11 = new Status("Tweet from 11. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status12 = new Status("Tweet from 12. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status13 = new Status("Tweet from 13. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            new Timestamp(time), carter);
+    private final Status status14 = new Status("Tweet from 14. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status15 = new Status("Tweet from 15. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status16 = new Status("Tweet from 16. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status17 = new Status("Tweet from 17. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
+    private final Status status18 = new Status("Tweet from 18. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            new Timestamp(time2), michael);
 
-
-    private Map<String, List<Status>> databaseUsernameStatus = new HashMap<String, List<Status>>(){{
-        put(ben.getAlias(), new ArrayList<Status>(){{
-            add(status1);
-        }});
-        put(michael.getAlias(), new ArrayList<Status>(){{
-            add(status2);
-        }});
-        put(carter.getAlias(), new ArrayList<Status>(){{
-            add(status3);
-            add(status4);
-        }});
-    }};
 
     /**
      * Performs a login and if successful, returns the logged in user and an auth token. The current
@@ -132,24 +146,14 @@ public class ServerFacade {
     }
 
     public StatusResponse getStatuses(StatusRequest request) {
-        String alias = carter.getAlias();
-        List<Status> statuses = new ArrayList<>();
-        if(request.isStory()){
-            statuses.addAll(getDummyStory());
-            if(newStatus != null){
-                statuses.add(newStatus);
-            }
+        List<Status> statuses;
+        if (request.isStory()) {
+            statuses = getDummyStory();
         }
-        else{
-            for(String key : databaseUsernameStatus.keySet()){
-                if (key.equals(alias)){
-                    continue;
-                }
-                else{
-                    statuses.addAll(getDummyFeed());
-                }
-            }
+        else {
+            statuses = getDummyFeed();
         }
+
 
         Collections.sort(statuses, new Comparator<Status>() {
             @Override
@@ -163,7 +167,21 @@ public class ServerFacade {
             }
         });
         Collections.reverse(statuses);
-        return new StatusResponse(statuses, false);
+
+        List<Status> responseStatus = new ArrayList<>(request.getLimit());
+
+        boolean hasMorePages = false;
+
+        if(request.getLimit() > 0) {
+            int followIndex = getStartingIndexStatus(request.getLastStatus(), statuses);
+
+            for(int limitCounter = 0; followIndex < statuses.size() && limitCounter < request.getLimit(); followIndex++, limitCounter++) {
+                responseStatus.add(statuses.get(followIndex));
+            }
+
+            hasMorePages = followIndex < statuses.size();
+        }
+        return new StatusResponse(responseStatus, hasMorePages);
     }
 
     /**
@@ -214,16 +232,6 @@ public class ServerFacade {
         return new FollowResponse(responseFollows, hasMorePages);
     }
 
-    /**
-     * Determines the index for the first followee/follower in the specified 'allFollowees' or 'allFollowers' list that should
-     * be returned in the current request. This will be the index of the next followee/follower after the
-     * specified 'lastFollowee' 'lastFollower.
-     *
-     * @param lastAlias the alias of the last followee/follower that was returned in the previous
-     *                          request or null if there was no previous request.
-     * @param allUsers the generated list of followees/followers from which we are returning paged results.
-     * @return the index of the first followee/follower to be returned.
-     */
     private int getStartingIndex(String lastAlias, List<User> allUsers) {
 
         int index = 0;
@@ -244,6 +252,21 @@ public class ServerFacade {
         return index;
     }
 
+    private int getStartingIndexStatus(String tweet, List<Status> allStatus) {
+
+        int index = 0;
+
+        if(tweet != null) {
+            for (int i = 0; i < allStatus.size(); i++) {
+                if(tweet.equals(allStatus.get(i).getTweet())) {
+                    index = i + 1;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+
     /**
      * Returns the list of dummy followee data. This is written as a separate method to allow
      * mocking of the followees.
@@ -251,28 +274,25 @@ public class ServerFacade {
      * @return the followees.
      */
     List<User> getDummyFollowees() {
-        return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
+        return Arrays.asList(ben, user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
                 user19, user20);
     }
 
     List<User> getDummyFollowers() {
-        return Arrays.asList(user2, user4, user6, user8, user10, user12, user14, user16, user18, user20);
+        return Arrays.asList(michael, user2, user4, user6, user8, user10, user12, user14, user16, user18, user20);
     }
 
     List<Status> getDummyFeed() {
-        return Arrays.asList(status1,status2);
+        return Arrays.asList(status1,status2,status5,status7,status14,status15,status16,status17,status18);
     }
 
     List<Status> getDummyStory() {
-        return Arrays.asList(status3,status4);
+        return Arrays.asList(status3,status4,status6,status8,status9,status10,status11,status12,status13);
     }
 
     public Response postStatus(PostStatusRequest request) {
-        long time = date.getTime();
-        Timestamp timestamp = new Timestamp(time);
-        Status status = new Status("This is a standard tweet!", timestamp, carter);
-        newStatus = status;
+        //would add the tweet to the data base
         return new Response(true);
     }
 

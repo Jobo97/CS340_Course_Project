@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.menu.MenuView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +31,10 @@ import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
-import edu.byu.cs.tweeter.presenter.PostStatusPresenter;
-import edu.byu.cs.tweeter.view.LoginActivity;
+import edu.byu.cs.tweeter.presenter.MainPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowCountTask;
-import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
 import edu.byu.cs.tweeter.view.asyncTasks.PostStatusTask;
 import edu.byu.cs.tweeter.view.login.LandingActivity;
@@ -49,7 +43,7 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements PostStatusPresenter.View, PostStatusTask.Observer,
+public class MainActivity extends AppCompatActivity implements MainPresenter.View, PostStatusTask.Observer,
         FollowPresenter.View, FollowCountTask.Observer, Serializable, LogoutPresenter.View, LogoutTask.Observer{
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
@@ -62,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
     private TextView followerCount;
 
     private FollowPresenter followPresenter;
-    private PostStatusPresenter postStatusPresenter;
+    private MainPresenter mainPresenter;
     private LogoutPresenter logoutPresenter;
 
     @Override
@@ -86,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
         tabs.setupWithViewPager(viewPager);
 
         followPresenter = new FollowPresenter(this);
-        postStatusPresenter = new PostStatusPresenter(this);
+        mainPresenter = new MainPresenter(this);
         logoutPresenter = new LogoutPresenter(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -138,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
     }
 
     public void postStatus(String tweet) {
-        PostStatusTask postStatusTask = new PostStatusTask(postStatusPresenter, this);
+        PostStatusTask postStatusTask = new PostStatusTask(mainPresenter, this);
         PostStatusRequest postStatusRequest = new PostStatusRequest(tweet, this.user.getAlias());
         postStatusTask.execute(postStatusRequest);
     }
@@ -166,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements PostStatusPresent
 
     @Override
     public void postSuccessful(Response response) {
-        //Needs to run an async task to pull in the new tweet
         Toast.makeText(findViewById(R.id.main_activity).getContext(), "Great tweet! ", Toast.LENGTH_LONG).show();
     }
 

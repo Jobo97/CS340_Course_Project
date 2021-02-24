@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -23,9 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,6 @@ import edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 import edu.byu.cs.tweeter.presenter.StatusPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetStatusTask;
-import edu.byu.cs.tweeter.view.main.MainActivity;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
@@ -50,7 +46,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 6;
 
     private User user;
     private Status status;
@@ -314,7 +310,8 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
             addLoadingFooter();
 
             GetStatusTask getStatusTask = new GetStatusTask(presenter, this);
-            StatusRequest request = new StatusRequest(user.getAlias(), PAGE_SIZE, isStory);
+            StatusRequest request = new StatusRequest(user.getAlias(), PAGE_SIZE,
+                    lastStatus == null ? null : lastStatus.getTweet(), isStory);
             getStatusTask.execute(request);
         }
 

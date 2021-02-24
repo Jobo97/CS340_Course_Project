@@ -5,20 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.Response;
 
-public class PostStatusServiceTest {
+public class MainServiceTest {
 
     private PostStatusRequest validRequest;
     private PostStatusRequest invalidRequest;
@@ -26,7 +17,7 @@ public class PostStatusServiceTest {
     private Response successResponse;
     private Response failureResponse;
 
-    private PostStatusService followServiceSpy;
+    private MainService followServiceSpy;
 
     /**
      * Create a PostStatusService spy that uses a mock ServerFacade to return known responses to
@@ -47,12 +38,12 @@ public class PostStatusServiceTest {
         Mockito.when(mockServerFacade.postStatus(invalidRequest)).thenReturn(failureResponse);
 
         // Create a FollowingService instance and wrap it with a spy that will use the mock service
-        followServiceSpy = Mockito.spy(new PostStatusService());
+        followServiceSpy = Mockito.spy(new MainService());
         Mockito.when(followServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link PostStatusService#postStatus(PostStatusRequest)}
+     * Verify that for successful requests the {@link MainService#postStatus(PostStatusRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
@@ -64,7 +55,7 @@ public class PostStatusServiceTest {
     }
 
     /**
-     * Verify that for failed requests the {@link PostStatusService#postStatus(PostStatusRequest)}
+     * Verify that for failed requests the {@link MainService#postStatus(PostStatusRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      */
