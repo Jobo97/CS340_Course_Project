@@ -7,16 +7,12 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 
-public class UserServiceTest {
+public class ProfileServiceTest {
 
     private GetUserRequest validRequest;
     private GetUserRequest invalidRequest;
@@ -24,7 +20,7 @@ public class UserServiceTest {
     private GetUserResponse successResponse;
     private GetUserResponse failureResponse;
 
-    private UserService followServiceSpy;
+    private ProfileService followServiceSpy;
 
     /**
      * Create a LoginService spy that uses a mock ServerFacade to return known responses to
@@ -47,12 +43,12 @@ public class UserServiceTest {
         Mockito.when(mockServerFacade.getUser(invalidRequest)).thenReturn(failureResponse);
 
         // Create a FollowingService instance and wrap it with a spy that will use the mock service
-        followServiceSpy = Mockito.spy(new UserService());
+        followServiceSpy = Mockito.spy(new ProfileService());
         Mockito.when(followServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link UserService#getUser(GetUserRequest)}
+     * Verify that for successful requests the {@link ProfileService#getUser(GetUserRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
@@ -65,7 +61,7 @@ public class UserServiceTest {
     }
 
     /**
-     * Verify that for failed requests the {@link UserService#getUser(GetUserRequest)}
+     * Verify that for failed requests the {@link ProfileService#getUser(GetUserRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.

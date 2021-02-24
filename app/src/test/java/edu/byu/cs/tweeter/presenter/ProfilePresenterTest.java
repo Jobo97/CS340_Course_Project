@@ -6,45 +6,39 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.StatusService;
-import edu.byu.cs.tweeter.model.service.UserService;
+import edu.byu.cs.tweeter.model.service.ProfileService;
 import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
-public class UserPresenterTest {
+public class ProfilePresenterTest {
 
     private GetUserRequest request;
     private GetUserResponse response;
-    private UserService mockStatusService;
-    private UserPresenter presenter;
+    private ProfileService mockProfileService;
+    private ProfilePresenter presenter;
 
     @BeforeEach
     public void setup() throws IOException {
-        User viewedUser = new User("FirstName", "LastName", null);
+        User viewedUser = new User("FirstName", "LastName", "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
-        request = new GetUserRequest("carterwonnacott");
+        request = new GetUserRequest("@carterwonnacott");
         response = new GetUserResponse(true, viewedUser);
 
         // Create a mock StatusService
-        mockStatusService = Mockito.mock(UserService.class);
-        Mockito.when(mockStatusService.getUser(request)).thenReturn(response);
+        mockProfileService = Mockito.mock(ProfileService.class);
+        Mockito.when(mockProfileService.getUser(request)).thenReturn(response);
 
         // Wrap a StatusPresenter in a spy that will use the mock service.
-        presenter = Mockito.spy(new UserPresenter(new UserPresenter.View() {
+        presenter = Mockito.spy(new ProfilePresenter(new ProfilePresenter.View() {
         }));
-        Mockito.when(presenter.getUser(request)).thenReturn(response);
+        Mockito.when(presenter.getProfileService()).thenReturn(mockProfileService);
     }
 
     @Test
     public void testUser_returnsGetUserResult() throws IOException {
-        Mockito.when(mockStatusService.getUser(request)).thenReturn(response);
+        Mockito.when(mockProfileService.getUser(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -53,7 +47,7 @@ public class UserPresenterTest {
 
     @Test
     public void testUser_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockStatusService.getUser(request)).thenThrow(new IOException());
+        Mockito.when(mockProfileService.getUser(request)).thenThrow(new IOException());
 
         //doesn't throw for some reason
         Assertions.assertThrows(IOException.class, () -> presenter.getUser(request));

@@ -21,7 +21,7 @@ public class LoginPresenterTest {
     private LoginPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() {
         User currentUser = new User("FirstName", "LastName", null);
 
         request = new LoginRequest("test-username", "test-password");
@@ -29,11 +29,10 @@ public class LoginPresenterTest {
 
         // Create a mock LoginService
         mockLoginService = Mockito.mock(LoginService.class);
-        Mockito.when(mockLoginService.login(request)).thenReturn(response);
 
         // Wrap a LoginPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new LoginPresenter(new LoginPresenter.View() {}));
-        Mockito.when(presenter.login(request)).thenReturn(response);
+        Mockito.when(presenter.getLoginService()).thenReturn(mockLoginService);
     }
 
     @Test
