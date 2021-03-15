@@ -3,8 +3,10 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.MainService;
-import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
+import edu.byu.cs.tweeter.model.service.MainServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
 public class MainPresenter {
     private final View view;
@@ -23,12 +25,12 @@ public class MainPresenter {
 
 
     public Response postStatus(PostStatusRequest request) throws IOException {
-        MainService mainService = getPostStatusService();
-        return mainService.postStatus(request);
+        MainServiceProxy mainServiceProxy = getPostStatusServiceProxy();
+        return mainServiceProxy.postStatus(request);
     }
 
-    MainService getPostStatusService() {
-        return new MainService();
+    MainServiceProxy getPostStatusServiceProxy() {
+        return new MainServiceProxy();
     }
 
 }

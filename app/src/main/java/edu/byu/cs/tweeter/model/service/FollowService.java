@@ -2,22 +2,23 @@ package edu.byu.cs.tweeter.model.service;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.IFollowingService;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
 /**
  * Contains the business logic for getting the users a user is following.
  */
-public class FollowService {
+public class FollowService implements IFollowingService {
 
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -28,6 +29,7 @@ public class FollowService {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
+    @Override
     public FollowResponse getFollows(FollowRequest request) throws IOException {
         FollowResponse response = getServerFacade().getFollows(request);
 
@@ -38,16 +40,19 @@ public class FollowService {
         return response;
     }
 
+    @Override
     public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException {
         UserFollowResponse response = getServerFacade().checkFollows(request);
         return response;
     }
 
+    @Override
     public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException {
         FollowCountResponse response = getServerFacade().getFollowCount(request);
         return response;
     }
 
+    @Override
     public UserFollowResponse followStatus(UserFollowRequest request) throws IOException{
         UserFollowResponse response = getServerFacade().followStatus(request);
         return response;
@@ -58,7 +63,7 @@ public class FollowService {
      *
      * @param response the response from the followee request.
      */
-    private void loadImages(FollowResponse response) throws IOException {
+    public void loadImages(FollowResponse response) throws IOException {
         for(User user : response.getFollows()) {
             byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
             user.setImageBytes(bytes);

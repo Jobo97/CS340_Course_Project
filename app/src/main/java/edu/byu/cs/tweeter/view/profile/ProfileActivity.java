@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.view.profile;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
@@ -19,16 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.Response;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
@@ -50,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
     public static final String VIEWED_USER = "ViewedUser";
+    private static final String LOG_TAG = "ProfileActiviity";
 
     private Button followButton;
     private FollowPresenter presenter;
@@ -199,6 +201,17 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
     @Override
     public void handleException(Exception exception) {
+        if(exception instanceof TweeterRemoteException) {
+            TweeterRemoteException remoteException = (TweeterRemoteException) exception;
+            Log.e(LOG_TAG, "Remote Exception Type: " + remoteException.getRemoteExceptionType());
+
+            Log.e(LOG_TAG, "Remote Stack Trace:");
+            if(remoteException.getRemoteStackTrace() != null) {
+                for(String stackTraceLine : remoteException.getRemoteStackTrace()) {
+                    Log.e(LOG_TAG, "\t\t" + stackTraceLine);
+                }
+            }
+        }
         Toast.makeText(findViewById(R.id.main_activity).getContext(),
                 "Failed to post tweet because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }

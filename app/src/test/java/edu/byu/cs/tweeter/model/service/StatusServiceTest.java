@@ -8,9 +8,9 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 public class StatusServiceTest {
 
@@ -29,8 +29,8 @@ public class StatusServiceTest {
     @BeforeEach
     public void setup() {
         // Setup request objects to use in the tests
-        validRequest = new StatusRequest("test alias", 10, lastStatus, true);
-        invalidRequest = new StatusRequest(null, 0, lastStatus, false);
+        validRequest = new StatusRequest("test alias", 10, null, true);
+        invalidRequest = new StatusRequest(null, 0, null, false);
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new StatusResponse("success");

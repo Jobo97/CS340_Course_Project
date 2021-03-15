@@ -7,12 +7,12 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
 public class LogoutServiceTest {
 

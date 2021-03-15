@@ -3,10 +3,9 @@ package edu.byu.cs.tweeter.view.asyncTasks;
 import android.os.AsyncTask;
 
 import java.io.IOException;
-import java.util.Observer;
 
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 import edu.byu.cs.tweeter.presenter.StatusPresenter;
 
 public class GetStatusTask extends AsyncTask<StatusRequest, Void, StatusResponse> {

@@ -3,14 +3,15 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.FollowService;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.FollowServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
 
 /**
  * The presenter for the "following" functionality of the application.
@@ -46,22 +47,22 @@ public class FollowPresenter {
      * @return the followees.
      */
     public FollowResponse getFollows(FollowRequest request) throws IOException {
-        FollowService followService = getFollowService();
+        FollowServiceProxy followService = getFollowService();
         return followService.getFollows(request);
     }
 
-    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException {
-        FollowService followService = getFollowService();
+    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException {
+        FollowServiceProxy followService = getFollowService();
         return followService.getFollowCount(request);
     }
 
-    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException {
-        FollowService followService = getFollowService();
+    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException {
+        FollowServiceProxy followService = getFollowService();
         return followService.checkFollow(request);
     }
 
-    public UserFollowResponse followStatus(UserFollowRequest userFollowRequest) throws IOException {
-        FollowService followService = getFollowService();
+    public UserFollowResponse followStatus(UserFollowRequest userFollowRequest) throws IOException, TweeterRemoteException {
+        FollowServiceProxy followService = getFollowService();
         return followService.followStatus(userFollowRequest);
     }
 
@@ -72,7 +73,7 @@ public class FollowPresenter {
      *
      * @return the instance.
      */
-    FollowService getFollowService() {
-        return new FollowService();
+    FollowServiceProxy getFollowService() {
+        return new FollowServiceProxy();
     }
 }

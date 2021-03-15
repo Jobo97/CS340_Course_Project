@@ -8,8 +8,8 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.MainService;
-import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
 public class MainPresenterTest {
 

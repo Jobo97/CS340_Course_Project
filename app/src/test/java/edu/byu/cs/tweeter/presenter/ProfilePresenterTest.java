@@ -7,16 +7,18 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.ProfileService;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import edu.byu.cs.tweeter.model.service.ProfileServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 
 public class ProfilePresenterTest {
 
     private GetUserRequest request;
     private GetUserResponse response;
-    private ProfileService mockProfileService;
+    private ProfileServiceProxy mockProfileServiceProxy;
     private ProfilePresenter presenter;
 
     @BeforeEach
@@ -27,18 +29,18 @@ public class ProfilePresenterTest {
         response = new GetUserResponse(true, viewedUser);
 
         // Create a mock StatusService
-        mockProfileService = Mockito.mock(ProfileService.class);
-        Mockito.when(mockProfileService.getUser(request)).thenReturn(response);
+        mockProfileServiceProxy = Mockito.mock(ProfileServiceProxy.class);
+        Mockito.when(mockProfileServiceProxy.getUser(request)).thenReturn(response);
 
         // Wrap a StatusPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new ProfilePresenter(new ProfilePresenter.View() {
         }));
-        Mockito.when(presenter.getProfileService()).thenReturn(mockProfileService);
+        Mockito.when(presenter.getProfileServiceProxy()).thenReturn(mockProfileServiceProxy);
     }
 
     @Test
     public void testUser_returnsGetUserResult() throws IOException {
-        Mockito.when(mockProfileService.getUser(request)).thenReturn(response);
+        Mockito.when(mockProfileServiceProxy.getUser(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -47,7 +49,7 @@ public class ProfilePresenterTest {
 
     @Test
     public void testUser_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockProfileService.getUser(request)).thenThrow(new IOException());
+        Mockito.when(mockProfileServiceProxy.getUser(request)).thenThrow(new IOException());
 
         //doesn't throw for some reason
         Assertions.assertThrows(IOException.class, () -> presenter.getUser(request));

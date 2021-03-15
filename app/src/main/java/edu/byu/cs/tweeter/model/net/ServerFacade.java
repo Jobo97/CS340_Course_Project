@@ -7,24 +7,24 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import edu.byu.cs.tweeter.BuildConfig;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
-import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
-import edu.byu.cs.tweeter.model.service.response.Response;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through

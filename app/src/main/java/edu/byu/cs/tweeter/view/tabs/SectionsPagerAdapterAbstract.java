@@ -7,8 +7,8 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class SectionsPagerAdapterAbstract extends FragmentPagerAdapter {
 

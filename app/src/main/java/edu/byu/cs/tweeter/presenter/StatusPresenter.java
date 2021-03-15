@@ -1,12 +1,12 @@
 package edu.byu.cs.tweeter.presenter;
 
-import android.view.View;
-
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.StatusService;
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
+import edu.byu.cs.tweeter.model.service.StatusServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 public class StatusPresenter {
 
@@ -26,11 +26,11 @@ public class StatusPresenter {
 
 
     public StatusResponse getStatus(StatusRequest request) throws IOException {
-        StatusService statusService = getStatusService();
-        return statusService.getStatuses(request);
+        StatusServiceProxy statusServiceProxy = getStatusServiceProxy();
+        return statusServiceProxy.getStatuses(request);
     }
 
-    StatusService getStatusService() {
-        return new StatusService();
+    StatusServiceProxy getStatusServiceProxy() {
+        return new StatusServiceProxy();
     }
 }

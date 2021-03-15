@@ -7,16 +7,18 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.service.LogoutService;
-import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
+import edu.byu.cs.tweeter.model.service.LogoutServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
 public class LogoutPresenterTest {
 
     private LogoutRequest request;
     private Response response;
-    private LogoutService mockLogoutService;
+    private LogoutServiceProxy mockLogoutServiceProxy;
     private LogoutPresenter presenter;
 
     @BeforeEach
@@ -25,16 +27,16 @@ public class LogoutPresenterTest {
         response = new Response(true, "logout successful");
 
         // Create a mock LoginService
-        mockLogoutService = Mockito.mock(LogoutService.class);
+        mockLogoutServiceProxy = Mockito.mock(LogoutServiceProxy.class);
 
         // Wrap a LoginPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new LogoutPresenter(new LogoutPresenter.View() {}));
-        Mockito.when(presenter.getLogoutService()).thenReturn(mockLogoutService);
+        Mockito.when(presenter.getLogoutService()).thenReturn(mockLogoutServiceProxy);
     }
 
     @Test
     public void testLogin_returnsLoginResult() throws IOException {
-        Mockito.when(mockLogoutService.logout(request)).thenReturn(response);
+        Mockito.when(mockLogoutServiceProxy.logout(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -43,7 +45,7 @@ public class LogoutPresenterTest {
 
     @Test
     public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockLogoutService.logout(request)).thenThrow(new IOException());
+        Mockito.when(mockLogoutServiceProxy.logout(request)).thenThrow(new IOException());
 
         // doesn't throw for some reason
         Assertions.assertThrows(IOException.class, () -> presenter.logout(request));

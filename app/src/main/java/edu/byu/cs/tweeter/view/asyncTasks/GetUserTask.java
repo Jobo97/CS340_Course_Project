@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 
 public class GetUserTask extends AsyncTask<GetUserRequest, Void, GetUserResponse> {

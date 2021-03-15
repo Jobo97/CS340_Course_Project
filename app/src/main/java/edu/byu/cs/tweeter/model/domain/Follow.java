@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.model.domain;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

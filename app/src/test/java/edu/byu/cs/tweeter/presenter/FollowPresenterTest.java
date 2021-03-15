@@ -8,16 +8,18 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.util.Arrays;
 
-import edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.FollowService;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.FollowServiceProxy;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
 
 public class FollowPresenterTest {
 
     private FollowRequest request;
     private FollowResponse response;
-    private FollowService mockFollowService;
+    private FollowServiceProxy mockFollowServiceProxy;
     private FollowPresenter presenter;
 
     @BeforeEach
@@ -36,17 +38,17 @@ public class FollowPresenterTest {
         response = new FollowResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
 
         // Create a mock FollowingService
-        mockFollowService = Mockito.mock(FollowService.class);
-        Mockito.when(mockFollowService.getFollows(request)).thenReturn(response);
+        mockFollowServiceProxy = Mockito.mock(FollowServiceProxy.class);
+        Mockito.when(mockFollowServiceProxy.getFollows(request)).thenReturn(response);
 
         // Wrap a FollowingPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new FollowPresenter(new FollowPresenter.View() {}));
-        Mockito.when(presenter.getFollowService()).thenReturn(mockFollowService);
+        Mockito.when(presenter.getFollowService()).thenReturn(mockFollowServiceProxy);
     }
 
     @Test
     public void testGetFollowing_returnsServiceResult() throws IOException {
-        Mockito.when(mockFollowService.getFollows(request)).thenReturn(response);
+        Mockito.when(mockFollowServiceProxy.getFollows(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -55,7 +57,7 @@ public class FollowPresenterTest {
 
     @Test
     public void testGetFollowing_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockFollowService.getFollows(request)).thenThrow(new IOException());
+        Mockito.when(mockFollowServiceProxy.getFollows(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {
             presenter.getFollows(request);

@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
-import edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 
 public class CheckFollowTask extends AsyncTask<UserFollowRequest, Void, UserFollowResponse> {
@@ -35,7 +36,7 @@ public class CheckFollowTask extends AsyncTask<UserFollowRequest, Void, UserFoll
 
         try {
             response = presenter.checkFollow(checkFollowRequests[0]);
-        } catch (IOException ex) {
+        } catch (IOException | TweeterRemoteException ex) {
             exception = ex;
         }
 

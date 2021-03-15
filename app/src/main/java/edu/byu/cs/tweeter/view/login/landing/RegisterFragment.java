@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,10 +25,11 @@ import androidx.fragment.app.Fragment;
 import java.io.ByteArrayOutputStream;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.model.service.request.LoginRequest;
-import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.presenter.LoginPresenter;
-import edu.byu.cs.tweeter.util.ByteArrayUtils;
 import edu.byu.cs.tweeter.view.asyncTasks.LoginTask;
 import edu.byu.cs.tweeter.view.main.MainActivity;
 
@@ -213,29 +213,20 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
     @Override
     public void handleException(Exception exception) {
         Log.e(LOG_TAG, exception.getMessage(), exception);
+
+        if(exception instanceof TweeterRemoteException) {
+            TweeterRemoteException remoteException = (TweeterRemoteException) exception;
+            Log.e(LOG_TAG, "Remote Exception Type: " + remoteException.getRemoteExceptionType());
+
+            Log.e(LOG_TAG, "Remote Stack Trace:");
+            if(remoteException.getRemoteStackTrace() != null) {
+                for(String stackTraceLine : remoteException.getRemoteStackTrace()) {
+                    Log.e(LOG_TAG, "\t\t" + stackTraceLine);
+                }
+            }
+        }
+
         Toast.makeText(this.getContext(), "Failed to login because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }
 
-    /*public void onProfileClicked(View view){
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        startActivity(intent);
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        } catch (ActivityNotFoundException e) {
-            // display error state to the user
-        }
-    }*/
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
-        }
-    }*/
 }

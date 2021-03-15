@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.StatusRequest;
-import edu.byu.cs.tweeter.model.service.response.StatusResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 import edu.byu.cs.tweeter.presenter.StatusPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetStatusTask;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
@@ -197,7 +197,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
 
         private final List<Status> statuses = new ArrayList<>();
 
-        private edu.byu.cs.tweeter.model.domain.Status lastStatus;      //unsure what this is used for
+        private Status lastStatus;      //unsure what this is used for
 
         private boolean hasMorePages;
         protected boolean isLoading = false;

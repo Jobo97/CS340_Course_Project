@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.GetUserRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
+
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
@@ -181,7 +181,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
 
         private final List<User> users = new ArrayList<>();
 
-        private edu.byu.cs.tweeter.model.domain.User lastFollowee;
+        private User lastFollowee;
 
         private boolean hasMorePages;
         protected boolean isLoading = false;

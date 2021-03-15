@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.service.response.Response;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
 public class MainServiceTest {
 
