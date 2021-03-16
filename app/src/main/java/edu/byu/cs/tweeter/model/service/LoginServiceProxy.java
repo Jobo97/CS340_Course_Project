@@ -7,6 +7,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemo
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.ILoginService;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.LoginResponse;
@@ -22,7 +23,7 @@ public class LoginServiceProxy implements ILoginService {
     public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException {
         ServerFacade serverFacade = getServerFacade();
         //LoginResponse loginResponse = serverFacade.login(request, URL_PATH);
-        LoginResponse loginResponse = serverFacade.login(request);
+        LoginResponse loginResponse = serverFacade.login(request, URL_PATH);
 
         if(loginResponse.isSuccess()) {
             loadImage(loginResponse.getUser());

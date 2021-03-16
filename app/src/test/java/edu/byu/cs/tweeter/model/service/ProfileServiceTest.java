@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 
@@ -36,7 +36,7 @@ public class ProfileServiceTest {
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new GetUserResponse(true, currentUser);
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
+        ServerFacade_Old mockServerFacade = Mockito.mock(ServerFacade_Old.class);
         Mockito.when(mockServerFacade.getUser(validRequest)).thenReturn(successResponse);
 
         failureResponse = new GetUserResponse(false, null);
@@ -49,7 +49,7 @@ public class ProfileServiceTest {
 
     /**
      * Verify that for successful requests the {@link ProfileService#getUser(GetUserRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -62,7 +62,7 @@ public class ProfileServiceTest {
 
     /**
      * Verify that for failed requests the {@link ProfileService#getUser(GetUserRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */

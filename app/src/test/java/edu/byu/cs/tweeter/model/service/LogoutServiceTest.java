@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
@@ -38,7 +38,7 @@ public class LogoutServiceTest {
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new Response(true, "logout successful");
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
+        ServerFacade_Old mockServerFacade = Mockito.mock(ServerFacade_Old.class);
         Mockito.when(mockServerFacade.logout(validRequest)).thenReturn(successResponse);
 
         failureResponse = new Response(false, "An exception occurred");
@@ -51,7 +51,7 @@ public class LogoutServiceTest {
 
     /**
      * Verify that for successful requests the {@link LogoutService#logout(LogoutRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -64,7 +64,7 @@ public class LogoutServiceTest {
 
     /**
      * Verify that for failed requests the {@link FollowService#getFollows(FollowRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */

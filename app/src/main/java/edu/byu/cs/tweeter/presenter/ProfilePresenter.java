@@ -5,6 +5,7 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.model.service.ProfileService;
 import edu.byu.cs.tweeter.model.service.ProfileServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 
@@ -29,7 +30,7 @@ public class ProfilePresenter {
         this.view = view;
     }
 
-    public GetUserResponse getUser(GetUserRequest request) throws IOException {
+    public GetUserResponse getUser(GetUserRequest request) throws IOException, TweeterRemoteException {
         ProfileServiceProxy profileServiceProxy = getProfileServiceProxy();
         return profileServiceProxy.getUser(request);
     }

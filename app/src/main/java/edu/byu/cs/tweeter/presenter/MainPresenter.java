@@ -5,6 +5,7 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.model.service.MainService;
 import edu.byu.cs.tweeter.model.service.MainServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
@@ -24,7 +25,7 @@ public class MainPresenter {
     }
 
 
-    public Response postStatus(PostStatusRequest request) throws IOException {
+    public Response postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException {
         MainServiceProxy mainServiceProxy = getPostStatusServiceProxy();
         return mainServiceProxy.postStatus(request);
     }

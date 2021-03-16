@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
@@ -66,7 +66,7 @@ public class FollowServiceTest {
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new FollowResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
+        ServerFacade_Old mockServerFacade = Mockito.mock(ServerFacade_Old.class);
         Mockito.when(mockServerFacade.getFollows(validRequest)).thenReturn(successResponse);
 
         failureResponse = new FollowResponse("An exception occurred");
@@ -93,7 +93,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for successful requests the {@link FollowService#getFollows(FollowRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -121,7 +121,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for failed requests the {@link FollowService#getFollows(FollowRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */
@@ -133,7 +133,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for successful requests the {@link FollowService#getFollowCount(FollowCountRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -146,7 +146,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for failed requests the {@link FollowService#getFollowCount(FollowCountRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */
@@ -158,7 +158,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for successful requests the {@link FollowService#checkFollow(UserFollowRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -171,7 +171,7 @@ public class FollowServiceTest {
 
     /**
      * Verify that for failed requests the {@link FollowService#checkFollow(UserFollowRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */

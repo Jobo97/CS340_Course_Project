@@ -5,6 +5,7 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.model.service.LogoutService;
 import edu.byu.cs.tweeter.model.service.LogoutServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
@@ -28,7 +29,7 @@ public class LogoutPresenter {
         this.view = view;
     }
 
-    public Response logout(LogoutRequest request) throws IOException {
+    public Response logout(LogoutRequest request) throws IOException, TweeterRemoteException {
         LogoutServiceProxy logoutServiceProxy = getLogoutService();
         return logoutServiceProxy.logout(request);
     }

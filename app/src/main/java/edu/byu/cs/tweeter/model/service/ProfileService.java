@@ -2,7 +2,7 @@ package edu.byu.cs.tweeter.model.service;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
@@ -22,7 +22,7 @@ public class ProfileService {
         response.getViewedUser().setImageBytes(bytes);
     }
 
-    ServerFacade getServerFacade() {
-        return new ServerFacade();
+    ServerFacade_Old getServerFacade() {
+        return new ServerFacade_Old();
     }
 }

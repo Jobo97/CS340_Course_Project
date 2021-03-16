@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.PostStatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
@@ -31,7 +31,7 @@ public class MainServiceTest {
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new Response(true);
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
+        ServerFacade_Old mockServerFacade = Mockito.mock(ServerFacade_Old.class);
         Mockito.when(mockServerFacade.postStatus(validRequest)).thenReturn(successResponse);
 
         failureResponse = new Response(false);
@@ -44,7 +44,7 @@ public class MainServiceTest {
 
     /**
      * Verify that for successful requests the {@link MainService#postStatus(PostStatusRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      */
@@ -56,7 +56,7 @@ public class MainServiceTest {
 
     /**
      * Verify that for failed requests the {@link MainService#postStatus(PostStatusRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      */
     @Test

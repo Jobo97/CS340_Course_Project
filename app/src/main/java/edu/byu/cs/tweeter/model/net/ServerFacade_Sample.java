@@ -5,10 +5,8 @@ import java.io.IOException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
-import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.LoginResponse;
-import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -52,16 +50,6 @@ public class ServerFacade_Sample {
         FollowResponse response = clientCommunicator.doPost(urlPath, request, null, FollowResponse.class);
 
         if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
-    }
-
-    public StatusResponse getStatuses(StatusRequest request, String urlPath) throws IOException, TweeterRemoteException {
-        StatusResponse response = clientCommunicator.doPost(urlPath, request, null, StatusResponse.class);
-                                                    //Do post?
-        if(response.isSuccess()){
             return response;
         } else {
             throw new RuntimeException(response.getMessage());

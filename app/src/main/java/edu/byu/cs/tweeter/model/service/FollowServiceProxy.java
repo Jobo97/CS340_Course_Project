@@ -3,7 +3,9 @@ package edu.byu.cs.tweeter.model.service;
 import java.io.IOException;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
+
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.IFollowingService;
@@ -21,20 +23,23 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
  */
 public class FollowServiceProxy implements IFollowingService {
 
-    static final String URL_PATH = "/getfollow";
+    static final String URL_PATH_GET_FOLLOWS = "/getfollow";
+    static final String URL_PATH_CHECK_FOLLOW = "/checkfollow";
+    static final String URL_PATH_FOLLOW_COUNT = "/getfollowcount";
+    static final String URL_PATH_FOLLOW_STATUS = "/followstatus";
 
     /**
      * Returns the users that the user specified in the request is following. Uses information in
      * the request object to limit the number of followees returned and to return the next set of
-     * followees after any that were returned in a previous request. Uses the {@link ServerFacade} to
+     * followees after any that were returned in a previous request. Uses the {@link ServerFacade_Old} to
      * get the followees from the server.
      *
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
     @Override
-     public FollowResponse getFollows(FollowRequest request) throws IOException {
-        FollowResponse response = getServerFacade().getFollows(request);
+     public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException {
+        FollowResponse response = getServerFacade().getFollows(request, URL_PATH_GET_FOLLOWS);
 
         if(response.isSuccess()) {
             loadImages(response);
@@ -44,17 +49,17 @@ public class FollowServiceProxy implements IFollowingService {
      }
     @Override
     public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException {
-        UserFollowResponse response = getServerFacade().checkFollows(request);
+        UserFollowResponse response = getServerFacade().checkFollows(request, URL_PATH_CHECK_FOLLOW);
         return response;
     }
     @Override
     public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException {
-        FollowCountResponse response = getServerFacade().getFollowCount(request);
+        FollowCountResponse response = getServerFacade().getFollowCount(request, URL_PATH_FOLLOW_COUNT);
         return response;
     }
     @Override
     public UserFollowResponse followStatus(UserFollowRequest request) throws IOException, TweeterRemoteException{
-        UserFollowResponse response = getServerFacade().followStatus(request);
+        UserFollowResponse response = getServerFacade().followStatus(request, URL_PATH_FOLLOW_STATUS);
         return response;
     }
     public void loadImages(FollowResponse response) throws IOException {

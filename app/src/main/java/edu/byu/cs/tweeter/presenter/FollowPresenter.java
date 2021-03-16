@@ -46,7 +46,7 @@ public class FollowPresenter {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowResponse getFollows(FollowRequest request) throws IOException {
+    public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException {
         FollowServiceProxy followService = getFollowService();
         return followService.getFollows(request);
     }

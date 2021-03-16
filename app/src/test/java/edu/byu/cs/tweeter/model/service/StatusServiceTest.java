@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
@@ -34,7 +34,7 @@ public class StatusServiceTest {
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new StatusResponse("success");
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
+        ServerFacade_Old mockServerFacade = Mockito.mock(ServerFacade_Old.class);
         Mockito.when(mockServerFacade.getStatuses(validRequest)).thenReturn(successResponse);
 
         failureResponse = new StatusResponse("failure");
@@ -47,7 +47,7 @@ public class StatusServiceTest {
 
     /**
      * Verify that for successful requests the {@link StatusService#getStatuses(StatusRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      * .
      *
      * @throws IOException if an IO error occurs.
@@ -60,7 +60,7 @@ public class StatusServiceTest {
 
     /**
      * Verify that for failed requests the {@link StatusService#getStatuses(StatusRequest)}
-     * method returns the same result as the {@link ServerFacade}.
+     * method returns the same result as the {@link ServerFacade_Old}.
      *
      * @throws IOException if an IO error occurs.
      */
