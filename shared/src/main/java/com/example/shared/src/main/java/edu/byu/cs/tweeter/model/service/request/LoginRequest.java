@@ -5,17 +5,43 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.reques
  */
 public class LoginRequest {
 
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
 
-    private final String firstname;
-    private final String lastname;
+    private String firstname;
+    private String lastname;
 
-    private final byte [] imageBytes;
+    private byte [] imageBytes;
 
-    private final boolean isRegister;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
+    public void setRegister(boolean register) {
+        isRegister = register;
+    }
+
+    private boolean isRegister;
 
 
+    public LoginRequest() {
+    }
 
     /**
      * Creates an instance.

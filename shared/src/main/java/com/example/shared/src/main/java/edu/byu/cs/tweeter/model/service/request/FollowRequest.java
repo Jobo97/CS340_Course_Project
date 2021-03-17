@@ -6,10 +6,10 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.reques
  */
 public class FollowRequest {
 
-    private final String followerAlias;
-    private final int limit;
-    private final String lastFolloweeAlias;
-    private final boolean isFollower;
+    private String followerAlias;
+    private int limit;
+    private String lastFolloweeAlias;
+    private boolean isFollower;
 
     /**
      * Creates an instance.
@@ -25,6 +25,9 @@ public class FollowRequest {
         this.limit = limit;
         this.lastFolloweeAlias = lastFolloweeAlias;
         this.isFollower = isFollower;
+    }
+
+    public FollowRequest() {
     }
 
     /**
@@ -57,5 +60,21 @@ public class FollowRequest {
 
     public boolean isFollower() {
         return isFollower;
+    }
+
+    public void setFollowerAlias(String followerAlias) {
+        this.followerAlias = followerAlias;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setLastFolloweeAlias(String lastFolloweeAlias) {
+        this.lastFolloweeAlias = lastFolloweeAlias;
+    }
+
+    public void setFollower(boolean follower) {
+        isFollower = follower;
     }
 }
