@@ -11,6 +11,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToke
 import edu.byu.cs.tweeter.model.service.LogoutService;
 import edu.byu.cs.tweeter.model.service.LogoutServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
@@ -35,7 +36,7 @@ public class LogoutPresenterTest {
     }
 
     @Test
-    public void testLogin_returnsLoginResult() throws IOException {
+    public void testLogin_returnsLoginResult() throws IOException, TweeterRemoteException {
         Mockito.when(mockLogoutServiceProxy.logout(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -44,7 +45,7 @@ public class LogoutPresenterTest {
     }
 
     @Test
-    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
+    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException {
         Mockito.when(mockLogoutServiceProxy.logout(request)).thenThrow(new IOException());
 
         // doesn't throw for some reason
