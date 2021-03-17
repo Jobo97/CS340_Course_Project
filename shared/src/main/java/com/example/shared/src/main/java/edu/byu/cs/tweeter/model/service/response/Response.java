@@ -5,8 +5,12 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respon
  */
 public class Response {
 
-    private final boolean success;
-    private final String message;
+    private boolean success;
+    private String message;
+
+    public Response() {
+
+    }
 
     /**
      * Creates an instance with a null message.
@@ -44,5 +48,13 @@ public class Response {
      */
     public String getMessage() {
         return message;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
