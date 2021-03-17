@@ -9,6 +9,8 @@ public class StatusResponse extends PagedResponse {
 
     private List<Status> statuses;
 
+    public StatusResponse(){}
+
     public StatusResponse(String message){
         super(false, message, false);
     }
@@ -42,5 +44,9 @@ public class StatusResponse extends PagedResponse {
     @Override
     public int hashCode() {
         return Objects.hash(statuses);
+    }
+
+    public void setStatuses(List<Status> statuses) {
+        this.statuses = statuses;
     }
 }
