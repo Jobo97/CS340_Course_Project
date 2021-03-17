@@ -11,11 +11,22 @@ public class LogoutRequest{
         this.token = token;
     }
 
+    public LogoutRequest() {
+    }
+
     public String getUserAlias() {
         return userAlias;
     }
 
     public AuthToken getToken() {
         return token;
+    }
+
+    public void setUserAlias(String userAlias) {
+        this.userAlias = userAlias;
+    }
+
+    public void setToken(AuthToken token) {
+        this.token = token;
     }
 }
