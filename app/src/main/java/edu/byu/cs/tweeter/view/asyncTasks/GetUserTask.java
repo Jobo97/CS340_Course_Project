@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import java.io.IOException;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
@@ -35,7 +36,7 @@ public class GetUserTask extends AsyncTask<GetUserRequest, Void, GetUserResponse
 
         try {
             response = presenter.getUser(userRequests[0]);
-        } catch (IOException ex) {
+        } catch (IOException | TweeterRemoteException ex) {
             exception = ex;
         }
 

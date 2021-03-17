@@ -13,6 +13,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.service.StatusService;
 import edu.byu.cs.tweeter.model.service.StatusServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
@@ -24,7 +25,7 @@ public class StatusPresenterTest {
     private StatusPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException {
         List<Status> statuses = new ArrayList<>();
 
         request = new StatusRequest("carterwonnacott", 10, null, true);
@@ -41,7 +42,7 @@ public class StatusPresenterTest {
     }
 
     @Test
-    public void testStatus_returnsStatusResult() throws IOException {
+    public void testStatus_returnsStatusResult() throws IOException, TweeterRemoteException {
         Mockito.when(mockStatusServiceProxy.getStatuses(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -50,7 +51,7 @@ public class StatusPresenterTest {
     }
 
     @Test
-    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
+    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException {
         Mockito.when(mockStatusServiceProxy.getStatuses(request)).thenThrow(new IOException());
 
         //doesn't throw for some reason

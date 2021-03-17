@@ -11,6 +11,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.ProfileService;
 import edu.byu.cs.tweeter.model.service.ProfileServiceProxy;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 
@@ -22,7 +23,7 @@ public class ProfilePresenterTest {
     private ProfilePresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException {
         User viewedUser = new User("FirstName", "LastName", "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
         request = new GetUserRequest("@carterwonnacott");
@@ -39,7 +40,7 @@ public class ProfilePresenterTest {
     }
 
     @Test
-    public void testUser_returnsGetUserResult() throws IOException {
+    public void testUser_returnsGetUserResult() throws IOException, TweeterRemoteException {
         Mockito.when(mockProfileServiceProxy.getUser(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -48,7 +49,7 @@ public class ProfilePresenterTest {
     }
 
     @Test
-    public void testUser_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
+    public void testUser_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException {
         Mockito.when(mockProfileServiceProxy.getUser(request)).thenThrow(new IOException());
 
         //doesn't throw for some reason
