@@ -13,5 +13,5 @@ public class LogoutServiceImpl implements ILogoutService {
         return getLogoutDAO().logout(request);
     }
 
-    LogoutDAO getLogoutDAO(){ return new LogoutDAO(); }
+    public LogoutDAO getLogoutDAO(){ return new LogoutDAO(); }
 }

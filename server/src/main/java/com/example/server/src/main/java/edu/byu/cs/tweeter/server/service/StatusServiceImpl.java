@@ -13,5 +13,5 @@ public class StatusServiceImpl implements IStatusService {
         return getStatusDAO().getStatuses(request);
     }
 
-    StatusDAO getStatusDAO(){ return new StatusDAO(); }
+    public StatusDAO getStatusDAO(){ return new StatusDAO(); }
 }
