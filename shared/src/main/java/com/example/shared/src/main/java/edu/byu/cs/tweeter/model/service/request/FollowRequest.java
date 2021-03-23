@@ -5,7 +5,10 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.reques
  * followees for a specified follower.
  */
 public class FollowRequest {
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     private String followerAlias;
     private int limit;
     private String lastFolloweeAlias;
