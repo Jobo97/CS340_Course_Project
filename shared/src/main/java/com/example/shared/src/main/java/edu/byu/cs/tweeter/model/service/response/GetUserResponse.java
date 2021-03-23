@@ -5,7 +5,9 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respons
 
 public class GetUserResponse extends Response {
 
-    private final User viewedUser;
+    private User viewedUser;
+
+    public GetUserResponse(){}
 
     public GetUserResponse(boolean success, User viewedUser) {
         super(success);
@@ -14,6 +16,10 @@ public class GetUserResponse extends Response {
 
     GetUserResponse(boolean success, String message, User viewedUser) {
         super(success, message);
+        this.viewedUser = viewedUser;
+    }
+
+    public void setViewedUser(User viewedUser) {
         this.viewedUser = viewedUser;
     }
 

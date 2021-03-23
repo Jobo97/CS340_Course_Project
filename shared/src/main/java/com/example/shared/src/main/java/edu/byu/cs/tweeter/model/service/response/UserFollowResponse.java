@@ -2,7 +2,9 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respon
 
 public class UserFollowResponse extends Response{
 
-    private final boolean isFollower;
+    private boolean isFollower;
+
+    public UserFollowResponse(){}
 
     public UserFollowResponse(boolean success, boolean isFollower) {
         super(success);
@@ -16,5 +18,9 @@ public class UserFollowResponse extends Response{
 
     public boolean isFollower() {
         return isFollower;
+    }
+
+    public void setFollower(boolean follower) {
+        isFollower = follower;
     }
 }
