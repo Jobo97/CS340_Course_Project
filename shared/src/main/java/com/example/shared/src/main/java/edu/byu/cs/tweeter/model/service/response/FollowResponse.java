@@ -22,6 +22,7 @@ public class FollowResponse extends PagedResponse {
     public FollowResponse(String message) {
         super(false, message, false);
     }
+    public FollowResponse(){}
 
     /**
      * Creates a response indicating that the corresponding request was successful.
@@ -63,5 +64,9 @@ public class FollowResponse extends PagedResponse {
     @Override
     public int hashCode() {
         return Objects.hash(follows);
+    }
+
+    public void setFollows(List<User> follows) {
+        this.follows = follows;
     }
 }

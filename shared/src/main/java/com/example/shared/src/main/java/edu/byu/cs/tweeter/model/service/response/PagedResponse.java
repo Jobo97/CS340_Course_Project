@@ -5,7 +5,9 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respon
  */
 public class PagedResponse extends Response {
 
-    private final boolean hasMorePages;
+    private boolean hasMorePages;
+
+    public PagedResponse(){}
 
     PagedResponse(boolean success, boolean hasMorePages) {
         super(success);
@@ -14,6 +16,14 @@ public class PagedResponse extends Response {
 
     PagedResponse(boolean success, String message, boolean hasMorePages) {
         super(success, message);
+        this.hasMorePages = hasMorePages;
+    }
+
+    public boolean isHasMorePages() {
+        return hasMorePages;
+    }
+
+    public void setHasMorePages(boolean hasMorePages) {
         this.hasMorePages = hasMorePages;
     }
 
