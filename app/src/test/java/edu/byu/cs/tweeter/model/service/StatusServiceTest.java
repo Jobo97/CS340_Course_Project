@@ -24,6 +24,10 @@ public class StatusServiceTest {
     private StatusResponse failureResponse;
 
     private StatusServiceProxy followServiceSpy;
+    private ServerFacade mockServerFacade;
+    private String url;
+
+
 
     /**
      * Create a StatusService spy that uses a mock ServerFacade to return known responses to
@@ -31,21 +35,20 @@ public class StatusServiceTest {
      */
     @BeforeEach
     public void setup() throws IOException, TweeterRemoteException {
+        url = "/statuses";
+
         // Setup request objects to use in the tests
         validRequest = new StatusRequest("test alias", 10, null, true);
         invalidRequest = new StatusRequest(null, 0, null, false);
-        String url = "/statuses";
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new StatusResponse("success");
-        ServerFacade mockServerFacade = Mockito.mock(ServerFacade.class);
-        Mockito.when(mockServerFacade.getStatuses(validRequest, url)).thenReturn(successResponse);
+        mockServerFacade = Mockito.mock(ServerFacade.class);
 
         failureResponse = new StatusResponse("failure");
-        Mockito.when(mockServerFacade.getStatuses(invalidRequest, url)).thenReturn(failureResponse);
 
         // Create a FollowingService instance and wrap it with a spy that will use the mock service
-        followServiceSpy = Mockito.spy(new StatusServiceProxy());
+        followServiceSpy = Mockito.spy(StatusServiceProxy.class);
         Mockito.when(followServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
@@ -58,6 +61,7 @@ public class StatusServiceTest {
      */
     @Test
     public void testGetStatuses_validRequest_correctResponse() throws Exception {
+        Mockito.when(mockServerFacade.getStatuses(validRequest, url)).thenReturn(successResponse);
         Response response = followServiceSpy.getStatuses(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
@@ -70,6 +74,7 @@ public class StatusServiceTest {
      */
     @Test
     public void testGetStatuses_invalidRequest_returnsNoUser() throws Exception {
+        Mockito.when(mockServerFacade.getStatuses(invalidRequest, url)).thenReturn(failureResponse);
         Response response = followServiceSpy.getStatuses(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }

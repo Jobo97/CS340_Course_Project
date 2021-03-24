@@ -17,6 +17,9 @@ public class LoginDAO {
     private User registeredUser;
 
     public LoginResponse login(LoginRequest request) {
+        if(request.getUsername() == null || request.getPassword() == null){
+            return new LoginResponse(null, null);
+        }
         if (request.getRegistered()) {
             registeredUser = new User("firstname", "lastname", "username", MALE_IMAGE_URL);
             return new LoginResponse(registeredUser, new AuthToken("New_User"));

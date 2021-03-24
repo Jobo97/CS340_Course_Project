@@ -7,6 +7,9 @@ public class LogoutDAO {
 
     public Response logout(LogoutRequest request) {
         //We will ignore the request since this is dummy data
+        if(request.getUserAlias() == null || request.getToken() == null){
+            return new Response(false);
+        }
         return new Response(true, "Logout worked");
     }
 }
