@@ -36,12 +36,12 @@ public class LogoutServiceIntegrationTest {
     @Test
     public void testLogout_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         Response response = logoutServiceProxy.logout(logoutRequest);
-        Assertions.assertEquals(response, expectedResponse);
+        Assertions.assertEquals(response.isSuccess(), expectedResponse.isSuccess());
     }
 
     @Test
     public void testLogout_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
         Response response = logoutServiceProxy.logout(invalidRequest);
-        Assertions.assertEquals(response, invalidResponse);
+        Assertions.assertEquals(response.isSuccess(), invalidResponse.isSuccess());
     }
 }

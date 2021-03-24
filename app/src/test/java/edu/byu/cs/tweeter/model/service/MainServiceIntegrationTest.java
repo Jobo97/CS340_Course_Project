@@ -34,13 +34,13 @@ public class MainServiceIntegrationTest {
     @Test
     public void testPostStatus_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         Response response = mainServiceProxy.postStatus(postStatusRequest);
-        Assertions.assertEquals(response, expectedResponse);
+        Assertions.assertEquals(response.isSuccess(), expectedResponse.isSuccess());
     }
 
     @Test
     public void testPostStatus_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
         Response response = mainServiceProxy.postStatus(invalidRequest);
-        Assertions.assertEquals(response, invalidResponse);
+        Assertions.assertEquals(response.isSuccess(), invalidResponse.isSuccess());
     }
 
 }

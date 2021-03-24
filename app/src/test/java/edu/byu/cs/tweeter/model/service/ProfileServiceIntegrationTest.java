@@ -10,8 +10,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileServiceIntegrationTest {
+
+    private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
+    private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+
+    private final User ben = new User("Ben", "Millett", "@benmillett", MALE_IMAGE_URL);
+    private final User michael = new User("Michael", "Skonnard", "@michaelskonnard", MALE_IMAGE_URL);
+    private final User carter = new User("Carter", "Wonnacott", "@carterwonnacott", MALE_IMAGE_URL);
+
+    private Map<String, User> databaseUsernameUser = new HashMap<String, User>(){{
+        put(ben.getAlias(), ben);
+        put(michael.getAlias(), michael);
+        put(carter.getAlias(), carter);
+    }};
 
     ProfileServiceProxy profileServiceProxy;
 
@@ -23,10 +38,10 @@ public class ProfileServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        getUserRequest = new GetUserRequest("carterwonnacott");
+        getUserRequest = new GetUserRequest("@carterwonnacott");
         invalidRequest = new GetUserRequest(null);
 
-        expectedResponse = new GetUserResponse(true, new User("carter", "wonnacott", null));
+        expectedResponse = new GetUserResponse(true, carter);
         invalidResponse = new GetUserResponse(false, null);
 
         profileServiceProxy = new ProfileServiceProxy();
@@ -35,12 +50,16 @@ public class ProfileServiceIntegrationTest {
     @Test
     public void testGetUser_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         GetUserResponse response = profileServiceProxy.getUser(getUserRequest);
-        Assertions.assertEquals(response, expectedResponse);
+        boolean areEqual = expectedResponse.isSuccess() == response.isSuccess();
+        areEqual = expectedResponse.getViewedUser().equals(response.getViewedUser()) && areEqual;
+        Assertions.assertTrue(areEqual);
     }
 
     @Test
     public void testGetUser_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
         GetUserResponse response = profileServiceProxy.getUser(invalidRequest);
-        Assertions.assertEquals(response, invalidResponse);
+        boolean areEqual = invalidResponse.isSuccess() == response.isSuccess();
+        areEqual = invalidResponse.getViewedUser().equals(response.getViewedUser()) && areEqual;
+        Assertions.assertTrue(areEqual);
     }
 }

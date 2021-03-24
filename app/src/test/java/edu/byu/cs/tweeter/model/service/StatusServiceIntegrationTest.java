@@ -90,7 +90,7 @@ public class StatusServiceIntegrationTest {
         statusRequest = new StatusRequest("@carterwonnacott", 10, "", false);
         invalidRequest = new StatusRequest("", 0, "", false);
         // setup expected response
-        expectedResponse = new StatusResponse(new ArrayList<>(), true);
+        expectedResponse = new StatusResponse(new ArrayList<>(), false);
 
         expectedResponse.getStatuses().add(status18);
         expectedResponse.getStatuses().add(status17);
@@ -110,13 +110,58 @@ public class StatusServiceIntegrationTest {
     @Test
     public void testGetStatuses_validRequest_correctResponse() throws Exception {
         StatusResponse response = statusServiceProxy.getStatuses(statusRequest);
-        Assertions.assertEquals(response, expectedResponse);
+        boolean areEqual = true;
+        for(Status status : response.getStatuses()){
+            boolean contains = false;
+            for(Status status1 : expectedResponse.getStatuses()){
+                if(status.equals(status1)){
+                    contains = true;
+                    break;
+                }
+            }
+            if(!contains){
+                areEqual = false;
+                break;
+            }
+        }
+        areEqual = response.getHasMorePages() == expectedResponse.getHasMorePages() && areEqual;
+        areEqual = response.isSuccess() == expectedResponse.isSuccess() && areEqual;
+        if(response.getMessage() == null){
+            areEqual = response.getMessage() == expectedResponse.getMessage() && areEqual;
+        }
+        else{
+            areEqual = response.getMessage().equals(expectedResponse.getMessage())  && areEqual;
+        }
+        Assertions.assertTrue(areEqual);
+
     }
 
     @Test
     public void testGetStatuses_invalidRequest_incorrectResponse() throws Exception {
         StatusResponse response = statusServiceProxy.getStatuses(invalidRequest);
-        Assertions.assertEquals(response, invalidResponse);
+        boolean areEqual = true;
+        for(Status status : response.getStatuses()){
+            boolean contains = false;
+            for(Status status1 : invalidResponse.getStatuses()){
+                if(status.equals(status1)){
+                    contains = true;
+                    break;
+                }
+            }
+            if(!contains){
+                areEqual = false;
+                break;
+            }
+        }
+        areEqual = response.getHasMorePages() == invalidResponse.getHasMorePages() && areEqual;
+        areEqual = response.isSuccess() == invalidResponse.isSuccess() && areEqual;
+        if(response.getMessage() == null){
+            areEqual = response.getMessage() == invalidResponse.getMessage() && areEqual;
+        }
+        else{
+            areEqual = response.getMessage().equals(invalidResponse.getMessage())  && areEqual;
+        }
+        Assertions.assertTrue(areEqual);
     }
 
 }

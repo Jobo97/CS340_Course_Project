@@ -136,7 +136,7 @@ public class Status {
 
     public boolean equals(Status other) {
         return this.tweet.equals(other.getTweet()) &&
-                this.timeStamp.toString().equals(other.getTimeStamp().toString()) &&
+                this.timeStampString.equals(other.getTimeStampString()) &&
                 this.user.equals(other.getUser());
     }
 }

@@ -23,14 +23,15 @@ public class StatusServiceProxy {
 
         StatusResponse response = getServerFacade().getStatuses(request, URL_PATH);
 
-        for (Status status : response.getStatuses()) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            Date parsedDate = dateFormat.parse(status.getTimeStampString());
-            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-            status.setTimeStamp(timestamp);
-        }
+
 
         if(response.isSuccess()) {
+            for (Status status : response.getStatuses()) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date parsedDate = dateFormat.parse(status.getTimeStampString());
+                Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                status.setTimeStamp(timestamp);
+            }
             loadImages(response);
         }
         return response;

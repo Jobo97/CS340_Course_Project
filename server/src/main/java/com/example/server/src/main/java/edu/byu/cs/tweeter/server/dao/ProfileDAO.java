@@ -23,7 +23,10 @@ public class ProfileDAO {
     }};
 
     public GetUserResponse getUser(GetUserRequest request) {
-        GetUserResponse getUserResponse = new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
-        return getUserResponse;
+        if(databaseUsernameUser.get(request.getUseralias()) != null){
+            GetUserResponse getUserResponse = new GetUserResponse(true, databaseUsernameUser.get(request.getUseralias()));
+            return getUserResponse;
+        }
+        return new GetUserResponse(false,null);
     }
 }

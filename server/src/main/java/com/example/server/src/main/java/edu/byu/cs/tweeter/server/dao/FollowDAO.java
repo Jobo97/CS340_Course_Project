@@ -82,6 +82,9 @@ public class FollowDAO {
 //        }
 
         List<User> allFollows;
+        if(request.getFollowerAlias() == null){
+            return new FollowResponse(null, false);
+        }
         if (request.getFollower()) {
             allFollows = getDummyFollowers();
         }
@@ -143,10 +146,16 @@ public class FollowDAO {
 
     public FollowCountResponse getFollowCount(FollowCountRequest request) {
         //Ignore the request for dummy data only
+        if(request.getUserAlias() == null){
+            return new FollowCountResponse(false, 0, 0);
+        }
         return new FollowCountResponse(true, getDummyFollowers().size(), getDummyFollowees().size());
     }
 
     public UserFollowResponse followStatus(UserFollowRequest request) {
+        if(request.getUserAlias() == null || request.getViewedAlias() == null){
+            return new UserFollowResponse(false, false);
+        }
         Random random = new Random();
         return new UserFollowResponse(true, random.nextBoolean());
     }
