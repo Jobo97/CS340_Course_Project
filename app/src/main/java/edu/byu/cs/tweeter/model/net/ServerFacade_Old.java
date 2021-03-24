@@ -138,7 +138,7 @@ public class ServerFacade_Old {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) {
-        if (request.isRegister()) {
+        if (request.getRegistered()) {
             registeredUser = new User("firstname", "lastname", "username", MALE_IMAGE_URL);
             return new LoginResponse(registeredUser, new AuthToken("New_User"));
         }
@@ -147,7 +147,7 @@ public class ServerFacade_Old {
 
     public StatusResponse getStatuses(StatusRequest request) {
         List<Status> statuses;
-        if (request.isStory()) {
+        if (request.getStory()) {
             statuses = getDummyStory();
         }
         else {
@@ -208,7 +208,7 @@ public class ServerFacade_Old {
         }
 
         List<User> allFollows;
-        if (request.isFollower()) {
+        if (request.getFollower()) {
             allFollows = getDummyFollowers();
         }
         else {

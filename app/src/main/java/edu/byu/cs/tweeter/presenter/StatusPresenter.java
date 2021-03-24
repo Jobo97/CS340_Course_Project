@@ -26,7 +26,7 @@ public class StatusPresenter {
     }
 
 
-    public StatusResponse getStatus(StatusRequest request) throws IOException, TweeterRemoteException {
+    public StatusResponse getStatus(StatusRequest request) throws Exception {
         StatusServiceProxy statusServiceProxy = getStatusServiceProxy();
         return statusServiceProxy.getStatuses(request);
     }
