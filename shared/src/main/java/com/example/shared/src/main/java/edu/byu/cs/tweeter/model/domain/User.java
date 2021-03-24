@@ -80,4 +80,10 @@ public class User implements Comparable<User>, Serializable {
     public int compareTo(User user) {
         return this.getAlias().compareTo(user.getAlias());
     }
+
+    public boolean equals(User other) {
+        return this.getName().equals(other.getName()) &&
+                this.alias.equals(other.getAlias()) &&
+                this.imageUrl.equals(other.getImageUrl());
+    }
 }

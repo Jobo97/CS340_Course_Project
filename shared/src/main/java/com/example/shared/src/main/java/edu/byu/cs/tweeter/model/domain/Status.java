@@ -87,5 +87,9 @@ public class Status {
         return urls;
     }
 
-
+    public boolean equals(Status other) {
+        return this.tweet.equals(other.getTweet()) &&
+                this.timeStamp.toString().equals(other.getTimeStamp().toString()) &&
+                this.user.equals(other.getUser());
+    }
 }

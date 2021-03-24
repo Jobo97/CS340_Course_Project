@@ -23,4 +23,8 @@ public class AuthToken implements Serializable {
     public int hashCode() {
         return Objects.hash(authToken);
     }
+
+    public boolean equals(AuthToken other) {
+        return this.authToken.equals(other.getAuthToken());
+    }
 }
