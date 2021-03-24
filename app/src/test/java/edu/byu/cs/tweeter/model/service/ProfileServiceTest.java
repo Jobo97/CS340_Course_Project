@@ -62,7 +62,7 @@ public class ProfileServiceTest {
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testLogin_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testGetUser_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         GetUserResponse response = followServiceSpy.getUser(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
@@ -74,7 +74,7 @@ public class ProfileServiceTest {
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testLogin_invalidRequest_returnsNoUser() throws IOException, TweeterRemoteException {
+    public void testGetUser_invalidRequest_returnsNoUser() throws IOException, TweeterRemoteException {
         GetUserResponse response = followServiceSpy.getUser(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }
