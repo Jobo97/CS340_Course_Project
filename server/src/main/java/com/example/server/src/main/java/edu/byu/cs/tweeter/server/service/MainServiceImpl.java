@@ -11,5 +11,5 @@ public class MainServiceImpl implements IMainService {
         return getMainDAO().postStatus(request);
     }
 
-    MainDAO getMainDAO(){ return new MainDAO(); }
+    public MainDAO getMainDAO(){ return new MainDAO(); }
 }

@@ -14,5 +14,5 @@ public class ProfileServiceImpl implements IProfileService {
         return getProfileDAO().getUser(request);
     }
 
-    ProfileDAO getProfileDAO(){ return new ProfileDAO(); }
+    public ProfileDAO getProfileDAO(){ return new ProfileDAO(); }
 }

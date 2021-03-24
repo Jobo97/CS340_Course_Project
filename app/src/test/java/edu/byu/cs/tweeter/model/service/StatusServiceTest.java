@@ -57,7 +57,7 @@ public class StatusServiceTest {
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetStatuses_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testGetStatuses_validRequest_correctResponse() throws Exception {
         Response response = followServiceSpy.getStatuses(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
@@ -69,7 +69,7 @@ public class StatusServiceTest {
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetStatuses_invalidRequest_returnsNoUser() throws IOException, TweeterRemoteException {
+    public void testGetStatuses_invalidRequest_returnsNoUser() throws Exception {
         Response response = followServiceSpy.getStatuses(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }

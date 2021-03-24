@@ -42,46 +42,46 @@ public class StatusDAO {
     long time2 = date2.getTime();
 
 
-    private final Status status1 = new Status("Tweet from 1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
-            new Timestamp(time), ben);
-    private final Status status2 = new Status("Tweet from 2. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status3 = new Status("Tweet from 3. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status4 = new Status("Tweet from 4. @benmillett @michaelskonnard www.apple.com www.linked.com",
-            new Timestamp(time2), carter);
-    private final Status status5 = new Status("Tweet from 5. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status6 = new Status("Tweet from 6. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status7 = new Status("Tweet from 7. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status8 = new Status("Tweet from 8. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status9 = new Status("Tweet from 9. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status10 = new Status("Tweet from 10. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status11 = new Status("Tweet from 11. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status12 = new Status("Tweet from 12. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status13 = new Status("Tweet from 13. @michaelskonnard @benmillett www.byu.edu www.google.com",
-            new Timestamp(time), carter);
-    private final Status status14 = new Status("Tweet from 14. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status15 = new Status("Tweet from 15. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status16 = new Status("Tweet from 16. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status17 = new Status("Tweet from 17. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
-    private final Status status18 = new Status("Tweet from 18. @benmillett @carterwonnacott www.apple.com www.linked.com",
-            new Timestamp(time2), michael);
+    private Status status1 = new Status("Tweet from 1. @michaelskonnard @carterwonnacott www.byu.edu www.google.com",
+            ben,(new Timestamp(time)).toString());
+    private Status status2 = new Status("Tweet from 2. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status3 = new Status("Tweet from 3. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status4 = new Status("Tweet from 4. @benmillett @michaelskonnard www.apple.com www.linked.com",
+            carter,(new Timestamp(time2)).toString());
+    private Status status5 = new Status("Tweet from 5. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status6 = new Status("Tweet from 6. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status7 = new Status("Tweet from 7. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status8 = new Status("Tweet from 8. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,((new Timestamp(time2)).toString()));
+    private Status status9 = new Status("Tweet from 9. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status10 = new Status("Tweet from 10. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status11 = new Status("Tweet from 11. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status12 = new Status("Tweet from 12. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status13 = new Status("Tweet from 13. @michaelskonnard @benmillett www.byu.edu www.google.com",
+            carter,(new Timestamp(time)).toString());
+    private Status status14 = new Status("Tweet from 14. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status15 = new Status("Tweet from 15. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status16 = new Status("Tweet from 16. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status17 = new Status("Tweet from 17. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
+    private Status status18 = new Status("Tweet from 18. @benmillett @carterwonnacott www.apple.com www.linked.com",
+            michael,(new Timestamp(time2)).toString());
 
     public StatusResponse getStatuses(StatusRequest request) {
         List<Status> statuses;
-        if (request.isStory()) {
+        if (request.getStory()) {
             statuses = getDummyStory();
         }
         else {

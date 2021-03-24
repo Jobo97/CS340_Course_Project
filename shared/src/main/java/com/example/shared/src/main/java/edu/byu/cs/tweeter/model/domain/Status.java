@@ -7,26 +7,45 @@ import java.util.List;
 import java.util.Objects;
 
 public class Status {
-    private List<String> Mentions;
-    private List<String> Urls;
+    private List<String> mentions;
+    private List<String> urls;
     private String tweet;
     private Timestamp timeStamp;            //Review this Timestamp class
+    private String timeStampString;
     private User user;
 
+    public Status() {}
+
     public Status(String tweet, Timestamp timeStamp, User user) {
-        this.Mentions = parseMentions(tweet);
-        this.Urls = parseURLS(tweet);
+        this.mentions = parseMentions(tweet);
+        this.urls = parseURLS(tweet);
         this.tweet = tweet;
         this.timeStamp = timeStamp;
+        if (timeStamp != null)
+        {
+            this.timeStampString = timeStamp.toString();
+        }
+        this.user = user;
+    }
+
+    public Status(String tweet, User user, String timeStamp) {
+        this.mentions = parseMentions(tweet);
+        this.urls = parseURLS(tweet);
+        this.tweet = tweet;
+        this.timeStampString = timeStamp;
+        if (timeStamp != null)
+        {
+            this.timeStampString = timeStamp;
+        }
         this.user = user;
     }
 
     public List<String> getMentions() {
-        return Mentions;
+        return mentions;
     }
 
     public List<String> getUrls() {
-        return Urls;
+        return urls;
     }
 
     public String getTweet() {
@@ -39,6 +58,34 @@ public class Status {
 
     public User getUser() {
         return user;
+    }
+
+    public void setMentions(List<String> mentions) {
+        this.mentions = mentions;
+    }
+
+    public void setUrls(List<String> urls) {
+        urls = urls;
+    }
+
+    public void setTweet(String tweet) {
+        this.tweet = tweet;
+    }
+
+    public void setTimeStamp(Timestamp timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getTimeStampString() {
+        return timeStampString;
+    }
+
+    public void setTimeStamp(String timeStampString) {
+        this.timeStampString = timeStampString;
     }
 
     @Override
@@ -57,8 +104,8 @@ public class Status {
     @Override
     public String toString() {
         return "Status{" +
-                "Mentions='" + Mentions.toString() + '\'' +
-                ", Urls='" + Urls.toString() + '\'' +
+                "Mentions='" + mentions.toString() + '\'' +
+                ", urls='" + urls.toString() + '\'' +
                 ", tweet='" + tweet + '\'' +
                 ", timeStamp='" + timeStamp.toString() + '\'' +
                 ", user='" + user.toString() + '\'' +

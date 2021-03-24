@@ -5,11 +5,10 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.reques
  * followees for a specified follower.
  */
 public class FollowRequest {
-
-    private final String followerAlias;
-    private final int limit;
-    private final String lastFolloweeAlias;
-    private final boolean isFollower;
+    private String followerAlias;
+    private int limit;
+    private String lastFolloweeAlias;
+    private boolean follower;
 
     /**
      * Creates an instance.
@@ -20,12 +19,14 @@ public class FollowRequest {
      *                     there was no previous request or if no followees were returned in the
      *                     previous request).
      */
-    public FollowRequest(String followerAlias, int limit, String lastFolloweeAlias, boolean isFollower) {
+    public FollowRequest(String followerAlias, int limit, String lastFolloweeAlias, boolean follower) {
         this.followerAlias = followerAlias;
         this.limit = limit;
         this.lastFolloweeAlias = lastFolloweeAlias;
-        this.isFollower = isFollower;
+        this.follower = follower;
     }
+
+    public FollowRequest() {}
 
     /**
      * Returns the follower whose followees are to be returned by this request.
@@ -55,7 +56,23 @@ public class FollowRequest {
         return lastFolloweeAlias;
     }
 
-    public boolean isFollower() {
-        return isFollower;
+    public boolean getFollower() {
+        return follower;
+    }
+
+    public void setFollowerAlias(String followerAlias) {
+        this.followerAlias = followerAlias;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setLastFolloweeAlias(String lastFolloweeAlias) {
+        this.lastFolloweeAlias = lastFolloweeAlias;
+    }
+
+    public void setFollower(boolean follower) {
+        this.follower = follower;
     }
 }

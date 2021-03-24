@@ -19,6 +19,7 @@ public class LoginHandler implements RequestHandler<LoginRequest, LoginResponse>
     public LoginResponse handleRequest(LoginRequest loginRequest, Context context) {
         LoginServiceImpl loginService = new LoginServiceImpl();
         try {
+            System.out.println(loginRequest.toString());
             return loginService.login(loginRequest);
         } catch (IOException e) {
             e.printStackTrace();

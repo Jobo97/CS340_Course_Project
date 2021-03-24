@@ -1,21 +1,51 @@
 package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request;
 
+import java.util.Arrays;
+
 /**
  * Contains all the information needed to make a login request.
  */
 public class LoginRequest {
 
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
 
-    private final String firstname;
-    private final String lastname;
+    private String firstname;
+    private String lastname;
 
-    private final byte [] imageBytes;
+    private byte [] imageBytes;
+    private String imageEncoded;
+    private boolean registered;
 
-    private final boolean isRegister;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
 
 
+
+
+    public LoginRequest() {
+    }
 
     /**
      * Creates an instance.
@@ -26,7 +56,7 @@ public class LoginRequest {
     public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
-        isRegister = false;
+        registered = false;
 
         firstname = null;
         lastname = null;
@@ -39,7 +69,20 @@ public class LoginRequest {
         this.firstname = firstname;
         this.lastname = lastname;
         this.imageBytes = imageBytes;
-        isRegister = true;
+        registered = true;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", imageBytes=" + Arrays.toString(imageBytes) +
+                ", imageEncoded='" + imageEncoded + '\'' +
+                ", registered=" + registered +
+                '}';
     }
 
     /**
@@ -72,7 +115,15 @@ public class LoginRequest {
         return imageBytes;
     }
 
-    public boolean isRegister() {
-        return isRegister;
+    public boolean getRegistered() {
+        return registered;
+    }
+
+    public String getImageEncoded() {
+        return imageEncoded;
+    }
+
+    public void setImageEncoded(String imageEncoded) {
+        this.imageEncoded = imageEncoded;
     }
 }

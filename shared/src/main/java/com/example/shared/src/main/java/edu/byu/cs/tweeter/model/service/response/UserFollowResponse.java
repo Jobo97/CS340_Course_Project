@@ -2,19 +2,25 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respon
 
 public class UserFollowResponse extends Response{
 
-    private final boolean isFollower;
+    private boolean follower;
 
-    public UserFollowResponse(boolean success, boolean isFollower) {
+    public UserFollowResponse(){}
+
+    public UserFollowResponse(boolean success, boolean follower) {
         super(success);
-        this.isFollower = isFollower;
+        this.follower = follower;
     }
 
-    UserFollowResponse(boolean success, String message, boolean isFollower) {
+    UserFollowResponse(boolean success, String message, boolean follower) {
         super(success, message);
-        this.isFollower = isFollower;
+        this.follower = follower;
     }
 
-    public boolean isFollower() {
-        return isFollower;
+    public boolean getFollower() {
+        return follower;
+    }
+
+    public void setFollower(boolean follower) {
+        this.follower = follower;
     }
 }
