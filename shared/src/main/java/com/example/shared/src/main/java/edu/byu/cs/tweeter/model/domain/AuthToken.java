@@ -9,6 +9,8 @@ import java.util.Objects;
 public class AuthToken implements Serializable {
     private String authToken;
 
+    public AuthToken() {}
+
     public AuthToken(String authToken) {
         this.authToken = authToken;
     }
@@ -17,7 +19,9 @@ public class AuthToken implements Serializable {
         return authToken;
     }
 
-
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
 
     @Override
     public int hashCode() {

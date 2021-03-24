@@ -40,7 +40,7 @@ public class GetStatusTask extends AsyncTask<StatusRequest, Void, StatusResponse
 
         try {
             response = presenter.getStatus(statusRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (Exception ex) {
             exception = ex;
         }
 

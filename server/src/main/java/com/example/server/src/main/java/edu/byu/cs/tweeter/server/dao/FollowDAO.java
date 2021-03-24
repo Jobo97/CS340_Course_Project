@@ -82,7 +82,7 @@ public class FollowDAO {
 //        }
 
         List<User> allFollows;
-        if (request.isFollower()) {
+        if (request.getFollower()) {
             allFollows = getDummyFollowers();
         }
         else {

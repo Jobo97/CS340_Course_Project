@@ -4,14 +4,14 @@ public class StatusRequest {
     private String userAlias;
     private int limit;
     private String lastStatus;
-    private boolean isStory;
+    private boolean story;
 
 
-    public StatusRequest(String userAlias, int limit, String lastStatus, boolean isStory) {
+    public StatusRequest(String userAlias, int limit, String lastStatus, boolean story) {
         this.userAlias = userAlias;
         this.limit = limit;
         this.lastStatus = lastStatus;
-        this.isStory = isStory;
+        this.story = story;
     }
 
     public StatusRequest() {
@@ -29,8 +29,8 @@ public class StatusRequest {
         return limit;
     }
 
-    public boolean isStory() {
-        return isStory;
+    public boolean getStory() {
+        return story;
     }
 
     public void setUserAlias(String userAlias) {
@@ -46,6 +46,6 @@ public class StatusRequest {
     }
 
     public void setStory(boolean story) {
-        isStory = story;
+        this.story = story;
     }
 }

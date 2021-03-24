@@ -1,5 +1,7 @@
 package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request;
 
+import java.util.Arrays;
+
 /**
  * Contains all the information needed to make a login request.
  */
@@ -12,6 +14,8 @@ public class LoginRequest {
     private String lastname;
 
     private byte [] imageBytes;
+    private String imageEncoded;
+    private boolean registered;
 
     public void setUsername(String username) {
         this.username = username;
@@ -33,11 +37,11 @@ public class LoginRequest {
         this.imageBytes = imageBytes;
     }
 
-    public void setRegister(boolean register) {
-        isRegister = register;
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 
-    private boolean isRegister;
+
 
 
     public LoginRequest() {
@@ -52,7 +56,7 @@ public class LoginRequest {
     public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
-        isRegister = false;
+        registered = false;
 
         firstname = null;
         lastname = null;
@@ -65,7 +69,20 @@ public class LoginRequest {
         this.firstname = firstname;
         this.lastname = lastname;
         this.imageBytes = imageBytes;
-        isRegister = true;
+        registered = true;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", imageBytes=" + Arrays.toString(imageBytes) +
+                ", imageEncoded='" + imageEncoded + '\'' +
+                ", registered=" + registered +
+                '}';
     }
 
     /**
@@ -98,7 +115,15 @@ public class LoginRequest {
         return imageBytes;
     }
 
-    public boolean isRegister() {
-        return isRegister;
+    public boolean getRegistered() {
+        return registered;
+    }
+
+    public String getImageEncoded() {
+        return imageEncoded;
+    }
+
+    public void setImageEncoded(String imageEncoded) {
+        this.imageEncoded = imageEncoded;
     }
 }

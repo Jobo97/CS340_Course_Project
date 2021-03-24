@@ -6,6 +6,9 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
@@ -15,8 +18,17 @@ public class StatusServiceProxy {
 
     private static final String URL_PATH = "/statuses";
 
-    public StatusResponse getStatuses(StatusRequest request) throws IOException, TweeterRemoteException {
+    public StatusResponse getStatuses(StatusRequest request) throws Exception {
+
+
         StatusResponse response = getServerFacade().getStatuses(request, URL_PATH);
+
+        for (Status status : response.getStatuses()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date parsedDate = dateFormat.parse(status.getTimeStampString());
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+            status.setTimeStamp(timestamp);
+        }
 
         if(response.isSuccess()) {
             loadImages(response);

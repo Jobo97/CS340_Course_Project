@@ -122,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
     @Override
     public void followInformation(UserFollowResponse userFollowResponse) {
-        if(userFollowResponse.isFollower()) {
+        if(userFollowResponse.getFollower()) {
             followButton.setText("Unfollow");
             followButton.setBackgroundColor(getResources().getColor(R.color.unfollow));
         }
