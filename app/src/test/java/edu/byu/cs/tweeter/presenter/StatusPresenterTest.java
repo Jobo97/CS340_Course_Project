@@ -25,7 +25,7 @@ public class StatusPresenterTest {
     private StatusPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException, TweeterRemoteException {
+    public void setup() throws Exception{
         List<Status> statuses = new ArrayList<>();
 
         request = new StatusRequest("carterwonnacott", 10, null, true);
@@ -42,7 +42,7 @@ public class StatusPresenterTest {
     }
 
     @Test
-    public void testStatus_returnsStatusResult() throws IOException, TweeterRemoteException {
+    public void testStatus_returnsStatusResult() throws Exception {
         Mockito.when(mockStatusServiceProxy.getStatuses(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -51,7 +51,7 @@ public class StatusPresenterTest {
     }
 
     @Test
-    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException {
+    public void testLogin_serviceThrowsIOException_presenterThrowsIOException() throws Exception {
         Mockito.when(mockStatusServiceProxy.getStatuses(request)).thenThrow(new IOException());
 
         //doesn't throw for some reason
