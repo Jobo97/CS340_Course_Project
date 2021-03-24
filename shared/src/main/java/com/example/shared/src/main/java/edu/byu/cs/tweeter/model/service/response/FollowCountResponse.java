@@ -2,8 +2,8 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respon
 
 public class FollowCountResponse extends Response{
 
-    private final int followerCount;
-    private final int followeeCount;
+    private int followerCount;
+    private int followeeCount;
 
     public FollowCountResponse(boolean success, int followerCount, int followeeCount) {
         super(success);
@@ -14,6 +14,18 @@ public class FollowCountResponse extends Response{
     FollowCountResponse(boolean success, String message, int followerCount, int followeeCount) {
         super(success, message);
         this.followerCount = followerCount;
+        this.followeeCount = followeeCount;
+    }
+
+    public FollowCountResponse(){
+
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public void setFolloweeCount(int followeeCount) {
         this.followeeCount = followeeCount;
     }
 

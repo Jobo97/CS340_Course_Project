@@ -1,0 +1,263 @@
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/LoginResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;\n\n/**\n * A response for a {@link LoginRequest}.\n */\npublic class LoginResponse extends Response {\n\n    private User user;\n    private AuthToken authToken;\n\n    /**\n     * Creates a response indicating that the corresponding request was unsuccessful.\n     *\n     * @param message a message describing why the request was unsuccessful.\n     */\n    public LoginResponse(String message) {\n        super(false, message);\n    }\n\n    /**\n     * Creates a response indicating that the corresponding request was successful.\n     *\n     * @param user the now logged in user.\n     * @param authToken the auth token representing this user's session with the server.\n     */\n    public LoginResponse(User user, AuthToken authToken) {\n        super(true, null);\n        this.user = user;\n        this.authToken = authToken;\n    }\n\n    /**\n     * Returns the logged in user.\n     *\n     * @return the user.\n     */\n    public User getUser() {\n        return user;\n    }\n\n    /**\n     * Returns the auth token.\n     *\n     * @return the auth token.\n     */\n    public AuthToken getAuthToken() {\n        return authToken;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/LoginResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/LoginResponse.java	(date 1615942695000)
+@@ -50,4 +50,12 @@
+     public AuthToken getAuthToken() {
+         return authToken;
+     }
++
++    public void setUser(User user) {
++        this.user = user;
++    }
++
++    public void setAuthToken(AuthToken authToken) {
++        this.authToken = authToken;
++    }
+ }
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowCountResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\npublic class FollowCountResponse extends Response{\n\n    private final int followerCount;\n    private final int followeeCount;\n\n    public FollowCountResponse(boolean success, int followerCount, int followeeCount) {\n        super(success);\n        this.followerCount = followerCount;\n        this.followeeCount = followeeCount;\n    }\n\n    FollowCountResponse(boolean success, String message, int followerCount, int followeeCount) {\n        super(success, message);\n        this.followerCount = followerCount;\n        this.followeeCount = followeeCount;\n    }\n\n    public int getFollowerCount() {\n        return followerCount;\n    }\n\n    public int getFolloweeCount() {\n        return followeeCount;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowCountResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowCountResponse.java	(date 1615942695000)
+@@ -2,8 +2,8 @@
+ 
+ public class FollowCountResponse extends Response{
+ 
+-    private final int followerCount;
+-    private final int followeeCount;
++    private int followerCount;
++    private int followeeCount;
+ 
+     public FollowCountResponse(boolean success, int followerCount, int followeeCount) {
+         super(success);
+@@ -16,6 +16,18 @@
+         this.followerCount = followerCount;
+         this.followeeCount = followeeCount;
+     }
++
++    public FollowCountResponse(){
++
++    }
++
++    public void setFollowerCount(int followerCount) {
++        this.followerCount = followerCount;
++    }
++
++    public void setFolloweeCount(int followeeCount) {
++        this.followeeCount = followeeCount;
++    }
+ 
+     public int getFollowerCount() {
+         return followerCount;
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/StatusResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\nimport java.util.List;\nimport java.util.Objects;\n\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;\n\npublic class StatusResponse extends PagedResponse {\n\n    private List<Status> statuses;\n\n    public StatusResponse(String message){\n        super(false, message, false);\n    }\n\n    public StatusResponse(List<Status> statuses, boolean hasMorePages){\n        super(true, hasMorePages);\n        this.statuses = statuses;\n    }\n\n    public List<Status> getStatuses() {\n        return statuses;\n    }\n\n    @Override\n    public boolean equals(Object param) {\n        if (this == param) {\n            return true;\n        }\n\n        if (param == null || getClass() != param.getClass()) {\n            return false;\n        }\n\n        StatusResponse that = (StatusResponse) param;\n\n        return (Objects.equals(statuses, that.statuses) &&\n                Objects.equals(this.getMessage(), that.getMessage()) &&\n                this.isSuccess() == that.isSuccess());\n    }\n\n    @Override\n    public int hashCode() {\n        return Objects.hash(statuses);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/StatusResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/StatusResponse.java	(date 1615942695000)
+@@ -9,6 +9,8 @@
+ 
+     private List<Status> statuses;
+ 
++    public StatusResponse(){}
++
+     public StatusResponse(String message){
+         super(false, message, false);
+     }
+@@ -43,4 +45,8 @@
+     public int hashCode() {
+         return Objects.hash(statuses);
+     }
++
++    public void setStatuses(List<Status> statuses) {
++        this.statuses = statuses;
++    }
+ }
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/GetUserResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;\n\npublic class GetUserResponse extends Response {\n\n    private final User viewedUser;\n\n    public GetUserResponse(boolean success, User viewedUser) {\n        super(success);\n        this.viewedUser = viewedUser;\n    }\n\n    GetUserResponse(boolean success, String message, User viewedUser) {\n        super(success, message);\n        this.viewedUser = viewedUser;\n    }\n\n    public User getViewedUser() {\n        return viewedUser;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/GetUserResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/GetUserResponse.java	(date 1615942695000)
+@@ -5,7 +5,9 @@
+ 
+ public class GetUserResponse extends Response {
+ 
+-    private final User viewedUser;
++    private User viewedUser;
++
++    public GetUserResponse(){}
+ 
+     public GetUserResponse(boolean success, User viewedUser) {
+         super(success);
+@@ -16,6 +18,10 @@
+         super(success, message);
+         this.viewedUser = viewedUser;
+     }
++
++    public void setViewedUser(User viewedUser) {
++        this.viewedUser = viewedUser;
++    }
+ 
+     public User getViewedUser() {
+         return viewedUser;
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\nimport java.util.List;\nimport java.util.Objects;\n\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;\nimport com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;\n\n/**\n * A paged response for a {@link FollowRequest}.\n */\npublic class FollowResponse extends PagedResponse {\n\n    private List<User> follows;\n\n    /**\n     * Creates a response indicating that the corresponding request was unsuccessful. Sets the\n     * success and more pages indicators to false.\n     *\n     * @param message a message describing why the request was unsuccessful.\n     */\n    public FollowResponse(String message) {\n        super(false, message, false);\n    }\n\n    /**\n     * Creates a response indicating that the corresponding request was successful.\n     *\n     * @param follows the follows to be included in the result.\n     * @param hasMorePages an indicator of whether more data is available for the request.\n     */\n    public FollowResponse(List<User> follows, boolean hasMorePages) {\n        super(true, hasMorePages);\n        this.follows = follows;\n    }\n\n    /**\n     * Returns the follows for the corresponding request.\n     *\n     * @return the follows.\n     */\n    public List<User> getFollows() {\n        return follows;\n    }\n\n    @Override\n    public boolean equals(Object param) {\n        if (this == param) {\n            return true;\n        }\n\n        if (param == null || getClass() != param.getClass()) {\n            return false;\n        }\n\n        FollowResponse that = (FollowResponse) param;\n\n        return (Objects.equals(follows, that.follows) &&\n                Objects.equals(this.getMessage(), that.getMessage()) &&\n                this.isSuccess() == that.isSuccess());\n    }\n\n    @Override\n    public int hashCode() {\n        return Objects.hash(follows);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/FollowResponse.java	(date 1615942695000)
+@@ -22,6 +22,7 @@
+     public FollowResponse(String message) {
+         super(false, message, false);
+     }
++    public FollowResponse(){}
+ 
+     /**
+      * Creates a response indicating that the corresponding request was successful.
+@@ -64,4 +65,8 @@
+     public int hashCode() {
+         return Objects.hash(follows);
+     }
++
++    public void setFollows(List<User> follows) {
++        this.follows = follows;
++    }
+ }
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/UserFollowResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\npublic class UserFollowResponse extends Response{\n\n    private final boolean isFollower;\n\n    public UserFollowResponse(boolean success, boolean isFollower) {\n        super(success);\n        this.isFollower = isFollower;\n    }\n\n    UserFollowResponse(boolean success, String message, boolean isFollower) {\n        super(success, message);\n        this.isFollower = isFollower;\n    }\n\n    public boolean isFollower() {\n        return isFollower;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/UserFollowResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/UserFollowResponse.java	(date 1615942695000)
+@@ -2,7 +2,9 @@
+ 
+ public class UserFollowResponse extends Response{
+ 
+-    private final boolean isFollower;
++    private boolean isFollower;
++
++    public UserFollowResponse(){}
+ 
+     public UserFollowResponse(boolean success, boolean isFollower) {
+         super(success);
+@@ -17,4 +19,8 @@
+     public boolean isFollower() {
+         return isFollower;
+     }
++
++    public void setFollower(boolean follower) {
++        isFollower = follower;
++    }
+ }
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/PagedResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\n/**\n * A response that can indicate whether there is more data available from the server.\n */\npublic class PagedResponse extends Response {\n\n    private final boolean hasMorePages;\n\n    PagedResponse(boolean success, boolean hasMorePages) {\n        super(success);\n        this.hasMorePages = hasMorePages;\n    }\n\n    PagedResponse(boolean success, String message, boolean hasMorePages) {\n        super(success, message);\n        this.hasMorePages = hasMorePages;\n    }\n\n    /**\n     * An indicator of whether more data is available from the server. A value of true indicates\n     * that the result was limited by a maximum value in the request and an additional request\n     * would return additional data.\n     *\n     * @return true if more data is available; otherwise, false.\n     */\n    public boolean getHasMorePages() {\n        return hasMorePages;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/PagedResponse.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/PagedResponse.java	(date 1615942695000)
+@@ -5,7 +5,9 @@
+  */
+ public class PagedResponse extends Response {
+ 
+-    private final boolean hasMorePages;
++    private boolean hasMorePages;
++
++    public PagedResponse(){}
+ 
+     PagedResponse(boolean success, boolean hasMorePages) {
+         super(success);
+@@ -16,6 +18,14 @@
+         super(success, message);
+         this.hasMorePages = hasMorePages;
+     }
++
++    public boolean isHasMorePages() {
++        return hasMorePages;
++    }
++
++    public void setHasMorePages(boolean hasMorePages) {
++        this.hasMorePages = hasMorePages;
++    }
+ 
+     /**
+      * An indicator of whether more data is available from the server. A value of true indicates
+Index: shared/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'java-library'\n\ndependencies {\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\n}\n\ntask wrapper(type: Wrapper) {\n    gradleVersion = '6.7.1'\n}\ntask prepareKotlinBuildScriptModel {\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/build.gradle	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/build.gradle	(date 1615921219000)
+@@ -2,6 +2,7 @@
+ 
+ dependencies {
+     implementation fileTree(dir: 'libs', include: ['*.jar'])
++
+ }
+ 
+ task wrapper(type: Wrapper) {
+Index: shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/Response.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response;\n\n/**\n * A base class for server responses.\n */\npublic class Response {\n\n    private final boolean success;\n    private final String message;\n\n    /**\n     * Creates an instance with a null message.\n     *\n     * @param success the success message.\n     */\n    public Response(boolean success) {\n        this(success, null);\n    }\n\n    /**\n     * Creates an instance.\n     *\n     * @param success the success indicator.\n     * @param message the error message.\n     */\n    public Response(boolean success, String message) {\n        this.success = success;\n        this.message = message;\n    }\n\n    /**\n     * Indicates whether the response represents a successful result.\n     *\n     * @return the success indicator.\n     */\n    public boolean isSuccess() {\n        return success;\n    }\n\n    /**\n     * The error message for unsuccessful results.\n     *\n     * @return an error message or null if the response indicates a successful result.\n     */\n    public String getMessage() {\n        return message;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/Response.java	(revision 95b7307c8dd39ccac8668485b76222d9689538ae)
++++ shared/src/main/java/com/example/shared/src/main/java/edu/byu/cs/tweeter/model/service/response/Response.java	(date 1615942695000)
+@@ -5,8 +5,12 @@
+  */
+ public class Response {
+ 
+-    private final boolean success;
+-    private final String message;
++    private boolean success;
++    private String message;
++
++    public Response() {
++
++    }
+ 
+     /**
+      * Creates an instance with a null message.
+@@ -45,4 +49,12 @@
+     public String getMessage() {
+         return message;
+     }
++
++    public void setSuccess(boolean success) {
++        this.success = success;
++    }
++
++    public void setMessage(String message) {
++        this.message = message;
++    }
+ }
