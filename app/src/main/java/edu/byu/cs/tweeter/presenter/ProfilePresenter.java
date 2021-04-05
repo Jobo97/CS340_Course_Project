@@ -30,7 +30,7 @@ public class ProfilePresenter {
         this.view = view;
     }
 
-    public GetUserResponse getUser(GetUserRequest request) throws IOException, TweeterRemoteException {
+    public GetUserResponse getUser(GetUserRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         ProfileServiceProxy profileServiceProxy = getProfileServiceProxy();
         return profileServiceProxy.getUser(request);
     }

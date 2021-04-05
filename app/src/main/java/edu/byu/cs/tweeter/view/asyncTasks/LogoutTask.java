@@ -49,7 +49,7 @@ public interface Observer {
 
         try {
             response = presenter.logout(logoutRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

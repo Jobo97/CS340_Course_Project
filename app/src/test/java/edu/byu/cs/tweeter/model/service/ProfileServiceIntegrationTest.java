@@ -57,9 +57,10 @@ public class ProfileServiceIntegrationTest {
 
     @Test
     public void testGetUser_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        GetUserResponse response = profileServiceProxy.getUser(invalidRequest);
-        boolean areEqual = invalidResponse.isSuccess() == response.isSuccess();
-        areEqual = invalidResponse.getViewedUser().equals(response.getViewedUser()) && areEqual;
-        Assertions.assertTrue(areEqual);
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
+            profileServiceProxy.getUser(invalidRequest);
+        });
+        String actualMessage = exception.getMessage();
+        Assertions.assertNull(actualMessage);
     }
 }

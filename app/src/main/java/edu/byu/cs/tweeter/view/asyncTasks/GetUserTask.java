@@ -36,7 +36,7 @@ public class GetUserTask extends AsyncTask<GetUserRequest, Void, GetUserResponse
 
         try {
             response = presenter.getUser(userRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

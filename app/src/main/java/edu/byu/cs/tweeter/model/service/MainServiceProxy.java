@@ -14,7 +14,7 @@ public class MainServiceProxy {
     private static final String URL_PATH = "/poststatus";
 
 
-    public Response postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException {
+    public Response postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         ServerFacade serverFacade = getServerFacade();
         Response response = serverFacade.postStatus(request, URL_PATH);
         return response;

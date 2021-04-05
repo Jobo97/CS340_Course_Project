@@ -26,7 +26,7 @@ public class StatusPresenter {
     }
 
 
-    public StatusResponse getStatus(StatusRequest request) throws Exception {
+    public StatusResponse getStatus(StatusRequest request) throws Exception, RuntimeException {
         StatusServiceProxy statusServiceProxy = getStatusServiceProxy();
         return statusServiceProxy.getStatuses(request);
     }

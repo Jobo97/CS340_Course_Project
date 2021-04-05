@@ -41,7 +41,11 @@ public class LogoutServiceIntegrationTest {
 
     @Test
     public void testLogout_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        Response response = logoutServiceProxy.logout(invalidRequest);
-        Assertions.assertEquals(response.isSuccess(), invalidResponse.isSuccess());
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
+            Response response = logoutServiceProxy.logout(invalidRequest);
+        });
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertNull(actualMessage);
     }
 }

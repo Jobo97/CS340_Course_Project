@@ -88,4 +88,20 @@ public class User implements Comparable<User>, Serializable {
                 this.alias.equals(other.getAlias()) &&
                 this.imageUrl.equals(other.getImageUrl());
     }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

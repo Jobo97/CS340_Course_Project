@@ -2,9 +2,21 @@ package com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Index;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
@@ -45,51 +57,177 @@ public class FollowDAO {
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
-    /**
-     * Gets the count of users from the database that the user specified is following. The
-     * current implementation uses generated data and doesn't actually access a database.
-     *
-     * @param follower the User whose count of how many following is desired.
-     * @return said count.
-     */
-    public Integer getFolloweeCount(User follower) {
-        // TODO: uses the dummy data.  Replace with a real implementation.
-        assert follower != null;
-        return getDummyFollowees().size();
+    AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withRegion("us-west-2")
+            .build();
+
+    private DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+    private Table table = dynamoDB.getTable("follows");
+    private UserDao uDao = new UserDao();
+
+
+    public Integer getFolloweeCount(String alias) {
+//        // TODO: uses the dummy data.  Replace with a real implementation.
+
+        HashMap<String, String> nameMap = new HashMap<String, String>();
+        nameMap.put("#fr", "follower_alias");
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put("#frv", alias);
+
+        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+                .withValueMap(valueMap);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+
+        items = table.query(querySpec);
+
+        iterator = items.iterator();
+        int followee_count = 0;
+        while (iterator.hasNext()) {
+            iterator.next();
+            followee_count++;
+        }
+
+        return followee_count;
     }
 
-    /**
-     * Gets the users from the database that the user specified in the request is following. Uses
-     * information in the request object to limit the number of followees returned and to return the
-     * next set of followees after any that were returned in a previous request. The current
-     * implementation returns generated data and doesn't actually access a database.
-     *
-     * @param request contains information about the user whose followees are to be returned and any
-     *                other information required to satisfy the request.
-     * @return the followees.
-     */
-    public FollowResponse getFollows(FollowRequest request) {
+    public Integer getFollowerCount(String alias) {
+//        // TODO: uses the dummy data.  Replace with a real implementation.
 
-        // Used in place of assert statements because Android does not support them
-//        if(BuildConfig.DEBUG) {
-//            if(request.getLimit() < 0) {
-//                throw new AssertionError();
-//            }
-//
-//            if(request.getFollowerAlias() == null) {
-//                throw new AssertionError();
-//            }
-//        }
+        Index index = table.getIndex("followee_alias-follower_alias-index");
+
+        HashMap<String, String> nameMap = new HashMap<String, String>();
+        nameMap.put("#fe", "followee_alias");
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put("#fev", alias);
+
+        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+                .withValueMap(valueMap);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+
+        items = index.query(querySpec);
+
+        iterator = items.iterator();
+        int follower_count = 0;
+        while (iterator.hasNext()) {
+            iterator.next();
+            follower_count++;
+        }
+        return follower_count;
+    }
+
+    public List<User> getFollowersPaginated(String followee_alias, Integer pageSize) {
+        HashMap<String, String> nameMap = new HashMap<String, String>();
+        nameMap.put("#fe", "followee_alias");
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put("#fev", followee_alias;
+        QuerySpec querySpec = new QuerySpec()
+                .withScanIndexForward(false)
+                .withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+                .withValueMap(valueMap)
+                .withMaxResultSize(pageSize);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            System.out.println(followee_alias + "'s followers:");
+            items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+            while(items.getLastLowLevelResult() != null){
+                System.out.println("additional page");
+                querySpec = new QuerySpec()
+                        .withScanIndexForward(false)
+                        .withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+                        .withValueMap(valueMap)
+                        .withMaxResultSize(pageSize)
+                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+
+            }
+
+            iterator = items.iterator();
+            while (iterator.hasNext()) {
+                item = iterator.next();
+                User u = uDao.get(item.getString("user_alias"));
+                users.add(u);
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("Unable to query " + followee_alias + "'s followers!");
+            System.err.println(e.getMessage());
+        }
+        return users;
+    }
+
+    public List<User> getFolloweesPaginated(String follower_alias, Integer pageSize) {
+        HashMap<String, String> nameMap = new HashMap<String, String>();
+        nameMap.put("#fr", "follower_alias");
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put("#frv", follower_alias);
+        QuerySpec querySpec = new QuerySpec()
+                .withScanIndexForward(true)
+                .withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+                .withValueMap(valueMap)
+                .withMaxResultSize(pageSize);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            System.out.println(follower_alias + "'s followees:");
+            items = table.query(querySpec);
+            while(items.getLastLowLevelResult() != null){
+                System.out.println("additional page");
+                querySpec = new QuerySpec()
+                        .withScanIndexForward(true)
+                        .withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+                        .withValueMap(valueMap)
+                        .withMaxResultSize(pageSize)
+                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+            }
+
+            iterator = items.iterator();
+            while (iterator.hasNext()) {
+                item = iterator.next();
+                User u = uDao.get(item.getString("user_alias"));
+                users.add(u);
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("Unable to query " + follower_alias + "'s followees!");
+            System.err.println(e.getMessage());
+        }
+        return users;
+    }
+
+    public FollowResponse getFollows(FollowRequest request) {
 
         List<User> allFollows;
         if(request.getFollowerAlias() == null){
             return new FollowResponse(null, false);
         }
         if (request.getFollower()) {
-            allFollows = getDummyFollowers();
+            allFollows = getFollowersPaginated(request.getFollowerAlias(), request.getLimit());
         }
         else {
-            allFollows = getDummyFollowees();
+            allFollows = getFolloweesPaginated(request.getFollowerAlias(), request.getLimit());
         }
 
         List<User> responseFollows = new ArrayList<>(request.getLimit());
@@ -109,38 +247,33 @@ public class FollowDAO {
         return new FollowResponse(responseFollows, hasMorePages);
     }
 
-    /**
-     * Determines the index for the first followee in the specified 'allFollowees' list that should
-     * be returned in the current request. This will be the index of the next followee after the
-     * specified 'lastFollowee'.
-     *
-     * @param lastFolloweeAlias the alias of the last followee that was returned in the previous
-     *                          request or null if there was no previous request.
-     * @param allFollowees the generated list of followees from which we are returning paged results.
-     * @return the index of the first followee to be returned.
-     */
-    private int getStartingIndex(String lastFolloweeAlias, List<User> allFollowees) {
+//    private int getStartingIndex(String lastFolloweeAlias, List<User> allFollowees) {
+//
+//        int followeesIndex = 0;
+//
+//        if(lastFolloweeAlias != null) {
+//            // This is a paged request for something after the first page. Find the first item
+//            // we should return
+//            for (int i = 0; i < allFollowees.size(); i++) {
+//                if(lastFolloweeAlias.equals(allFollowees.get(i).getAlias())) {
+//                    // We found the index of the last item returned last time. Increment to get
+//                    // to the first one we should return
+//                    followeesIndex = i + 1;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        return followeesIndex;
+//    }
 
-        int followeesIndex = 0;
-
-        if(lastFolloweeAlias != null) {
-            // This is a paged request for something after the first page. Find the first item
-            // we should return
-            for (int i = 0; i < allFollowees.size(); i++) {
-                if(lastFolloweeAlias.equals(allFollowees.get(i).getAlias())) {
-                    // We found the index of the last item returned last time. Increment to get
-                    // to the first one we should return
-                    followeesIndex = i + 1;
-                    break;
-                }
-            }
-        }
-
-        return followeesIndex;
-    }
+    // checkFollows: for looking at and updating button
     public UserFollowResponse checkFollows(UserFollowRequest request) {
         //Deal with error throwing for invalid data
         Random random = new Random();
+        if (request.getUserAlias() == null){
+            return new UserFollowResponse(false, random.nextBoolean());
+        }
         return new UserFollowResponse(true, random.nextBoolean());
     }
 
@@ -149,9 +282,10 @@ public class FollowDAO {
         if(request.getUserAlias() == null){
             return new FollowCountResponse(false, 0, 0);
         }
-        return new FollowCountResponse(true, getDummyFollowers().size(), getDummyFollowees().size());
+        return new FollowCountResponse(true, getFollowerCount(request.getUserAlias()), getFolloweeCount(request.getUserAlias()));
     }
 
+    // followStatus changing your follow status for that person
     public UserFollowResponse followStatus(UserFollowRequest request) {
         if(request.getUserAlias() == null || request.getViewedAlias() == null){
             return new UserFollowResponse(false, false);
@@ -160,12 +294,6 @@ public class FollowDAO {
         return new UserFollowResponse(true, random.nextBoolean());
     }
 
-    /**
-     * Returns the list of dummy followee data. This is written as a separate method to allow
-     * mocking of the followees.
-     *
-     * @return the followees.
-     */
     public List<User> getDummyFollowees() {
         return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
@@ -174,4 +302,44 @@ public class FollowDAO {
     List<User> getDummyFollowers() {
         return Arrays.asList(michael, user2, user4, user6, user8, user10, user12, user14, user16, user18, user20);
     }
+
 }
+
+
+//DynamoDB object
+//        object.get(request.getUserAlias)
+//
+//        // Used in place of assert statements because Android does not support them
+////        if(BuildConfig.DEBUG) {
+////            if(request.getLimit() < 0) {
+////                throw new AssertionError();
+////            }
+////
+////            if(request.getFollowerAlias() == null) {
+////                throw new AssertionError();
+////            }
+////        }
+//
+//        List<User> allFollows;
+//        if (request.getFollower()) {
+//            allFollows = getDummyFollowers();
+//        }
+//        else {
+//            allFollows = getDummyFollowees();
+//        }
+//
+//        List<User> responseFollows = new ArrayList<>(request.getLimit());
+//
+//        boolean hasMorePages = false;
+//
+//        if(request.getLimit() > 0) {
+//            int followIndex = getStartingIndex(request.getLastFolloweeAlias(), allFollows);
+//
+//            for(int limitCounter = 0; followIndex < allFollows.size() && limitCounter < request.getLimit(); followIndex++, limitCounter++) {
+//                responseFollows.add(allFollows.get(followIndex));
+//            }
+//
+//            hasMorePages = followIndex < allFollows.size();
+//        }
+//
+//        return new FollowResponse(responseFollows, hasMorePages);

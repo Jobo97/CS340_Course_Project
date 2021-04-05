@@ -41,7 +41,7 @@ public class PostStatusTask extends AsyncTask<PostStatusRequest, Void, Response>
         try {
             response = presenter.postStatus(postStatusRequests[0]);
 
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

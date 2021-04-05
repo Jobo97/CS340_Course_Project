@@ -14,7 +14,7 @@ public class LogoutServiceProxy {
     private static final String URL_PATH = "/logout";
 
 
-    public Response logout(LogoutRequest request) throws IOException, TweeterRemoteException {
+    public Response logout(LogoutRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         ServerFacade serverFacade = getServerFacade();
         return serverFacade.logout(request, URL_PATH);
         //return serverFacade.logout(request, URL_PATH);

@@ -36,7 +36,7 @@ public class FollowCountTask extends AsyncTask<FollowCountRequest, Void, FollowC
 
         try {
             response = presenter.getFollowCount(followCountRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

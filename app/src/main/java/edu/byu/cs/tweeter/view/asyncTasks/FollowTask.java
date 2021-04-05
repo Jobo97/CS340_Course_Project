@@ -37,7 +37,7 @@ public class FollowTask extends AsyncTask<UserFollowRequest, Void, UserFollowRes
 
         try {
             response = presenter.followStatus(userFollowRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

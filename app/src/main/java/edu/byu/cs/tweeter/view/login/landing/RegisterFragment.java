@@ -143,6 +143,7 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             photo = (Bitmap) data.getExtras().get("data");
+            updateButton();
         }
     }
 
@@ -167,8 +168,9 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
         String s2 = lastname.getText().toString();
         String s3 = username.getText().toString();
         String s4 = password.getText().toString();
+        Bitmap b5 = photo;
 
-        if(s1.equals("") || s2.equals("") || s3.equals("") || s4.equals("")){
+        if(s1.equals("") || s2.equals("") || s3.equals("") || s4.equals("") || (b5 == null)){
             registerButton.setEnabled(false);
         }
         else{

@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade_Old;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class FollowServiceIntegrationTest {
 
     private final User ben = new User("Ben", "Millett", "@benmillett", MALE_IMAGE_URL);
@@ -134,11 +136,12 @@ public class FollowServiceIntegrationTest {
 
     @Test
     public void testGetFollowCount_invalidRequest_returnsNoFollowees() throws IOException, TweeterRemoteException {
-        FollowCountResponse response = followServiceProxy.getFollowCount(invalidFollowCountRequest);
-        boolean areTrue = response.getFolloweeCount() == invalidFollowCountResponse.getFolloweeCount();
-        areTrue = response.getFollowerCount() == invalidFollowCountResponse.getFollowerCount() && areTrue;
-        areTrue = response.isSuccess() == invalidFollowCountResponse.isSuccess() && areTrue;
-        Assertions.assertTrue(areTrue);
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
+            followServiceProxy.getFollowCount(invalidFollowCountRequest);
+        });
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertNull(actualMessage);
     }
 
     @Test
@@ -149,8 +152,12 @@ public class FollowServiceIntegrationTest {
 
     @Test
     public void testCheckFollow_invalidRequest_returnsNoFollowees() throws IOException, TweeterRemoteException {
-        UserFollowResponse response = followServiceProxy.checkFollow(invalidUserFollowRequest);
-        Assertions.assertEquals(invalidUserFollowResponse.isSuccess(), response.isSuccess());
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
+            followServiceProxy.checkFollow(invalidUserFollowRequest);
+        });
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertNull(actualMessage);
     }
 
 }
