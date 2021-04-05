@@ -66,8 +66,8 @@ public class LoginServiceIntegrationTest {
     @Test
     public void testLogin_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
         LoginResponse response = loginServiceProxy.login(invalidRequest);
-        boolean areEqual = response.getUser() == expectedResponse.getUser();
-        areEqual = response.getAuthToken() == expectedResponse.getAuthToken() && areEqual;
+        boolean areEqual = response.getUser() == invalidResponse.getUser();
+        areEqual = response.getAuthToken() == invalidResponse.getAuthToken() && areEqual;
         Assertions.assertTrue(areEqual);
     }
 

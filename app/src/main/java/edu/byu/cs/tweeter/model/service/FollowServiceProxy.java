@@ -38,27 +38,28 @@ public class FollowServiceProxy implements IFollowingService {
      * @return the followees.
      */
     @Override
-     public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException {
+     public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         FollowResponse response = getServerFacade().getFollows(request, URL_PATH_GET_FOLLOWS);
 
-        if(response.isSuccess()) {
+        if(response.isSuccess() && response.getFollows() != null) {
             loadImages(response);
         }
 
         return response;
      }
     @Override
-    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException {
+    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException, RuntimeException{
         UserFollowResponse response = getServerFacade().checkFollows(request, URL_PATH_CHECK_FOLLOW);
+
         return response;
     }
     @Override
-    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException {
+    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException, RuntimeException{
         FollowCountResponse response = getServerFacade().getFollowCount(request, URL_PATH_FOLLOW_COUNT);
         return response;
     }
     @Override
-    public UserFollowResponse followStatus(UserFollowRequest request) throws IOException, TweeterRemoteException{
+    public UserFollowResponse followStatus(UserFollowRequest request) throws IOException, TweeterRemoteException, RuntimeException{
         UserFollowResponse response = getServerFacade().followStatus(request, URL_PATH_FOLLOW_STATUS);
         return response;
     }

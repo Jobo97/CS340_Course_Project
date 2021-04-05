@@ -15,7 +15,7 @@ public class ProfileServiceProxy {
     private static final String URL_PATH = "/profile";
 
 
-    public GetUserResponse getUser(GetUserRequest request) throws IOException, TweeterRemoteException {
+    public GetUserResponse getUser(GetUserRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         GetUserResponse response = getServerFacade().getUser(request, URL_PATH);
         if(response.isSuccess()) {
             loadImages(response);

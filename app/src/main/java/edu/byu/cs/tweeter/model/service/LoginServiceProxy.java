@@ -20,7 +20,7 @@ public class LoginServiceProxy implements ILoginService {
 
     private static final String URL_PATH = "/login";
 
-    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException {
+    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         ServerFacade serverFacade = getServerFacade();
         //LoginResponse loginResponse = serverFacade.login(request, URL_PATH);
 
@@ -32,7 +32,7 @@ public class LoginServiceProxy implements ILoginService {
 
         LoginResponse loginResponse = serverFacade.login(request, URL_PATH);
 
-        if(loginResponse.isSuccess()) {
+        if(loginResponse.isSuccess() && loginResponse.getUser() != null) {
             loadImage(loginResponse.getUser());
         }
 

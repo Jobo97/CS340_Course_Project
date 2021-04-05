@@ -36,7 +36,7 @@ public class CheckFollowTask extends AsyncTask<UserFollowRequest, Void, UserFoll
 
         try {
             response = presenter.checkFollow(checkFollowRequests[0]);
-        } catch (IOException | TweeterRemoteException ex) {
+        } catch (IOException | TweeterRemoteException | RuntimeException ex) {
             exception = ex;
         }
 

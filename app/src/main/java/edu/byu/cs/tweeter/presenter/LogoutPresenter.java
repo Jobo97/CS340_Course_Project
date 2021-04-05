@@ -29,7 +29,7 @@ public class LogoutPresenter {
         this.view = view;
     }
 
-    public Response logout(LogoutRequest request) throws IOException, TweeterRemoteException {
+    public Response logout(LogoutRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         LogoutServiceProxy logoutServiceProxy = getLogoutService();
         return logoutServiceProxy.logout(request);
     }

@@ -46,22 +46,22 @@ public class FollowPresenter {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException {
+    public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         FollowServiceProxy followService = getFollowService();
         return followService.getFollows(request);
     }
 
-    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException {
+    public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         FollowServiceProxy followService = getFollowService();
         return followService.getFollowCount(request);
     }
 
-    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException {
+    public UserFollowResponse checkFollow(UserFollowRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         FollowServiceProxy followService = getFollowService();
         return followService.checkFollow(request);
     }
 
-    public UserFollowResponse followStatus(UserFollowRequest userFollowRequest) throws IOException, TweeterRemoteException {
+    public UserFollowResponse followStatus(UserFollowRequest userFollowRequest) throws IOException, TweeterRemoteException, RuntimeException {
         FollowServiceProxy followService = getFollowService();
         return followService.followStatus(userFollowRequest);
     }

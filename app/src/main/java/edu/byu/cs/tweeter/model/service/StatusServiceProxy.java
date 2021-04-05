@@ -18,7 +18,7 @@ public class StatusServiceProxy {
 
     private static final String URL_PATH = "/statuses";
 
-    public StatusResponse getStatuses(StatusRequest request) throws Exception {
+    public StatusResponse getStatuses(StatusRequest request) throws Exception, RuntimeException {
 
 
         StatusResponse response = getServerFacade().getStatuses(request, URL_PATH);

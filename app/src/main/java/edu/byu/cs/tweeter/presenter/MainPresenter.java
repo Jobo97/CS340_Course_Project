@@ -25,7 +25,7 @@ public class MainPresenter {
     }
 
 
-    public Response postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException {
+    public Response postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         MainServiceProxy mainServiceProxy = getPostStatusServiceProxy();
         return mainServiceProxy.postStatus(request);
     }
