@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FollowDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.service.FollowServiceImpl;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
@@ -23,7 +24,7 @@ public class FollowServiceImplTest {
 
     private FollowRequest request;
     private FollowResponse expectedResponse;
-    private FollowDAOM3 mMockFollowDAOM3;
+    private FollowDAO mMockFollowDAO;
     private FollowServiceImpl followingServiceImplSpy;
 
     private UserFollowRequest userFollowRequest;
@@ -69,8 +70,8 @@ public class FollowServiceImplTest {
         invalidFollowCountResponse = new FollowCountResponse(false, -1, -1);
 
         followingServiceImplSpy = Mockito.spy(FollowServiceImpl.class);
-        mMockFollowDAOM3 = Mockito.mock(FollowDAOM3.class);
-        Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mMockFollowDAOM3);
+        mMockFollowDAO = Mockito.mock(FollowDAO.class);
+        Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mMockFollowDAO);
     }
 
     /**
@@ -79,14 +80,14 @@ public class FollowServiceImplTest {
      */
     @Test
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.getFollows(request)).thenReturn(expectedResponse);
+        Mockito.when(mMockFollowDAO.getFollows(request)).thenReturn(expectedResponse);
         FollowResponse response = followingServiceImplSpy.getFollows(request);
         Assertions.assertEquals(expectedResponse, response);
     }
 
     @Test
     public void testGetFollowees_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.getFollows(invalidRequest)).thenReturn(invalidResponse);
+        Mockito.when(mMockFollowDAO.getFollows(invalidRequest)).thenReturn(invalidResponse);
         FollowResponse response = followingServiceImplSpy.getFollows(invalidRequest);
         Assertions.assertEquals(invalidResponse, response);
     }
@@ -94,14 +95,14 @@ public class FollowServiceImplTest {
 
     @Test
     public void testCheckFollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.checkFollows(userFollowRequest)).thenReturn(userFollowResponse);
+        Mockito.when(mMockFollowDAO.checkFollows(userFollowRequest)).thenReturn(userFollowResponse);
         UserFollowResponse response = followingServiceImplSpy.checkFollow(userFollowRequest);
         Assertions.assertEquals(userFollowResponse, response);
     }
 
     @Test
     public void testCheckFollow_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.checkFollows(invalidUserFollowRequest)).thenReturn(invalidUserFollowResponse);
+        Mockito.when(mMockFollowDAO.checkFollows(invalidUserFollowRequest)).thenReturn(invalidUserFollowResponse);
         UserFollowResponse response = followingServiceImplSpy.checkFollow(invalidUserFollowRequest);
         Assertions.assertEquals(invalidUserFollowResponse, response);
     }
@@ -109,14 +110,14 @@ public class FollowServiceImplTest {
 
     @Test
     public void testGetFollowCount_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.getFollowCount(followCountRequest)).thenReturn(followCountResponse);
+        Mockito.when(mMockFollowDAO.getFollowCount(followCountRequest)).thenReturn(followCountResponse);
         FollowCountResponse response = followingServiceImplSpy.getFollowCount(followCountRequest);
         Assertions.assertEquals(followCountResponse, response);
     }
 
     @Test
     public void testGetFollowCount_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.getFollowCount(invalidFollowCountRequest)).thenReturn(invalidFollowCountResponse);
+        Mockito.when(mMockFollowDAO.getFollowCount(invalidFollowCountRequest)).thenReturn(invalidFollowCountResponse);
         FollowCountResponse response = followingServiceImplSpy.getFollowCount(invalidFollowCountRequest);
         Assertions.assertEquals(invalidFollowCountResponse, response);
     }
@@ -124,14 +125,14 @@ public class FollowServiceImplTest {
 
     @Test
     public void testFollowStatus_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.followStatus(userFollowRequest)).thenReturn(userFollowResponse);
+        Mockito.when(mMockFollowDAO.followStatus(userFollowRequest)).thenReturn(userFollowResponse);
         UserFollowResponse response = followingServiceImplSpy.followStatus(userFollowRequest);
         Assertions.assertEquals(userFollowResponse, response);
     }
 
     @Test
     public void testFollowStatus_invalidRequest_incorrectResponse() throws IOException, TweeterRemoteException {
-        Mockito.when(mMockFollowDAOM3.followStatus(invalidUserFollowRequest)).thenReturn(invalidUserFollowResponse);
+        Mockito.when(mMockFollowDAO.followStatus(invalidUserFollowRequest)).thenReturn(invalidUserFollowResponse);
         UserFollowResponse response = followingServiceImplSpy.followStatus(invalidUserFollowRequest);
         Assertions.assertEquals(invalidUserFollowResponse, response);
     }

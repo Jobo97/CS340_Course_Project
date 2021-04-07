@@ -116,7 +116,8 @@ public class RegisterFragment extends Fragment implements LoginPresenter.View, L
             photo.recycle();
 
             LoginTask task = new LoginTask(presenter, this);
-            task.execute(new LoginRequest(username.getText().toString(), password.getText().toString(),
+            String alias = "@" + username.getText().toString();
+            task.execute(new LoginRequest(alias, password.getText().toString(),
                     firstname.getText().toString(), lastname.getText().toString(), byteArray));
         } catch (IllegalArgumentException e) {
             Log.e("MA exception", e.getMessage(), e);

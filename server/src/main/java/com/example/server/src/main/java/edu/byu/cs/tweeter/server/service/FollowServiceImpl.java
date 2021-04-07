@@ -1,12 +1,12 @@
 package com.example.server.src.main.java.edu.byu.cs.tweeter.server.service;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FollowDAO;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.IFollowingService;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowCountRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.UserFollowRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowCountResponse;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FollowDAOM3;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.UserFollowResponse;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class FollowServiceImpl implements IFollowingService {
         return response;
     }
 
-    public FollowDAOM3 getFollowingDAO() {
-        return new FollowDAOM3();
+    public FollowDAO getFollowingDAO() {
+        return new FollowDAO();
     }
 }

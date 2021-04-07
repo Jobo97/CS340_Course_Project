@@ -75,7 +75,8 @@ public class LoginFragment extends Fragment implements LoginPresenter.View, Logi
     public void onLoginClicked(View view){
         try {
             LoginTask task = new LoginTask(presenter, this);
-            task.execute(new LoginRequest(username.getText().toString(), password.getText().toString()));
+            String alias = "@" + username.getText().toString();
+            task.execute(new LoginRequest(alias, password.getText().toString()));
         } catch (IllegalArgumentException e) {
             Log.e("MA exception", e.getMessage(), e);
         }

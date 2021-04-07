@@ -140,9 +140,13 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
     @Override
     public void followStatus(UserFollowResponse userFollowResponse) {
+        // Updates the Follow table to include or delete a relationship between the user and viewedUser
+
+        // Updates button
         CheckFollowTask checkFollowTask = new CheckFollowTask(presenter,this);
         checkFollowTask.execute(new UserFollowRequest(user.getAlias(),viewedUser.getAlias()));
 
+        // Updates follow count numbers
         FollowCountTask followCountTask = new FollowCountTask(presenter, this);
         followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
     }
