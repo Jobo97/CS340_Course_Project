@@ -56,6 +56,7 @@ public class UserDAO {
             u.setAlias(outcome.getString("user_alias"));
             u.setFirstName(outcome.getString("firstname"));
             u.setLastName(outcome.getString("lastname"));
+            u.setImageUrl(outcome.getString("imageUrl"));
             // s3dao to get image and convert into bytes
             System.out.println("GetItem succeeded: " + outcome);
             return u;
