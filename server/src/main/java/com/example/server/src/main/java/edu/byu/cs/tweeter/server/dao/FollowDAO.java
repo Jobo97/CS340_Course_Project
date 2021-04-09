@@ -122,6 +122,43 @@ public class FollowDAO {
         return follower_count;
     }
 
+    public List<User> getFollowers(String followee_handle) {
+
+        HashMap<String, String> nameMap = new HashMap<String, String>();
+        nameMap.put("#fe", "followee_handle");
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put(":fev", followee_handle);
+        QuerySpec querySpec = new QuerySpec()
+                .withScanIndexForward(false)
+                .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
+                .withValueMap(valueMap);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+//            System.out.println(followee_handle + "'s followers:");
+            items = table.getIndex("follows_index").query(querySpec);
+
+            iterator = items.iterator();
+            while (iterator.hasNext()) {
+                item = iterator.next();
+                User u = uDao.get(item.getString("follower_alias"));
+                users.add(u);
+                System.out.println(item.getString("follower_handle"));
+            }
+            return users;
+        }
+        catch (Exception e) {
+            System.err.println("Unable to query " + followee_handle + "'s followers!");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
     public FollowResponse getFollowersPaginated(String followee_alias, Integer pageSize) {
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#fe", "followee_alias");
