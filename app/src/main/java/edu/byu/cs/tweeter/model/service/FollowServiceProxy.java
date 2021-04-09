@@ -40,7 +40,7 @@ public class FollowServiceProxy implements IFollowingService {
     @Override
      public FollowResponse getFollows(FollowRequest request) throws IOException, TweeterRemoteException, RuntimeException {
         FollowResponse response = getServerFacade().getFollows(request, URL_PATH_GET_FOLLOWS);
-
+        System.out.println(response);
         if(response.isSuccess() && response.getFollows() != null) {
             loadImages(response);
         }
@@ -65,8 +65,15 @@ public class FollowServiceProxy implements IFollowingService {
     }
     public void loadImages(FollowResponse response) throws IOException {
         for(User user : response.getFollows()) {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
+            if (user != null) {
+                byte [] bytes;
+                if (user.getImageUrl() != null) {
+                    bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+                    if (bytes != null) {
+                        user.setImageBytes(bytes);
+                    }
+                }
+            }
         }
     }
 //    @Override
