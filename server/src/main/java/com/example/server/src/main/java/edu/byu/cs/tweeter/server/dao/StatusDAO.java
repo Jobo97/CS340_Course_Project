@@ -191,19 +191,23 @@ public class StatusDAO {
     public boolean putFeed(String alias, String tweet, String timeStampString) {
         // Need to get the list of the followers of the alias
         final Map<String, Object> infoMap = new HashMap<String, Object>();
+        infoMap.put("tweet", tweet);
         //infoMap.put("imageEncoded", followee_name);
 
         try {
-//            //List<User> followers = followDAO.getFollowers();     // We don't want it to be paginated
-//            for (User user : followers) {
-//                infoMap.put("tweet", tweet);
-//                infoMap.put("tweet_user_alias", alias);
-//                // user.getAlias() is the person who will see it, alias is the person who tweeted it
-//                PutItemOutcome outcome = feedTable
-//                        .putItem(new Item()
-//                                .withPrimaryKey("user_alias", user.getAlias(), "timestamp", timeStampString)
-//                                .withMap("info", infoMap));
-//            }
+            List<User> followers = followDAO.getFollowers(alias);     // We don't want it to be paginated
+            if(followers == null){
+                return false;
+            }
+            for (User user : followers) {
+                infoMap.put("tweet", tweet);
+                infoMap.put("tweet_user_alias", alias);
+                // user.getAlias() is the person who will see it, alias is the person who tweeted it
+                PutItemOutcome outcome = feedTable
+                        .putItem(new Item()
+                                .withPrimaryKey("user_alias", user.getAlias(), "timestamp", timeStampString)
+                                .withMap("info", infoMap));
+            }
         } catch(Exception e) {
             System.err.println("Unable to add tweet to feed: " + tweet);
             return false;
