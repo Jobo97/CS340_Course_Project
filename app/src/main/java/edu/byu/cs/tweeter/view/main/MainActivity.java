@@ -23,6 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import edu.byu.cs.tweeter.R;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -135,7 +141,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     public void postStatus(String tweet) {
         PostStatusTask postStatusTask = new PostStatusTask(mainPresenter, this);
-        PostStatusRequest postStatusRequest = new PostStatusRequest(tweet, this.user.getAlias());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        try{
+            date = dateFormat.parse(String.valueOf(System.currentTimeMillis()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Timestamp timestamp = new Timestamp(date.getTime());
+        PostStatusRequest postStatusRequest = new PostStatusRequest(tweet, this.user.getAlias(), timestamp.toString());
         postStatusTask.execute(postStatusRequest);
     }
 

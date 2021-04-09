@@ -1,5 +1,11 @@
 package com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
@@ -14,7 +20,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StatusDAO {
 
@@ -79,6 +87,23 @@ public class StatusDAO {
     private Status status18 = new Status("Tweet from 18. @benmillett @carterwonnacott www.apple.com www.linked.com",
             michael,(new Timestamp(time2)).toString());
 
+
+    private final String TABLE_FOLLOWS = "follows";
+    private final String TABLE_STORY = "story";
+    private final String TABLE_FEED = "feed";
+
+    AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withRegion("us-west-2")
+            .build();
+
+    private DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+    private Table followsTable = dynamoDB.getTable("follows");
+    private Table storyTable = dynamoDB.getTable("story");
+    private Table feedTable = dynamoDB.getTable("feed");
+    private UserDAO uDao = new UserDAO();
+    private FollowDAO followDAO = new FollowDAO();
+
     public StatusResponse getStatuses(StatusRequest request) {
         List<Status> statuses;
         if (request.getStory()) {
@@ -140,5 +165,49 @@ public class StatusDAO {
 
     List<Status> getDummyStory() {
         return Arrays.asList(status3,status4,status6,status8,status9,status10,status11,status12,status13);
+    }
+
+    public boolean putStory(String alias, String tweet, String timeStampString) {
+        // NEEDS TIMESTAMP AS SORT KEY
+        // When typing the tweet and post tweet is pressed, we need to make a timestamp and
+        // include that timestamp in the PostStatusRequest, that way it is stored in the
+        final Map<String, Object> infoMap = new HashMap<String, Object>();
+        infoMap.put("tweet", tweet);
+        //infoMap.put("imageEncoded", followee_name);
+
+        try {
+            PutItemOutcome outcome = storyTable
+                    .putItem(new Item()
+                            .withPrimaryKey("user_alias", alias, "timestamp", timeStampString)
+                            .withMap("info", infoMap));
+        } catch(Exception e) {
+            System.err.println("Unable to add tweet to story: " + tweet);
+            return false;
+        }
+        return true;
+
+    }
+
+    public boolean putFeed(String alias, String tweet, String timeStampString) {
+        // Need to get the list of the followers of the alias
+        final Map<String, Object> infoMap = new HashMap<String, Object>();
+        //infoMap.put("imageEncoded", followee_name);
+
+        try {
+//            //List<User> followers = followDAO.getFollowers();     // We don't want it to be paginated
+//            for (User user : followers) {
+//                infoMap.put("tweet", tweet);
+//                infoMap.put("tweet_user_alias", alias);
+//                // user.getAlias() is the person who will see it, alias is the person who tweeted it
+//                PutItemOutcome outcome = feedTable
+//                        .putItem(new Item()
+//                                .withPrimaryKey("user_alias", user.getAlias(), "timestamp", timeStampString)
+//                                .withMap("info", infoMap));
+//            }
+        } catch(Exception e) {
+            System.err.println("Unable to add tweet to feed: " + tweet);
+            return false;
+        }
+        return true;
     }
 }
