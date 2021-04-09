@@ -74,9 +74,9 @@ public class FollowDAO {
         nameMap.put("#fr", "follower_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put("#frv", alias);
+        valueMap.put(":frv", alias);
 
-        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
                 .withValueMap(valueMap);
 
         ItemCollection<QueryOutcome> items = null;
@@ -102,9 +102,9 @@ public class FollowDAO {
         nameMap.put("#fe", "followee_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put("#fev", alias);
+        valueMap.put(":fev", alias);
 
-        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+        QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
                 .withValueMap(valueMap);
 
         ItemCollection<QueryOutcome> items = null;
@@ -127,10 +127,10 @@ public class FollowDAO {
         nameMap.put("#fe", "followee_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put("#fev", followee_alias);
+        valueMap.put(":fev", followee_alias);
         QuerySpec querySpec = new QuerySpec()
                 .withScanIndexForward(false)
-                .withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+                .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
 
@@ -148,7 +148,7 @@ public class FollowDAO {
                 System.out.println("additional page");
                 querySpec = new QuerySpec()
                         .withScanIndexForward(false)
-                        .withKeyConditionExpression("#fe = #fev").withNameMap(nameMap)
+                        .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
                         .withValueMap(valueMap)
                         .withMaxResultSize(pageSize)
                         .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
@@ -159,7 +159,7 @@ public class FollowDAO {
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
-                User u = uDao.get(item.getString("user_alias"));
+                User u = uDao.get(item.getString("follower_alias"));
                 users.add(u);
             }
 
@@ -177,10 +177,10 @@ public class FollowDAO {
         nameMap.put("#fr", "follower_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put("#frv", follower_alias);
+        valueMap.put(":frv", follower_alias);
         QuerySpec querySpec = new QuerySpec()
                 .withScanIndexForward(true)
-                .withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+                .withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
 
@@ -198,7 +198,7 @@ public class FollowDAO {
                 System.out.println("additional page");
                 querySpec = new QuerySpec()
                         .withScanIndexForward(true)
-                        .withKeyConditionExpression("#fr = #frv").withNameMap(nameMap)
+                        .withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
                         .withValueMap(valueMap)
                         .withMaxResultSize(pageSize)
                         .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
@@ -208,7 +208,7 @@ public class FollowDAO {
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
-                User u = uDao.get(item.getString("user_alias"));
+                User u = uDao.get(item.getString("followee_alias"));
                 users.add(u);
             }
 

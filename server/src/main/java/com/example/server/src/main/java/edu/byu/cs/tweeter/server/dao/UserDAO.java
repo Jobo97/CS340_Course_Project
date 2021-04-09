@@ -48,16 +48,19 @@ public class UserDAO {
     }
 
     public User get(String userAlias) {
+        System.out.println(userAlias);
         GetItemSpec spec = new GetItemSpec().withPrimaryKey("user_alias", userAlias);
         try {
             System.out.println("Attempting to read the item...");
             Item outcome = table.getItem(spec);
             User u = new User();
             u.setAlias(outcome.getString("user_alias"));
-            u.setFirstName(outcome.getString("firstname"));
-            u.setLastName(outcome.getString("lastname"));
+            u.setFirstName(outcome.getString("firstName"));
+            u.setLastName(outcome.getString("lastName"));
             // s3dao to get image and convert into bytes
+            u.setImageUrl(outcome.getString("imageUrl"));
             System.out.println("GetItem succeeded: " + outcome);
+            System.out.println(u.toString());
             return u;
         }
         catch (Exception e) {
