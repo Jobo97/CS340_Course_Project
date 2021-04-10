@@ -1,8 +1,8 @@
 package com.example.server.src.test.java.edu.byu.cs.tweeter.server.service;
 
-import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.StatusDAO;
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FeedDAO;
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.StoryDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.service.StatusServiceImpl;
-import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.Status;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.StatusRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
@@ -17,7 +17,8 @@ public class StatusServiceImplTest {
 
     private StatusRequest statusRequest;
     private StatusResponse statusResponse;
-    private StatusDAO statusDAO;
+    private StoryDAO storyDAO;
+    private FeedDAO feedDAO;
     private StatusServiceImpl statusService;
     private StatusRequest invalidRequest;
     private StatusResponse invalidResponse;
@@ -28,21 +29,23 @@ public class StatusServiceImplTest {
         statusResponse = new StatusResponse("message");
         invalidRequest = new StatusRequest(null, -1, null, false);
         invalidResponse = new StatusResponse("failed message");
-        statusDAO = Mockito.mock(StatusDAO.class);
+        storyDAO = Mockito.mock(StoryDAO.class);
+        feedDAO = Mockito.mock(FeedDAO.class);
         statusService = Mockito.spy(StatusServiceImpl.class);
-        Mockito.when(statusService.getStatusDAO()).thenReturn(statusDAO);
+        Mockito.when(statusService.getStoryDAO()).thenReturn(storyDAO);
+        Mockito.when(statusService.getFeedDAO()).thenReturn(feedDAO);
     }
 
     @Test
     public void testGetStatuses_validRequest_correctResponse() throws IOException {
-        Mockito.when(statusDAO.getStatuses(statusRequest)).thenReturn(statusResponse);
+        Mockito.when(storyDAO.getStoryPaginated(statusRequest.getUserAlias(), statusRequest.getLimit())).thenReturn(statusResponse);
         StatusResponse response = statusService.getStatuses(statusRequest);
         Assertions.assertEquals(response, statusResponse);
     }
 
     @Test
     public void testGetStatuses_invalidRequest_incorrectResponse() throws IOException {
-        Mockito.when(statusDAO.getStatuses(invalidRequest)).thenReturn(invalidResponse);
+        Mockito.when(storyDAO.getStoryPaginated(invalidRequest.getUserAlias(), invalidRequest.getLimit())).thenReturn(invalidResponse);
         StatusResponse response = statusService.getStatuses(invalidRequest);
         Assertions.assertEquals(response, invalidResponse);
     }
