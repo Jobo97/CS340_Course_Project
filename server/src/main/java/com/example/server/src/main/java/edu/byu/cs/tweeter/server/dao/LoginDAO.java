@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
@@ -62,7 +64,10 @@ public class LoginDAO {
 //            outcome = table.putItem(new Item()
 //                    .withPrimaryKey("user_alias", request.getUsername())
 //                    .withMap("info", infoMap));
-            outcome = table.putItem(item);
+            PutItemSpec putItemSpec = new PutItemSpec()
+                    .withItem(item)
+                    .withReturnValues(ReturnValue.ALL_OLD);
+            outcome = table.putItem(putItemSpec);
         } catch (Exception e) {
             System.out.println("AuthToken registration failed.");
             e.printStackTrace();
@@ -72,6 +77,7 @@ public class LoginDAO {
         user = userDAO.get(request.getUsername());
 
         // item probably null here
+        System.out.println(outcome);
         Item item = outcome.getItem();
 
         String authToken = item.getString("authtoken");
