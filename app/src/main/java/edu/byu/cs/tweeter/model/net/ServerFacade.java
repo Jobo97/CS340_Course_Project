@@ -43,6 +43,7 @@ public class ServerFacade {
         if(response.isSuccess()) {
             return response;
         } else {
+            System.out.println(response);
             throw new RuntimeException(response.getMessage());
         }
     }

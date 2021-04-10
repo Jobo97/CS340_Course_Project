@@ -22,9 +22,9 @@ public class MainServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        postStatusRequest = new PostStatusRequest("tweet", "alias");
+        postStatusRequest = new PostStatusRequest("tweet", "alias", "time");
         response = new Response(true);
-        invalidRequest = new PostStatusRequest(null, null);
+        invalidRequest = new PostStatusRequest(null, null, null);
         invalidResponse = new Response(false);
         mainDAO = Mockito.mock(MainDAO.class);
         mainService = Mockito.spy(MainServiceImpl.class);
