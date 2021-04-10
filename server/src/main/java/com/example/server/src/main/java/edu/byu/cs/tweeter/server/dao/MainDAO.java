@@ -9,29 +9,26 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
 
+import java.util.List;
+
 public class MainDAO {
 
-    private StatusDAO statusDAO = new StatusDAO();
+    private StoryDAO storyDAO = new StoryDAO();
+    private FollowDAO followDAO = new FollowDAO();
 
     // When I post a tweet, it needs to be added to the Story table in relation to me
     // Then needs to be placed in the feeds table in relation to all of my followers
     // To do the feeds table, I'll need to get all of my followers from follow DAO
-    public Response postStatus(PostStatusRequest request) {
+    public List<User> postStatus(PostStatusRequest request) {
 
         try {
-            boolean addedToStory = statusDAO.putStory(request.getAlias(), request.getTweet(), request.getTimeStampString());
-            boolean addedToFeed = statusDAO.putFeed(request.getAlias(), request.getTweet(), request.getTimeStampString());
-            if(addedToFeed && addedToStory){
-                return new Response(true, "Tweet successfully added to story/feeds");
-            }
-            else {
-                return new Response(false, "Unable to post Tweet");
-            }
+            boolean addedToStory = storyDAO.putStory(request.getAlias(), request.getTweet(), request.getTimeStampString());
+            return followDAO.getFollowers(request.getAlias());
         }
         catch (Exception e) {
             System.err.println("Unable to post " + request.getAlias() + "'s tweet due to a connection error");
             System.err.println(e.getMessage());
-            return new Response(false, "Connection error");
+            return null;
         }
 
         //would add the tweet to the data base
