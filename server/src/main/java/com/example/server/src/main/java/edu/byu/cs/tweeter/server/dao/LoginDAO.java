@@ -34,6 +34,7 @@ public class LoginDAO {
     private UserDAO userDAO = new UserDAO();
 
     public LoginResponse login(LoginRequest request) {
+        System.out.println(request);
         User user;
         if (request.getRegistered()) {
             if (!userDAO.put(request)) return new LoginResponse("Register failed.");
@@ -41,18 +42,27 @@ public class LoginDAO {
         else {
             //check username/password match
             Item item = userTable.getItem("user_alias", request.getUsername());
-            if (request.getPassword() != item.getString("password"))
+            if (item != null) {
+                if (!(request.getPassword().equals(item.getString("password"))))
+                    return new LoginResponse("Login failed.");
+            }
+            else {
                 return new LoginResponse("Login failed.");
+            }
         }
 
         PutItemOutcome outcome;
         try {
             //add authToken
-            Map<String, Object> infoMap = new HashMap<>();
-            infoMap.put("authtoken", generateAuthToken(request.getUsername()));
-            outcome = table.putItem(new Item()
-                    .withPrimaryKey("user_alias", request.getUsername())
-                    .withMap("info", infoMap));
+//            Map<String, Object> infoMap = new HashMap<>();
+            Item item = new Item();
+            item.withPrimaryKey("user_alias", request.getUsername())
+                    .withString("authtoken", generateAuthToken(request.getPassword()).getAuthToken());
+//            infoMap.put("authtoken", (generateAuthToken(request.getPassword())).getAuthToken());
+//            outcome = table.putItem(new Item()
+//                    .withPrimaryKey("user_alias", request.getUsername())
+//                    .withMap("info", infoMap));
+            outcome = table.putItem(item);
         } catch (Exception e) {
             System.out.println("AuthToken registration failed.");
             e.printStackTrace();
@@ -60,12 +70,17 @@ public class LoginDAO {
         }
 
         user = userDAO.get(request.getUsername());
+
+        // item probably null here
         Item item = outcome.getItem();
-        AuthToken authToken = (AuthToken) item.get("authtoken");
-        return new LoginResponse(user, authToken);
+
+        String authToken = item.getString("authtoken");
+        AuthToken a = new AuthToken();
+        a.setAuthToken(authToken);
+        return new LoginResponse(user, a);
     }
 
-    private AuthToken generateAuthToken(String username) {
-        return new AuthToken(Integer.toString(username.hashCode()));
+    private AuthToken generateAuthToken(String password) {
+        return new AuthToken(Integer.toString(password.hashCode()));
     }
 }
