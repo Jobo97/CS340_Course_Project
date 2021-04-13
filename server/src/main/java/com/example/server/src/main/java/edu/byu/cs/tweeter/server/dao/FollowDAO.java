@@ -125,7 +125,7 @@ public class FollowDAO {
     public List<User> getFollowers(String followee_handle) {
 
         HashMap<String, String> nameMap = new HashMap<String, String>();
-        nameMap.put("#fe", "followee_handle");
+        nameMap.put("#fe", "followee_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(":fev", followee_handle);
@@ -141,14 +141,14 @@ public class FollowDAO {
 
         try {
 //            System.out.println(followee_handle + "'s followers:");
-            items = table.getIndex("follows_index").query(querySpec);
+            items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
 
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
                 User u = uDao.get(item.getString("follower_alias"));
                 users.add(u);
-                System.out.println(item.getString("follower_handle"));
+                System.out.println(item.getString("follower_alias"));
             }
             return users;
         }
@@ -159,45 +159,60 @@ public class FollowDAO {
         return null;
     }
 
-    public FollowResponse getFollowersPaginated(String followee_alias, Integer pageSize) {
+    public FollowResponse getFollowersPaginated(String followee_alias, Integer pageSize, String lastFollowerAlias) {
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#fe", "followee_alias");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(":fev", followee_alias);
+
+        boolean hasMorePages = false;
         QuerySpec querySpec = new QuerySpec()
                 .withScanIndexForward(false)
                 .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
+        if(lastFollowerAlias != null){       // Primary and the sort key
+//            querySpec.withExclusiveStartKey("follower_alias", lastFollowerAlias,
+//                    "followee_alias", followee_alias);
+            querySpec.withExclusiveStartKey("followee_alias", followee_alias,
+                    "follower_alias", lastFollowerAlias);
+        }
 
         ItemCollection<QueryOutcome> items = null;
         Iterator<Item> iterator = null;
         Item item = null;
         List<User> users = new ArrayList<>();
-        boolean hasMorePages = false;
+        //check for the last low level result
+        //.withExclusiveStartKey( (KeyAttribute) lastFollowerAlias)
 
         try {
             System.out.println(followee_alias + "'s followers:");
             items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
-            while(items.getLastLowLevelResult() != null){
-                hasMorePages = true;
-                System.out.println("additional page");
-                querySpec = new QuerySpec()
-                        .withScanIndexForward(false)
-                        .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
-                        .withValueMap(valueMap)
-                        .withMaxResultSize(pageSize)
-                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
-                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+            System.out.println("Last Low level");
+            System.out.println(items.getLastLowLevelResult());
 
-            }
-
+//            while(items.getLastLowLevelResult() != null){
+//                hasMorePages = true;
+//                System.out.println("additional page");
+//                querySpec = new QuerySpec()
+//                        .withScanIndexForward(false)
+//                        .withKeyConditionExpression("#fe = :fev").withNameMap(nameMap)
+//                        .withValueMap(valueMap)
+//                        .withMaxResultSize(pageSize)
+//                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+//                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+//
+//            }
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
                 User u = uDao.get(item.getString("follower_alias"));
                 users.add(u);
+            }
+            if(users.size() == pageSize){
+                System.out.println("Has more pages set to True on line 214");
+                hasMorePages = true;
             }
 
         }
@@ -206,10 +221,10 @@ public class FollowDAO {
             System.err.println(e.getMessage());
             return new FollowResponse(null, false);
         }
-        return new FollowResponse(users,hasMorePages);
+        return new FollowResponse(users, hasMorePages);
     }
 
-    public FollowResponse getFolloweesPaginated(String follower_alias, Integer pageSize) {
+    public FollowResponse getFolloweesPaginated(String follower_alias, Integer pageSize, String lastFolloweeAlias) {
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#fr", "follower_alias");
 
@@ -220,6 +235,10 @@ public class FollowDAO {
                 .withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
+        if(lastFolloweeAlias != null){       // Primary and the sort key
+            querySpec.withExclusiveStartKey("follower_alias", follower_alias,
+                    "followee_alias", lastFolloweeAlias);
+        }
 
         ItemCollection<QueryOutcome> items = null;
         Iterator<Item> iterator = null;
@@ -230,23 +249,33 @@ public class FollowDAO {
         try {
             System.out.println(follower_alias + "'s followees:");
             items = table.query(querySpec);
-            while(items.getLastLowLevelResult() != null){
+            System.out.println("Last Low level");
+            System.out.println(items.getLastLowLevelResult());
+            if(items.getLastLowLevelResult() != null){
+                System.out.println("Has more pages set to True on line 255");
                 hasMorePages = true;
-                System.out.println("additional page");
-                querySpec = new QuerySpec()
-                        .withScanIndexForward(true)
-                        .withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
-                        .withValueMap(valueMap)
-                        .withMaxResultSize(pageSize)
-                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
-                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
             }
+//            while(items.getLastLowLevelResult() != null){
+//                hasMorePages = true;
+//                System.out.println("additional page");
+//                querySpec = new QuerySpec()
+//                        .withScanIndexForward(true)
+//                        .withKeyConditionExpression("#fr = :frv").withNameMap(nameMap)
+//                        .withValueMap(valueMap)
+//                        .withMaxResultSize(pageSize)
+//                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+//                items = table.getIndex("followee_alias-follower_alias-index").query(querySpec);
+//            }
 
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
                 User u = uDao.get(item.getString("followee_alias"));
                 users.add(u);
+            }
+            if(users.size() == pageSize){
+                System.out.println("Has more pages set to True on line 277");
+                hasMorePages = true;
             }
 
         }
@@ -265,10 +294,12 @@ public class FollowDAO {
             return new FollowResponse(null, false);
         }
         if (request.getFollower()) {
-            return getFollowersPaginated(request.getFollowerAlias(), request.getLimit());
+            return getFollowersPaginated(request.getFollowerAlias(), request.getLimit(),
+                    request.getLastFolloweeAlias());
         }
         else {
-            return getFolloweesPaginated(request.getFollowerAlias(), request.getLimit());
+            return getFolloweesPaginated(request.getFollowerAlias(), request.getLimit(),
+                    request.getLastFolloweeAlias());
         }
 //
 //        List<User> responseFollows = new ArrayList<>(request.getLimit());

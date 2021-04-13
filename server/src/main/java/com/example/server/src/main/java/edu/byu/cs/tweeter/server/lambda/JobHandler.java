@@ -18,10 +18,16 @@ public class JobHandler implements RequestHandler<SQSEvent,Void> {
         for (SQSEvent.SQSMessage msg : sqsEvent.getRecords()) {
             PostStatusFeedRequest postStatusFeedRequest = new PostStatusFeedRequest();
             Map<String, SQSEvent.MessageAttribute> map = msg.getMessageAttributes();
-            postStatusFeedRequest.setAlias(map.get("userAlias").getStringValue());
+
+            //Check for deserializing errors here
+
+            postStatusFeedRequest.setAlias(map.get("followerAlias").getStringValue());
             postStatusFeedRequest.setTweet_alias(map.get("tweet_userAlias").getStringValue());
             postStatusFeedRequest.setTweet(map.get("tweet").getStringValue());
             postStatusFeedRequest.setTimeStampString(map.get("timeStampString").getStringValue());
+
+            System.out.println("JobHandler request info");
+            System.out.println(postStatusFeedRequest.toString());
 
             StatusServiceImpl service = new StatusServiceImpl();
             service.postStatusFeed(postStatusFeedRequest);
