@@ -5,9 +5,10 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface IStatusService {
     StatusResponse getStatuses(StatusRequest request) throws IOException;
 
-    boolean postStatusFeed(PostStatusFeedRequest postStatusFeedRequest);
+    boolean postStatusFeed(List<PostStatusFeedRequest> postStatusFeedRequest);
 }

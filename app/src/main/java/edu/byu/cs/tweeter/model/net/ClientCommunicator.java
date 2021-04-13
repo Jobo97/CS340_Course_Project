@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.model.net;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.JsonSerializer;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 
 import java.io.BufferedReader;

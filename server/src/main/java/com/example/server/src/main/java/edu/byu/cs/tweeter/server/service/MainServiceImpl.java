@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MainServiceImpl implements IMainService {
     @Override
-    public List<User> postStatus(PostStatusRequest request) {
+    public List<String> postStatus(PostStatusRequest request) {
         return getMainDAO().postStatus(request);
     }
 
