@@ -8,6 +8,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public class StatusServiceImpl implements IStatusService {
     @Override
@@ -24,7 +25,7 @@ public class StatusServiceImpl implements IStatusService {
     }
 
     @Override
-    public boolean postStatusFeed(PostStatusFeedRequest postStatusFeedRequest) {
+    public boolean postStatusFeed(List<PostStatusFeedRequest> postStatusFeedRequest) {
         return getFeedDAO().putFeed(postStatusFeedRequest);
     }
 

@@ -19,7 +19,7 @@ public class MainDAO {
     // When I post a tweet, it needs to be added to the Story table in relation to me
     // Then needs to be placed in the feeds table in relation to all of my followers
     // To do the feeds table, I'll need to get all of my followers from follow DAO
-    public List<User> postStatus(PostStatusRequest request) {
+    public List<String> postStatus(PostStatusRequest request) {
 
         try {
             boolean addedToStory = storyDAO.putStory(request.getAlias(), request.getTweet(), request.getTimeStampString());

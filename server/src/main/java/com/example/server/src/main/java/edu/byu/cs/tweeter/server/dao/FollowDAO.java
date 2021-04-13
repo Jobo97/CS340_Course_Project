@@ -122,7 +122,7 @@ public class FollowDAO {
         return follower_count;
     }
 
-    public List<User> getFollowers(String followee_handle) {
+    public List<String> getFollowers(String followee_handle) {
 
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#fe", "followee_alias");
@@ -137,7 +137,7 @@ public class FollowDAO {
         ItemCollection<QueryOutcome> items = null;
         Iterator<Item> iterator = null;
         Item item = null;
-        List<User> users = new ArrayList<>();
+        List<String> user_aliases = new ArrayList<>();
 
         try {
 //            System.out.println(followee_handle + "'s followers:");
@@ -146,11 +146,13 @@ public class FollowDAO {
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
-                User u = uDao.get(item.getString("follower_alias"));
-                users.add(u);
+                String s = item.getString("follower_alias");
+
+                //Just send back the user_alias
+                user_aliases.add(s);
                 System.out.println(item.getString("follower_alias"));
             }
-            return users;
+            return user_aliases;
         }
         catch (Exception e) {
             System.err.println("Unable to query " + followee_handle + "'s followers!");
