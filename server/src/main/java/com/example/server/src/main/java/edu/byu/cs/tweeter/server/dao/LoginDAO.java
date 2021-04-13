@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
@@ -43,13 +44,20 @@ public class LoginDAO {
         }
         else {
             //check username/password match
+            //GetItemSpec
             Item item = userTable.getItem("user_alias", request.getUsername());
             if (item != null) {
-                if (!(request.getPassword().equals(item.getString("password"))))
-                    return new LoginResponse("Login failed.");
+                System.out.println("PASSWORD STUFF");
+                System.out.println(request.getPassword());
+                System.out.println(item.getString("password"));
+                if (!(request.getPassword().equals(item.getString("password")))) {
+                    System.out.println("broke on line 54");
+                    return new LoginResponse("Login failed on line 55.");
+                }
             }
             else {
-                return new LoginResponse("Login failed.");
+                System.out.println("broke on line 59");
+                return new LoginResponse("Login failed on line 59.");
             }
         }
 
@@ -57,7 +65,9 @@ public class LoginDAO {
         try {
             //add authToken
 //            Map<String, Object> infoMap = new HashMap<>();
+            System.out.println("Reaches 68");
             Item item = new Item();
+            // Create some sort of timestamp an place it into the table
             item.withPrimaryKey("user_alias", request.getUsername())
                     .withString("authtoken", generateAuthToken(request.getPassword()).getAuthToken());
 //            infoMap.put("authtoken", (generateAuthToken(request.getPassword())).getAuthToken());
@@ -67,22 +77,31 @@ public class LoginDAO {
             PutItemSpec putItemSpec = new PutItemSpec()
                     .withItem(item)
                     .withReturnValues(ReturnValue.ALL_OLD);
+            System.out.println("Reaches 79");
             outcome = table.putItem(putItemSpec);
         } catch (Exception e) {
             System.out.println("AuthToken registration failed.");
             e.printStackTrace();
-            return new LoginResponse("Login failed.");
+            System.out.println("broke on line 75");
+            return new LoginResponse("Login failed on line 84.");
         }
-
+        System.out.println("Reaches 87");
         user = userDAO.get(request.getUsername());
 
         // item probably null here
         System.out.println(outcome);
         Item item = outcome.getItem();
 
+        System.out.println("ITEM INFO FROM USER TABLE");
+        System.out.println(item.getString("authtoken"));
+        System.out.println(user.getAlias());
+
         String authToken = item.getString("authtoken");
         AuthToken a = new AuthToken();
         a.setAuthToken(authToken);
+
+        // Create some sort of timestamp an place it into the table
+
         return new LoginResponse(user, a);
     }
 

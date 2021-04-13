@@ -25,7 +25,7 @@ public class StatusServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        statusRequest = new StatusRequest("alias", 10, "status", true);
+        statusRequest = new StatusRequest("alias", 10, "timestamp", true);
         statusResponse = new StatusResponse("message");
         invalidRequest = new StatusRequest(null, -1, null, false);
         invalidResponse = new StatusResponse("failed message");
@@ -38,14 +38,14 @@ public class StatusServiceImplTest {
 
     @Test
     public void testGetStatuses_validRequest_correctResponse() throws IOException {
-        Mockito.when(storyDAO.getStoryPaginated(statusRequest.getUserAlias(), statusRequest.getLimit())).thenReturn(statusResponse);
+        Mockito.when(storyDAO.getStoryPaginated(statusRequest.getUserAlias(), statusRequest.getLimit(), statusRequest.getLastTimeStamp())).thenReturn(statusResponse);
         StatusResponse response = statusService.getStatuses(statusRequest);
         Assertions.assertEquals(response, statusResponse);
     }
 
     @Test
     public void testGetStatuses_invalidRequest_incorrectResponse() throws IOException {
-        Mockito.when(storyDAO.getStoryPaginated(invalidRequest.getUserAlias(), invalidRequest.getLimit())).thenReturn(invalidResponse);
+        Mockito.when(storyDAO.getStoryPaginated(invalidRequest.getUserAlias(), invalidRequest.getLimit(), statusRequest.getLastTimeStamp())).thenReturn(invalidResponse);
         StatusResponse response = statusService.getStatuses(invalidRequest);
         Assertions.assertEquals(response, invalidResponse);
     }

@@ -141,15 +141,16 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     public void postStatus(String tweet) {
         PostStatusTask postStatusTask = new PostStatusTask(mainPresenter, this);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
         Date date = new Date(System.currentTimeMillis());
         try{
-            date = dateFormat.parse(String.valueOf(System.currentTimeMillis()));
+            date = dateFormat.parse(date.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
         Timestamp timestamp = new Timestamp(date.getTime());
-        PostStatusRequest postStatusRequest = new PostStatusRequest(tweet, this.user.getAlias(), timestamp.toString());
+        PostStatusRequest postStatusRequest = new PostStatusRequest(tweet,
+                this.user.getAlias(), timestamp.toString());
         postStatusTask.execute(postStatusRequest);
     }
 

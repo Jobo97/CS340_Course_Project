@@ -3,22 +3,22 @@ package com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.reques
 public class StatusRequest {
     private String userAlias;
     private int limit;
-    private String lastStatus;
+    private String lastTimeStamp;
     private boolean story;
 
 
-    public StatusRequest(String userAlias, int limit, String lastStatus, boolean story) {
+    public StatusRequest(String userAlias, int limit, String lastTimeStamp, boolean story) {
         this.userAlias = userAlias;
         this.limit = limit;
-        this.lastStatus = lastStatus;
+        this.lastTimeStamp = lastTimeStamp;
         this.story = story;
     }
 
     public StatusRequest() {
     }
 
-    public String getLastStatus() {
-        return lastStatus;
+    public String getLastTimeStamp() {
+        return lastTimeStamp;
     }
 
     public String getUserAlias() {
@@ -41,8 +41,8 @@ public class StatusRequest {
         this.limit = limit;
     }
 
-    public void setLastStatus(String lastStatus) {
-        this.lastStatus = lastStatus;
+    public void setLastTimeStamp(String lastStatus) {
+        this.lastTimeStamp = lastStatus;
     }
 
     public void setStory(boolean story) {

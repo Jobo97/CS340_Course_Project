@@ -16,10 +16,10 @@ public class StatusServiceImpl implements IStatusService {
             return new StatusResponse(null, false);
         }
         if(request.getStory()){
-            return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit());
+            return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
         }
         else{
-            return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit());
+            return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
         }
     }
 

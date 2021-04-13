@@ -34,7 +34,7 @@ public class FeedDAO {
     private Table feedTable = dynamoDB.getTable(TABLE_FEED);
     private UserDAO uDao = new UserDAO();
 
-    public StatusResponse getFeedPaginated(String userAlias, int pageSize) {
+    public StatusResponse getFeedPaginated(String userAlias, int pageSize, String lastTimestamp) {
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#ua", "user_alias");
 
@@ -45,6 +45,10 @@ public class FeedDAO {
                 .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
+        if(lastTimestamp != null){       // Primary and the sort key
+            querySpec.withExclusiveStartKey("user_alias", userAlias,
+                    "timestamp", lastTimestamp);
+        }
 
         ItemCollection<QueryOutcome> items = null;
         Iterator<Item> iterator = null;
@@ -54,17 +58,17 @@ public class FeedDAO {
 
         try {
             items = feedTable.query(querySpec);
-            while(items.getLastLowLevelResult() != null){
-                hasMorePages = true;
-                System.out.println("additional page");
-                querySpec = new QuerySpec()
-                        .withScanIndexForward(false)
-                        .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
-                        .withValueMap(valueMap)
-                        .withMaxResultSize(pageSize)
-                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
-                items = feedTable.query(querySpec);
-            }
+//            while(items.getLastLowLevelResult() != null){
+//                hasMorePages = true;
+//                System.out.println("additional page");
+//                querySpec = new QuerySpec()
+//                        .withScanIndexForward(false)
+//                        .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
+//                        .withValueMap(valueMap)
+//                        .withMaxResultSize(pageSize)
+//                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+//                items = feedTable.query(querySpec);
+//            }
 
             iterator = items.iterator();
             while (iterator.hasNext()) {
@@ -72,6 +76,9 @@ public class FeedDAO {
                 User u = uDao.get(item.getString("tweet_user_alias"));              //Review this.
                 Status s = new Status(item.getString("tweet"), u, item.getString("timestamp"));
                 statuses.add(s);
+            }
+            if(statuses.size() == pageSize){
+                hasMorePages = true;
             }
 
         }
@@ -84,6 +91,8 @@ public class FeedDAO {
     }
 
     public boolean putFeed(PostStatusFeedRequest postStatusFeedRequest) {
+        System.out.println("putFeed function in FeedDAO");
+        System.out.println(postStatusFeedRequest.toString());
         try {
             // user.getAlias() is the person who will see it, alias is the person who tweeted it
             PutItemOutcome outcome = feedTable

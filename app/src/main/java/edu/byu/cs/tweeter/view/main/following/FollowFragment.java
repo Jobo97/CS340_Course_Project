@@ -295,6 +295,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         void loadMoreItems() {
             isLoading = true;
             addLoadingFooter();
+            System.out.println("scroll was registered");
 
             GetFollowingTask getFollowingTask = new GetFollowingTask(presenter, this);
             FollowRequest request = new FollowRequest(user.getAlias(), PAGE_SIZE, (lastFollowee == null ? null : lastFollowee.getAlias()), isFollower);

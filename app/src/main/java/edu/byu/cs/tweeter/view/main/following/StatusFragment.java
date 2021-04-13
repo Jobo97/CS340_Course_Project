@@ -311,7 +311,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
 
             GetStatusTask getStatusTask = new GetStatusTask(presenter, this);
             StatusRequest request = new StatusRequest(user.getAlias(), PAGE_SIZE,
-                    lastStatus == null ? null : lastStatus.getTweet(), isStory);
+                    lastStatus == null ? null : lastStatus.getTimeStampString(), isStory);
             getStatusTask.execute(request);
         }
 
