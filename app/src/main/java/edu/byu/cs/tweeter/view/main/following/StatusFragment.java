@@ -347,7 +347,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
         public void handleException(Exception exception) {
             Log.e(LOG_TAG, exception.getMessage(), exception);
             removeLoadingFooter();
-            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         /**

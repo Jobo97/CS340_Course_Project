@@ -26,7 +26,7 @@ import java.util.Date;
 public class AuthTokenDAO {
 
     private final String TABLE_AUTH = "authtoken";
-    private final long TIME_LIMIT = 30000;//14400000; // 4 hours
+    private final long TIME_LIMIT = 14400000; // 4 hours
     AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
             .standard()
             .withRegion("us-west-2")
