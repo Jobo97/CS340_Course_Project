@@ -31,7 +31,7 @@ public class StoryDAO {
     private Table storyTable = dynamoDB.getTable(TABLE_STORY);
     private UserDAO uDao = new UserDAO();
 
-    public StatusResponse getStoryPaginated(String userAlias, int pageSize) {
+    public StatusResponse getStoryPaginated(String userAlias, int pageSize, String lastTimestamp) {
         HashMap<String, String> nameMap = new HashMap<String, String>();
         nameMap.put("#ua", "user_alias");
 
@@ -42,6 +42,10 @@ public class StoryDAO {
                 .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
                 .withValueMap(valueMap)
                 .withMaxResultSize(pageSize);
+        if(lastTimestamp != null){       // Primary and the sort key
+            querySpec.withExclusiveStartKey("user_alias", userAlias,
+                    "timestamp", lastTimestamp);
+        }
 
         ItemCollection<QueryOutcome> items = null;
         Iterator<Item> iterator = null;
@@ -51,17 +55,17 @@ public class StoryDAO {
 
         try {
             items = storyTable.query(querySpec);
-            while(items.getLastLowLevelResult() != null){
-                hasMorePages = true;
-                System.out.println("additional page");
-                querySpec = new QuerySpec()
-                        .withScanIndexForward(false)
-                        .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
-                        .withValueMap(valueMap)
-                        .withMaxResultSize(pageSize)
-                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
-                items = storyTable.query(querySpec);
-            }
+//            while(items.getLastLowLevelResult() != null){
+//                hasMorePages = true;
+//                System.out.println("additional page");
+//                querySpec = new QuerySpec()
+//                        .withScanIndexForward(false)
+//                        .withKeyConditionExpression("#ua = :uav").withNameMap(nameMap)
+//                        .withValueMap(valueMap)
+//                        .withMaxResultSize(pageSize)
+//                        .withExclusiveStartKey((KeyAttribute) items.getLastLowLevelResult().getQueryResult().getLastEvaluatedKey());
+//                items = storyTable.query(querySpec);
+//            }
 
             iterator = items.iterator();
             while (iterator.hasNext()) {
@@ -69,6 +73,9 @@ public class StoryDAO {
                 User u = uDao.get(item.getString("user_alias"));
                 Status s = new Status(item.getString("tweet"), u, item.getString("timestamp"));
                 statuses.add(s);
+            }
+            if(statuses.size() == pageSize){
+                hasMorePages = true;
             }
 
         }

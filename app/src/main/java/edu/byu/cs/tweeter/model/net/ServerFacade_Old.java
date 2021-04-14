@@ -172,15 +172,15 @@ public class ServerFacade_Old {
 
         boolean hasMorePages = false;
 
-        if(request.getLimit() > 0) {
-            int followIndex = getStartingIndexStatus(request.getLastStatus(), statuses);
-
-            for(int limitCounter = 0; followIndex < statuses.size() && limitCounter < request.getLimit(); followIndex++, limitCounter++) {
-                responseStatus.add(statuses.get(followIndex));
-            }
-
-            hasMorePages = followIndex < statuses.size();
-        }
+//        if(request.getLimit() > 0) {
+//            int followIndex = getStartingIndexStatus(request.getLastStatus(), statuses);
+//
+//            for(int limitCounter = 0; followIndex < statuses.size() && limitCounter < request.getLimit(); followIndex++, limitCounter++) {
+//                responseStatus.add(statuses.get(followIndex));
+//            }
+//
+//            hasMorePages = followIndex < statuses.size();
+//        }
         return new StatusResponse(responseStatus, hasMorePages);
     }
 

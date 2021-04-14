@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.model.net;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.JsonSerializer;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 
 import java.io.BufferedReader;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 class ClientCommunicator {
 
-    private static final int TIMEOUT_MILLIS = 10000;
+    private static final int TIMEOUT_MILLIS = 30000;
 
     private final String baseURL;
 

@@ -7,5 +7,5 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.respons
 import java.util.List;
 
 public interface IMainService {
-    List<User> postStatus(PostStatusRequest request);
+    List<String> postStatus(PostStatusRequest request);
 }

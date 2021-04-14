@@ -8,6 +8,7 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.StatusResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public class StatusServiceImpl implements IStatusService {
     @Override
@@ -16,15 +17,15 @@ public class StatusServiceImpl implements IStatusService {
             return new StatusResponse(null, false);
         }
         if(request.getStory()){
-            return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit());
+            return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
         }
         else{
-            return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit());
+            return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
         }
     }
 
     @Override
-    public boolean postStatusFeed(PostStatusFeedRequest postStatusFeedRequest) {
+    public boolean postStatusFeed(List<PostStatusFeedRequest> postStatusFeedRequest) {
         return getFeedDAO().putFeed(postStatusFeedRequest);
     }
 
