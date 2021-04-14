@@ -14,6 +14,8 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.LoginResponse;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ public class LoginDAO {
     private UserDAO userDAO = new UserDAO();
 
     public LoginResponse login(LoginRequest request) {
+
         System.out.println(request);
         User user;
         if (request.getRegistered()) {
@@ -48,9 +51,27 @@ public class LoginDAO {
             Item item = userTable.getItem("user_alias", request.getUsername());
             if (item != null) {
                 System.out.println("PASSWORD STUFF");
+                System.out.println("Request password:");
                 System.out.println(request.getPassword());
+                System.out.println("item.getString(\"password\"):");
                 System.out.println(item.getString("password"));
-                if (!(request.getPassword().equals(item.getString("password")))) {
+
+                String unhashedPassword = item.getString("password");
+
+                boolean matched = false;
+                try {
+                    matched = PasswordHasher.validatePassword(request.getPassword(), unhashedPassword);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeySpecException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Request password:");
+                System.out.println(request.getPassword());
+                System.out.println("unhashed password:");
+
+                System.out.println(unhashedPassword);
+                if (!matched) {
                     System.out.println("broke on line 54");
                     return new LoginResponse("Login failed on line 55.");
                 }
@@ -62,23 +83,12 @@ public class LoginDAO {
         }
 
         PutItemOutcome outcome;
+        String authToken;
         try {
-            //add authToken
-//            Map<String, Object> infoMap = new HashMap<>();
-            System.out.println("Reaches 68");
-            Item item = new Item();
-            // Create some sort of timestamp an place it into the table
-            item.withPrimaryKey("user_alias", request.getUsername())
-                    .withString("authtoken", generateAuthToken(request.getPassword()).getAuthToken());
-//            infoMap.put("authtoken", (generateAuthToken(request.getPassword())).getAuthToken());
-//            outcome = table.putItem(new Item()
-//                    .withPrimaryKey("user_alias", request.getUsername())
-//                    .withMap("info", infoMap));
-            PutItemSpec putItemSpec = new PutItemSpec()
-                    .withItem(item)
-                    .withReturnValues(ReturnValue.ALL_OLD);
-            System.out.println("Reaches 79");
-            outcome = table.putItem(putItemSpec);
+            AuthTokenDAO authTokenDAO = new AuthTokenDAO();
+            AuthToken token = generateAuthToken(request.getUsername());
+            authTokenDAO.put(request.getUsername(), token.getAuthToken());
+            authToken = token.getAuthToken();
         } catch (Exception e) {
             System.out.println("AuthToken registration failed.");
             e.printStackTrace();
@@ -89,14 +99,11 @@ public class LoginDAO {
         user = userDAO.get(request.getUsername());
 
         // item probably null here
-        System.out.println(outcome);
-        Item item = outcome.getItem();
 
         System.out.println("ITEM INFO FROM USER TABLE");
-        System.out.println(item.getString("authtoken"));
+        System.out.println(authToken);
         System.out.println(user.getAlias());
 
-        String authToken = item.getString("authtoken");
         AuthToken a = new AuthToken();
         a.setAuthToken(authToken);
 
@@ -105,7 +112,23 @@ public class LoginDAO {
         return new LoginResponse(user, a);
     }
 
-    private AuthToken generateAuthToken(String password) {
-        return new AuthToken(Integer.toString(password.hashCode()));
+    private AuthToken generateAuthToken(String userName) {
+        return new AuthToken(Integer.toString(userName.hashCode()));
     }
 }
+
+//            //add authToken
+////            Map<String, Object> infoMap = new HashMap<>();
+//            System.out.println("Reaches 68");
+//            Item item = new Item();
+//            // Create some sort of timestamp an place it into the table
+//            item.withPrimaryKey("user_alias", request.getUsername())
+//                    .withString("authtoken", generateAuthToken(request.getUsername()).getAuthToken());
+////            infoMap.put("authtoken", (generateAuthToken(request.getPassword())).getAuthToken());
+////            outcome = table.putItem(new Item()
+////                    .withPrimaryKey("user_alias", request.getUsername())
+////                    .withMap("info", infoMap));
+//            PutItemSpec putItemSpec = new PutItemSpec()
+//                    .withItem(item)
+//                    .withReturnValues(ReturnValue.ALL_OLD);
+//            System.out.println("Reaches 79");

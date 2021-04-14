@@ -17,6 +17,7 @@ import java.io.IOException;
 public class LoginHandler implements RequestHandler<LoginRequest, LoginResponse> {
     @Override
     public LoginResponse handleRequest(LoginRequest loginRequest, Context context) {
+
         LoginServiceImpl loginService = new LoginServiceImpl();
         try {
             System.out.println(loginRequest.toString());
