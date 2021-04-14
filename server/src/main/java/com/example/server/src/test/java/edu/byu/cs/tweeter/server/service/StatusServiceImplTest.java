@@ -1,5 +1,6 @@
 package com.example.server.src.test.java.edu.byu.cs.tweeter.server.service;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FeedDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.StoryDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.service.StatusServiceImpl;
@@ -34,6 +35,10 @@ public class StatusServiceImplTest {
         statusService = Mockito.spy(StatusServiceImpl.class);
         Mockito.when(statusService.getStoryDAO()).thenReturn(storyDAO);
         Mockito.when(statusService.getFeedDAO()).thenReturn(feedDAO);
+        AuthTokenDAO authTokenDAO = Mockito.mock(AuthTokenDAO.class);
+        Mockito.when(statusService.getAuthTokenDAO()).thenReturn(authTokenDAO);
+        Mockito.when(authTokenDAO.validateSession(statusRequest.getLoggedInUserAlias())).thenReturn(true);
+        Mockito.when(authTokenDAO.validateSession(statusRequest.getLoggedInUserAlias())).thenReturn(true);
     }
 
     @Test
