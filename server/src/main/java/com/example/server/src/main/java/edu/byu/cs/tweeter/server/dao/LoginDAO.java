@@ -72,13 +72,11 @@ public class LoginDAO {
 
                 System.out.println(unhashedPassword);
                 if (!matched) {
-                    System.out.println("broke on line 54");
-                    return new LoginResponse("Login failed on line 55.");
+                    return new LoginResponse("Login failed: Invalid password");
                 }
             }
             else {
-                System.out.println("broke on line 59");
-                return new LoginResponse("Login failed on line 59.");
+                return new LoginResponse("Login failed: Invalid username.");
             }
         }
 
@@ -92,10 +90,8 @@ public class LoginDAO {
         } catch (Exception e) {
             System.out.println("AuthToken registration failed.");
             e.printStackTrace();
-            System.out.println("broke on line 75");
-            return new LoginResponse("Login failed on line 84.");
+            return new LoginResponse("Login failed.");
         }
-        System.out.println("Reaches 87");
         user = userDAO.get(request.getUsername());
 
         // item probably null here
