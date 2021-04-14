@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FollowDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.service.FollowServiceImpl;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
@@ -72,6 +73,10 @@ public class FollowServiceImplTest {
         followingServiceImplSpy = Mockito.spy(FollowServiceImpl.class);
         mMockFollowDAO = Mockito.mock(FollowDAO.class);
         Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mMockFollowDAO);
+        AuthTokenDAO authTokenDAO = Mockito.mock(AuthTokenDAO.class);
+        Mockito.when(followingServiceImplSpy.getAuthTokenDAO()).thenReturn(authTokenDAO);
+        Mockito.when(authTokenDAO.validateSession(currentUser.getAlias())).thenReturn(true);
+        Mockito.when(authTokenDAO.validateSession(null)).thenReturn(true);
     }
 
     /**

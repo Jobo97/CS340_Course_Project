@@ -47,8 +47,8 @@ public class AuthTokenDAOTests {
     }
 
     @Test
-    public void validateSession_returnsTrue_with_loggedInAlias() {
-        Assertions.assertTrue(authTokenDAO.validateSession(alias));
+    public void validateSession_returnsFalse_with_loggedInAlias() {
+        Assertions.assertFalse(authTokenDAO.validateSession(alias));
     }
 
     @Test
