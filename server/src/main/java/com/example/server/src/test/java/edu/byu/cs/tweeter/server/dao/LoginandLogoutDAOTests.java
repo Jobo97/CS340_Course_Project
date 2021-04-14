@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import javax.swing.JPasswordField;
 
 public class LoginandLogoutDAOTests {
@@ -32,7 +34,13 @@ public class LoginandLogoutDAOTests {
         String password = "password";
         String firstname = "testy";
         String lastname = "mctest";
-        byte[] imageBytes = null;
+        String imageURL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
+        byte[] imageBytes = new byte[0];
+        try {
+            imageBytes = ByteArrayUtils.bytesFromUrl(imageURL);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         LoginRequest loginRequest = new LoginRequest(username, password, firstname, lastname, imageBytes);
         LoginResponse loginResponse = loginDAO.login(loginRequest);
@@ -46,7 +54,7 @@ public class LoginandLogoutDAOTests {
 
     @Test
     public void loginAndLogout_return_goodResponse_with_goodRequest() {
-        String username = "@test";
+        String username = "@newtest";
         String password = "password";
         LoginRequest loginRequest = new LoginRequest(username, password);
         LoginResponse loginResponse = loginDAO.login(loginRequest);
@@ -71,7 +79,6 @@ public class LoginandLogoutDAOTests {
 
     @Test
     public void register_returns_badResponse_with_badRequest() {
-        Response response = loginDAO.login(new LoginRequest(null, null, null, null, null));
-        Assertions.assertFalse(response.isSuccess());
+        Assertions.assertThrows(NullPointerException.class, () -> loginDAO.login(new LoginRequest(null, null, null, null, null)));
     }
 }

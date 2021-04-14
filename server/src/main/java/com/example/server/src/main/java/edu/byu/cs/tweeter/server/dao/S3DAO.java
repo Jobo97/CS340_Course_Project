@@ -20,7 +20,7 @@ public class S3DAO {
     private String bucketName = "cbstweeterprofileimages";
     private AmazonS3 s3;
 
-    S3DAO() {
+    public S3DAO() {
 
         try {
             s3 = AmazonS3ClientBuilder
