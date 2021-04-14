@@ -38,6 +38,7 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request, String urlPath) throws IOException, TweeterRemoteException {
+
         LoginResponse response = clientCommunicator.doPost(urlPath, request, null, LoginResponse.class);
 
         if(response.isSuccess()) {
@@ -64,6 +65,11 @@ public class ServerFacade {
         if(response.isSuccess()) {
             return response;
         } else {
+            if (response.getMessage() != null) {
+                if (response.getMessage().equals("User-session timeout")) {
+                    return response;
+                }
+            }
             throw new RuntimeException(response.getMessage());
         }
     }

@@ -14,28 +14,38 @@ import java.util.HashMap;
 
 public class LogoutDAO {
 
-    AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
-            .standard()
-            .withRegion("us-west-2")
-            .build();
-
-    private DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
-    private Table table = dynamoDB.getTable("authtoken");
+//    AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+//            .standard()
+//            .withRegion("us-west-2")
+//            .build();
+//
+//    private DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+//    private Table table = dynamoDB.getTable("authtoken");
 
     public Response logout(LogoutRequest request) {
 
-        DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
-                .withPrimaryKey(new PrimaryKey("user_alias", request.getUserAlias()));
-        try {
-            System.out.println("Attempting logout...");
-            table.deleteItem(deleteItemSpec);
+        AuthTokenDAO aDao = new AuthTokenDAO();
+        if (aDao.delete(request.getUserAlias())) {
             System.out.println("Logout succeeded");
             return new Response(true, "Logout successful!");
         }
-        catch (Exception e) {
+        else {
             System.err.println("Unable to logout user: " + request.getUserAlias() + " still logged in.");
-            System.err.println(e.getMessage());
             return new Response(false, "Logout failed.");
         }
     }
 }
+
+//        DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
+//                .withPrimaryKey(new PrimaryKey("user_alias", request.getUserAlias()));
+//        try {
+//            System.out.println("Attempting logout...");
+//            table.deleteItem(deleteItemSpec);
+//            System.out.println("Logout succeeded");
+//            return new Response(true, "Logout successful!");
+//        }
+//        catch (Exception e) {
+//            System.err.println("Unable to logout user: " + request.getUserAlias() + " still logged in.");
+//            System.err.println(e.getMessage());
+//            return new Response(false, "Logout failed.");
+//        }

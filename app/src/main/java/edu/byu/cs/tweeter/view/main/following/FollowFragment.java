@@ -27,16 +27,22 @@ import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToke
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.FollowRequest;
 
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.Response;
+
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
+import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
 import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
+import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
+import edu.byu.cs.tweeter.view.login.LandingActivity;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
-public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable, ProfilePresenter.View {
+public class FollowFragment extends Fragment implements FollowPresenter.View, Serializable, ProfilePresenter.View, LogoutPresenter.View {
 
     private static final String LOG_TAG = "FollowFragment";
     private static final String USER_KEY = "UserKey";
@@ -55,6 +61,8 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     private boolean isFollower;
     private FollowPresenter presenter;
     private ProfilePresenter userPresenter;
+    private LogoutPresenter logoutPresenter;
+
 
     private FollowFragment.FollowingRecyclerViewAdapter followingRecyclerViewAdapter;
 
@@ -91,6 +99,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
 
         presenter = new FollowPresenter(this);
         userPresenter = new ProfilePresenter(this);
+        logoutPresenter = new LogoutPresenter(this);
 
         RecyclerView followingRecyclerView = view.findViewById(R.id.followRecyclerView);
 
@@ -177,7 +186,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     /**
      * The adapter for the RecyclerView that displays the Following data.
      */
-    private class FollowingRecyclerViewAdapter extends RecyclerView.Adapter<FollowFragment.FollowingHolder> implements GetFollowingTask.Observer {
+    private class FollowingRecyclerViewAdapter extends RecyclerView.Adapter<FollowFragment.FollowingHolder> implements GetFollowingTask.Observer, LogoutTask.Observer {
 
         private final List<User> users = new ArrayList<>();
 
@@ -311,6 +320,14 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         @Override
         public void followsRetrieved(FollowResponse followResponse) {
             List<User> follows = followResponse.getFollows();
+            if (followResponse.getMessage() != null) {
+                if (followResponse.getMessage().equals("User-session timeout")) {
+                    //logout task
+                    System.out.println("timeout logout task was called");
+                    LogoutTask task = new LogoutTask(logoutPresenter, this);
+                    task.execute(new LogoutRequest(user.getAlias(), authToken));
+                }
+            }
 
             lastFollowee = (follows.size() > 0) ? follows.get(follows.size() -1) : null;
             hasMorePages = followResponse.getHasMorePages();
@@ -318,6 +335,18 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
             isLoading = false;
             removeLoadingFooter();
             followingRecyclerViewAdapter.addItems(follows);
+        }
+
+        @Override
+        public void logoutSuccessful(Response response) {
+            Intent intent = new Intent(getActivity(), LandingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+        @Override
+        public void logoutUnsuccessful(Response response) {
+            System.out.println("Session timeout failed.");
         }
 
         /**
