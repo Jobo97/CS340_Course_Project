@@ -46,16 +46,16 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == FEED_FRAGMENT_POSITION){
-            return StatusFragment.newInstance(user, authToken, false);
+            return StatusFragment.newInstance(user, authToken, false, user.getAlias());
         }
         else if (position == STORY_FRAGMENT_POSITION){
-            return StatusFragment.newInstance(user, authToken, true);
+            return StatusFragment.newInstance(user, authToken, true, user.getAlias());
         }
         else if (position == FOLLOWING_FRAGMENT_POSITION) {
-            return FollowFragment.newInstance(user, authToken, false);
+            return FollowFragment.newInstance(user, authToken, false, user.getAlias());
         }
         else if (position == FOLLOWER_FRAGMENT_POSITION) {
-            return FollowFragment.newInstance(user, authToken, true);
+            return FollowFragment.newInstance(user, authToken, true, user.getAlias());
         }
         else {
             return PlaceholderFragment.newInstance(position + 1);

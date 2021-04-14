@@ -26,4 +26,5 @@ public class LoginServiceImpl implements ILoginService {
 
 
     public LoginDAO getLoginDAO(){ return new LoginDAO(); }
+
 }

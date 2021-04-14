@@ -42,6 +42,8 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
     private static final String USER_KEY = "UserKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
     private static final String IS_STORY_KEY = "IsStoryKey";
+    private static final String L_USER_KEY = "LUserKey";
+
 
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
@@ -53,6 +55,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
     private AuthToken authToken;
     private boolean isStory;
     private StatusPresenter presenter;
+    private String loggedInUser;
 
     private StatusFragment.StatusRecyclerViewAdapter statusRecyclerViewAdapter;
 
@@ -65,13 +68,14 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
      * @return the fragment.
      */
 
-    public static StatusFragment newInstance(User user, AuthToken authToken, boolean isStory) {
+    public static StatusFragment newInstance(User user, AuthToken authToken, boolean isStory, String loggedInUser) {
         StatusFragment fragment = new StatusFragment();
 
         Bundle args = new Bundle(3);
         args.putSerializable(USER_KEY, user);
         args.putSerializable(AUTH_TOKEN_KEY, authToken);
         args.putSerializable(IS_STORY_KEY, isStory);
+        args.putSerializable(L_USER_KEY, loggedInUser);
 
         fragment.setArguments(args);
         return fragment;
@@ -86,6 +90,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
         user = (User) getArguments().getSerializable(USER_KEY);
         authToken = (AuthToken) getArguments().getSerializable(AUTH_TOKEN_KEY);
         isStory = (boolean) getArguments().getSerializable(IS_STORY_KEY);
+        loggedInUser = (String) getArguments().getSerializable(L_USER_KEY);
 
         presenter = new StatusPresenter(this);
 
@@ -162,6 +167,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
                         intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
                         intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
                         intent.putExtra(ProfileActivity.VIEWED_USER, m);
+                        intent.putExtra(ProfileActivity.L_USER_KEY, loggedInUser);
                         startActivity(intent);
                     }
                 };
@@ -311,7 +317,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
 
             GetStatusTask getStatusTask = new GetStatusTask(presenter, this);
             StatusRequest request = new StatusRequest(user.getAlias(), PAGE_SIZE,
-                    lastStatus == null ? null : lastStatus.getTimeStampString(), isStory);
+                    lastStatus == null ? null : lastStatus.getTimeStampString(), isStory, loggedInUser);
             getStatusTask.execute(request);
         }
 
@@ -341,7 +347,7 @@ public class StatusFragment extends Fragment implements StatusPresenter.View{
         public void handleException(Exception exception) {
             Log.e(LOG_TAG, exception.getMessage(), exception);
             removeLoadingFooter();
-            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         /**

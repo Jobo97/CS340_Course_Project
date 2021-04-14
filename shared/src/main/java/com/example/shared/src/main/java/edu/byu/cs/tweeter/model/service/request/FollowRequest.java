@@ -9,6 +9,15 @@ public class FollowRequest {
     private int limit;
     private String lastFolloweeAlias;
     private boolean follower;
+    private String loggedInUserAlias;
+
+    public String getLoggedInUserAlias() {
+        return loggedInUserAlias;
+    }
+
+    public void setLoggedInUserAlias(String loggedInUserAlias) {
+        this.loggedInUserAlias = loggedInUserAlias;
+    }
 
     /**
      * Creates an instance.
@@ -19,6 +28,14 @@ public class FollowRequest {
      *                     there was no previous request or if no followees were returned in the
      *                     previous request).
      */
+    public FollowRequest(String followerAlias, int limit, String lastFolloweeAlias, boolean follower, String loggedInUserAlias) {
+        this.followerAlias = followerAlias;
+        this.limit = limit;
+        this.lastFolloweeAlias = lastFolloweeAlias;
+        this.follower = follower;
+        this.loggedInUserAlias = loggedInUserAlias;
+    }
+
     public FollowRequest(String followerAlias, int limit, String lastFolloweeAlias, boolean follower) {
         this.followerAlias = followerAlias;
         this.limit = limit;

@@ -33,7 +33,6 @@ public class FollowFetcher implements RequestHandler<SQSEvent, Void> {
             MainServiceImpl service = new MainServiceImpl();
             List<String> followers = service.postStatus(postStatusRequest);
             System.out.println("Number of followers:");
-            System.out.println(followers.size());
             if(followers != null){
                 List<String> subGroup = new ArrayList<>();
                 String queueUrl = "https://sqs.us-west-2.amazonaws.com/797774218094/JobsQ";
