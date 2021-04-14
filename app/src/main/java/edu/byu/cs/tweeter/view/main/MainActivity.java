@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         followerCount = findViewById(R.id.followerCount);
 
         FollowCountTask followCountTask = new FollowCountTask(followPresenter, this);
-        followCountTask.execute(new FollowCountRequest(user.getAlias()));
+        followCountTask.execute(new FollowCountRequest(user.getAlias(), user.getAlias()));
     }
 
     public void postStatus(String tweet) {

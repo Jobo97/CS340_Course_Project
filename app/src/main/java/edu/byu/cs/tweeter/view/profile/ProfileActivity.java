@@ -51,7 +51,10 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
     public static final String VIEWED_USER = "ViewedUser";
+    public static final String L_USER_KEY = "LUserKey";
+
     private static final String LOG_TAG = "ProfileActiviity";
+
 
     private Button followButton;
     private FollowPresenter presenter;
@@ -62,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
     private String viewedUserString;
     private TextView followeeCount;
     private TextView followerCount;
+    private String loggedInUserAlias;
 
     private ProfilePresenter userPresenter;
     private LogoutPresenter logoutPresenter;
@@ -75,6 +79,9 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         if (user == null) {
             throw new RuntimeException("User not passed to activity");
         }
+        String lUser = (String) getIntent().getSerializableExtra(L_USER_KEY);
+        this.loggedInUserAlias = lUser;
+
         this.user = user;
         System.out.println(user.toString());
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
@@ -86,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         //Fails to cast the string int a user object. I think we need an async task here
         viewedUserString = (String) getIntent().getSerializableExtra(VIEWED_USER);
         GetUserTask task = new GetUserTask(userPresenter, this);
-        task.execute(new GetUserRequest(viewedUserString));
+        task.execute(new GetUserRequest(viewedUserString, loggedInUserAlias));
 
     }
 
@@ -148,13 +155,13 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
 
         // Updates follow count numbers
         FollowCountTask followCountTask = new FollowCountTask(presenter, this);
-        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
+        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias(), loggedInUserAlias));
     }
 
     @Override
     public void loadUser(GetUserResponse getUserResponse) {
         viewedUser = getUserResponse.getViewedUser();
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), viewedUser, authToken);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), viewedUser, authToken, user.getAlias());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
@@ -175,7 +182,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
         followerCount = findViewById(R.id.followerCount);
 
         FollowCountTask followCountTask = new FollowCountTask(presenter, this);
-        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias()));
+        followCountTask.execute(new FollowCountRequest(viewedUser.getAlias(), loggedInUserAlias));
 
         followButton = findViewById(R.id.follow_button);
         followButton.setOnClickListener(new View.OnClickListener() {
@@ -216,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity implements FollowPresente
                 }
             }
         }
-        Toast.makeText(findViewById(R.id.main_activity).getContext(),
-                "Failed to post tweet because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(findViewById(R.id.main_activity).getContext(),
+//                "Failed to post tweet because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

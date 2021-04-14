@@ -30,8 +30,9 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final Context mContext;
     private final User user;
     private final AuthToken authToken;
+    private final String loggedInUser;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authToken) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authToken, String loggedInUser) {
         super(fm);
         System.out.println(context.toString());
         System.out.println(user.toString());
@@ -39,18 +40,19 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         mContext = context;
         this.user = user;
         this.authToken = authToken;
+        this.loggedInUser = loggedInUser;
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position == STORY_FRAGMENT_POSITION){
-            return StatusFragment.newInstance(user, authToken, true);
+            return StatusFragment.newInstance(user, authToken, true, loggedInUser);
         }
         else if (position == FOLLOWING_FRAGMENT_POSITION) {
-            return FollowFragment.newInstance(user, authToken, false);
+            return FollowFragment.newInstance(user, authToken, false, loggedInUser);
         }
         else if (position == FOLLOWER_FRAGMENT_POSITION) {
-            return FollowFragment.newInstance(user, authToken, true);
+            return FollowFragment.newInstance(user, authToken, true, loggedInUser);
         }
         else {
             return PlaceholderFragment.newInstance(position + 1);

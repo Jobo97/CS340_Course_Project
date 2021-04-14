@@ -22,7 +22,7 @@ public class FollowServiceImpl implements IFollowingService {
 
     @Override
     public FollowResponse getFollows(FollowRequest request) throws IOException {
-        if (getAuthTokenDAO().validateSession(request.getFollowerAlias())) {
+        if (getAuthTokenDAO().validateSession(request.getLoggedInUserAlias())) {
             FollowResponse response = getFollowingDAO().getFollows(request);
             return response;
         }
@@ -54,7 +54,7 @@ public class FollowServiceImpl implements IFollowingService {
 
     @Override
     public FollowCountResponse getFollowCount(FollowCountRequest request) throws IOException {
-        if (getAuthTokenDAO().validateSession(request.getUserAlias())) {
+        if (getAuthTokenDAO().validateSession(request.getLoggedInAlias())) {
             FollowCountResponse response = getFollowingDAO().getFollowCount(request);
             return response;
         }

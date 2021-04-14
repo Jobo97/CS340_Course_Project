@@ -48,6 +48,8 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     private static final String USER_KEY = "UserKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
     private static final String IS_FOLLOWER_KEY = "IsFollowerKey";
+    private static final String L_USER_KEY = "LUserKey";
+
 
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
@@ -62,6 +64,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
     private FollowPresenter presenter;
     private ProfilePresenter userPresenter;
     private LogoutPresenter logoutPresenter;
+    private String loggedInUser;
 
 
     private FollowFragment.FollowingRecyclerViewAdapter followingRecyclerViewAdapter;
@@ -75,13 +78,14 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
      * @return the fragment.
      */
 
-    public static FollowFragment newInstance(User user, AuthToken authToken, boolean isFollower) {
+    public static FollowFragment newInstance(User user, AuthToken authToken, boolean isFollower, String loggedInUser) {
         FollowFragment fragment = new FollowFragment();
 
         Bundle args = new Bundle(3);
         args.putSerializable(USER_KEY, user);
         args.putSerializable(AUTH_TOKEN_KEY, authToken);
         args.putSerializable(IS_FOLLOWER_KEY, isFollower);
+        args.putSerializable(L_USER_KEY, loggedInUser);
 
         fragment.setArguments(args);
         return fragment;
@@ -96,6 +100,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         user = (User) getArguments().getSerializable(USER_KEY);
         authToken = (AuthToken) getArguments().getSerializable(AUTH_TOKEN_KEY);
         isFollower = (boolean) getArguments().getSerializable(IS_FOLLOWER_KEY);
+        loggedInUser = (String) getArguments().getSerializable(L_USER_KEY);
 
         presenter = new FollowPresenter(this);
         userPresenter = new ProfilePresenter(this);
@@ -149,7 +154,9 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
                         intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
                         //would the async task wait at all for it to load viewedUser?
                         intent.putExtra(ProfileActivity.VIEWED_USER, viewedUser.getAlias());
-                        startActivity(intent);                    }
+                        intent.putExtra(ProfileActivity.L_USER_KEY, loggedInUser);
+                        startActivity(intent);
+                    }
                 });
             } else {
                 userImage = null;
@@ -272,7 +279,9 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
         @Override
         public void onBindViewHolder(@NonNull FollowFragment.FollowingHolder followingHolder, int position) {
             if(!isLoading) {
-                followingHolder.bindUser(users.get(position));
+                if (users.get(position) != null) {
+                    followingHolder.bindUser(users.get(position));
+                }
             }
         }
 
@@ -307,7 +316,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
             System.out.println("scroll was registered");
 
             GetFollowingTask getFollowingTask = new GetFollowingTask(presenter, this);
-            FollowRequest request = new FollowRequest(user.getAlias(), PAGE_SIZE, (lastFollowee == null ? null : lastFollowee.getAlias()), isFollower);
+            FollowRequest request = new FollowRequest(user.getAlias(), PAGE_SIZE, (lastFollowee == null ? null : lastFollowee.getAlias()), isFollower, loggedInUser);
             getFollowingTask.execute(request);
         }
 
@@ -325,7 +334,7 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
                     //logout task
                     System.out.println("timeout logout task was called");
                     LogoutTask task = new LogoutTask(logoutPresenter, this);
-                    task.execute(new LogoutRequest(user.getAlias(), authToken));
+                    task.execute(new LogoutRequest(loggedInUser, authToken));
                 }
             }
 
@@ -339,7 +348,13 @@ public class FollowFragment extends Fragment implements FollowPresenter.View, Se
 
         @Override
         public void logoutSuccessful(Response response) {
-            Intent intent = new Intent(getActivity(), LandingActivity.class);
+            Intent intent;
+            if (getActivity() == null) {
+                intent = new Intent(getContext(), LandingActivity.class);
+            }
+            else {
+                intent = new Intent(getActivity(), LandingActivity.class);
+            }
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

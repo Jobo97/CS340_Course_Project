@@ -1,5 +1,6 @@
 package com.example.server.src.main.java.edu.byu.cs.tweeter.server.service;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.FeedDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.StoryDAO;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.IStatusService;
@@ -13,14 +14,21 @@ import java.util.List;
 public class StatusServiceImpl implements IStatusService {
     @Override
     public StatusResponse getStatuses(StatusRequest request) throws IOException {
-        if(request.getUserAlias() == null){
-            return new StatusResponse(null, false);
+        if (getAuthTokenDAO().validateSession(request.getLoggedInUserAlias())) {
+            if (request.getUserAlias() == null) {
+                return new StatusResponse(null, false);
+            }
+            if (request.getStory()) {
+                return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
+            } else {
+                return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
+            }
         }
-        if(request.getStory()){
-            return getStoryDAO().getStoryPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
-        }
-        else{
-            return getFeedDAO().getFeedPaginated(request.getUserAlias(), request.getLimit(), request.getLastTimeStamp());
+        else {
+            StatusResponse response = new StatusResponse();
+            response.setMessage("User-session timeout");
+            response.setSuccess(false);
+            return response;
         }
     }
 
@@ -31,4 +39,5 @@ public class StatusServiceImpl implements IStatusService {
 
     public StoryDAO getStoryDAO(){ return new StoryDAO(); }
     public FeedDAO getFeedDAO(){ return new FeedDAO(); }
+    public AuthTokenDAO getAuthTokenDAO(){ return new AuthTokenDAO(); }
 }
