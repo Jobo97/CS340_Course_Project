@@ -1,7 +1,9 @@
 package com.example.server.src.test.java.edu.byu.cs.tweeter.server.service;
 
+import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.dao.ProfileDAO;
 import com.example.server.src.main.java.edu.byu.cs.tweeter.server.service.ProfileServiceImpl;
+import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.AuthToken;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.domain.User;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.request.GetUserRequest;
 import com.example.shared.src.main.java.edu.byu.cs.tweeter.model.service.response.GetUserResponse;
@@ -32,6 +34,10 @@ public class ProfileServiceImplTest {
         profileDAO = Mockito.mock(ProfileDAO.class);
         profileService = Mockito.spy(ProfileServiceImpl.class);
         Mockito.when(profileService.getProfileDAO()).thenReturn(profileDAO);
+        AuthTokenDAO authTokenDAO = Mockito.mock(AuthTokenDAO.class);
+        Mockito.when(profileService.getAuthTokenDAO()).thenReturn(authTokenDAO);
+        Mockito.when(authTokenDAO.validateSession(currentUser.getAlias())).thenReturn(true);
+        Mockito.when(authTokenDAO.validateSession(null)).thenReturn(true);
     }
 
     @Test
